@@ -1,0 +1,15 @@
+- file: intro
+  title: "Introduction" 
+
+- part: "Data visualization"
+  chapters:
+  - file: 01/1-test
+    title: "Example notebook"
+
+
+- part: "Resources"
+  chapters:
+  - url: https://github.com/courtois-neuromod/anat-processing/releases
+    title: "Results of spinal cord analysis" 
+  - url: https://github.com/courtois-neuromod/anat-processing
+    title: "GitHub repository" 

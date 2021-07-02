@@ -1,0 +1,2 @@
+wget -O spinalcord_results.zip https://github.com/courtois-neuromod/anat-processing/releases/download/r20210610/spinalcord_results.zip
+unzip -j spinalcord_results.zip -d $HOME/spinalcord_results/
