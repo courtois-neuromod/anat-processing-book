@@ -29,7 +29,7 @@ launch_buttons:
   colab_url                 : "https://colab.research.google.com/drive/1Yi2KiiEzLrEA7ZRA3JL8YhT5cdv3Lbcv?usp=sharing"
 
 repository:
-  url                       : https://github.com/zelenkastiot/mri-plotly
+  url                       : https://github.com/courtois-neuromod/anat-processing-book
   branch                    : main  
 
 parse:
