@@ -6,8 +6,8 @@ Data used in notebook is avilable [here](https://github.com/courtois-neuromod/an
 
 import pandas as pd
 
-df_t1 = pd.read_csv("./../spinalcord_results/results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
-df_t2 = pd.read_csv("./../spinalcord_results/results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
+df_t1 = pd.read_csv("./../spinalcord_results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
+df_t2 = pd.read_csv("./../spinalcord_results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
 
 Display results for <code>csa-SC_T1w.csv</code>: 
 
