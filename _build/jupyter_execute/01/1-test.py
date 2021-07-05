@@ -9,11 +9,7 @@ import pandas as pd
 df_t1 = pd.read_csv("./../spinalcord_results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
 df_t2 = pd.read_csv("./../spinalcord_results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
 
-Display results for <code>csa-SC_T1w.csv</code>: 
-
 df_t1
-
-Display values for <code>csa-SC_T2w.csv</code>: 
 
 df_t2
 
@@ -223,11 +219,19 @@ from IPython.core.display import display, HTML
 init_notebook_mode(connected = True)
 config={'showLink': False, 'displayModeBar': False}
 
-# Different shapes can been seen here: https://github.com/plotly/plotly.py/issues/2182
-# I used the one with index 102 (outline of a dimond)
+# Get different symbols (See for reference: https://plotly.com/python/marker-style/)
+raw_symbols = SymbolValidator().values
+namestems = []
+namevariants = []
+symbols = []
+for i in range(0,len(raw_symbols),3):
+    name = raw_symbols[i+2]
+    symbols.append(raw_symbols[i])
+    namestems.append(name.replace("-open", "").replace("-dot", ""))
+    namevariants.append(name[len(namestems[-1]):])
 
 # Load fancy colors
-tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (241, 119, 32),  
+tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
              (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
              (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
              (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
@@ -251,131 +255,283 @@ figb = go.Figure(data=go.Scatter(x=labels_int,
 for trace in range(0, len(mean_area_matrix_1)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_area_matrix_1[trace], 
-                              mode='markers',
-                              hovertemplate = 
-                              "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>1</sub>w]',
-                              marker_color="rgb"+str(tableau20[0])))
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_area_matrix_1[trace], 
+                                  mode='markers',
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_area_matrix_1[trace], 
+                                  mode='markers',
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
 # Add MEAN [area] --- > T2w
 for trace in range(0, len(mean_area_matrix_2)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_area_matrix_2[trace], 
-                              mode='markers',
-                              hovertemplate = 
-                              "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>2</sub>w]',
-                              marker_symbol=102,
-                              marker_color="rgb"+str(tableau20[3])))
+    if trace == 0: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_area_matrix_2[trace], 
+                                  mode='markers',
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'T2w',
+                                  marker_symbol=symbols[5],
+                                  marker_color="rgb"+str(tableau20[3])))
+        
+    else: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_area_matrix_2[trace], 
+                                  mode='markers',
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = False, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_symbol=symbols[5],
+                                  marker_color="rgb"+str(tableau20[3])))
 
 # Add MEAN [AP] --- > T1w
 for trace in range(0, len(mean_ap_matrix_1)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_ap_matrix_1[trace], 
-                              mode='markers',
-                              visible=False,
-                              hovertemplate = 
-                              "Mean [AP]: <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>1</sub>w]',
-                              marker_color="rgb"+str(tableau20[0])))
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_ap_matrix_1[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = True, 
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean [AP]: <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_ap_matrix_1[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = False, 
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean [AP]: <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
+            
 
 # Add MEAN [AP] --- > T2w
 for trace in range(0, len(mean_ap_matrix_2)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_ap_matrix_2[trace], 
-                              mode='markers',
-                              visible=False,
-                              hovertemplate = 
-                              "Mean [AP]: <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              marker_symbol=102,
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>2</sub>w]',
-                              marker_color="rgb"+str(tableau20[3])))
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_ap_matrix_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = True, 
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean [AP]: <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  marker_symbol=symbols[5],
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_color="rgb"+str(tableau20[3])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_ap_matrix_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = False, 
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean [AP]: <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  marker_symbol=symbols[5],
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_color="rgb"+str(tableau20[3])))
     
 # Add MEAN [RL] --- > T1w
 for trace in range(0, len(mean_rl_matrix_1)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_rl_matrix_1[trace], 
-                              mode='markers',
-                              visible=False,
-                              hovertemplate = 
-                              "Mean (RL): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>1</sub>w]',
-                              marker_color="rgb"+str(tableau20[0])))
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_rl_matrix_1[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = True, 
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean (RL): <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
+        
+    else: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_rl_matrix_1[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = False, 
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean (RL): <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
+        
     
 # Add MEAN [RL] --- > T2w
 for trace in range(0, len(mean_rl_matrix_2)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_rl_matrix_2[trace], 
-                              mode='markers',
-                              visible=False,
-                              hovertemplate = 
-                              "Mean (RL): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>2</sub>w]',
-                              marker_symbol=102,
-                              marker_color="rgb"+str(tableau20[3])))
+    if trace == 0: 
     
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_rl_matrix_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = True, 
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean (RL): <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_symbol=symbols[5],
+                                  marker_color="rgb"+str(tableau20[3])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_rl_matrix_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = False, 
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean (RL): <i> %{y: .2f} </i> mm" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_symbol=symbols[5],
+                                  marker_color="rgb"+str(tableau20[3])))
 # Add MEAN [angle_AP] --- > T1w
 for trace in range(0, len(mean_angle_matrix_1)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_angle_matrix_1[trace], 
-                              mode='markers',
-                              visible=False,
-                              hovertemplate = 
-                              "Mean (angle_AP): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>1</sub>w]',
-                              marker_color="rgb"+str(tableau20[0])))
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_angle_matrix_1[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = True, 
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean (angle_AP): <i> %{y: .2f} </i>°" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
+        
+    else: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_angle_matrix_1[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = False, 
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean (angle_AP): <i> %{y: .2f} </i>°" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T1w',
+                                  marker_color="rgb"+str(tableau20[0])))
     
 # Add MEAN [angle_AP] --- > T2w
 for trace in range(0, len(mean_angle_matrix_2)):
     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
     
-    figb.add_trace(go.Scatter(x=t, 
-                              y=mean_angle_matrix_2[trace], 
-                              mode='markers',
-                              visible=False,
-                              hovertemplate = 
-                              "Mean (angle_AP): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
-                              "<br>" + 
-                              "<b>%{text}</b>", 
-                              text = ['Session {}'.format(i + 1) for i in range(4)],
-                              name=labels_subjects[trace] + ' [T<sub>2</sub>w]',
-                              marker_symbol=102,
-                              marker_color="rgb"+str(tableau20[3])))
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_angle_matrix_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = True, 
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean (angle_AP): <i> %{y: .2f} </i>°" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_symbol=symbols[5],
+                                  marker_color="rgb"+str(tableau20[3])))
 
+    else: 
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_angle_matrix_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  showlegend = False, 
+                                  legendgroup="group2",
+                                  hovertemplate = 
+                                  "Mean (angle_AP): <i> %{y: .2f} </i>°" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T2w',
+                                  marker_symbol=symbols[5],
+                                  marker_color="rgb"+str(tableau20[3])))
+        
 # Add dotted line for first trace
 figb.add_shape(type="line",
     x0=-1, y0=70, x1=6, y1=70,
@@ -386,16 +542,16 @@ figb.add_shape(type="line",
     )
 )
 
-figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
+figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                    updatemenus=[
                                 dict(
                                     active = 0, 
                                     x=1.32,
-                                    y=0.28,
+                                    y=0.68,
                                     direction="down",
                                     yanchor="top",
                                     buttons=list([
-                                        dict(label="(a) Mean (area)",
+                                        dict(label="(1) Mean (area)",
                                                      method="update",
                                                      args=[{"visible": [True] + [True]*12 + [False]*36},
                                                            
@@ -415,7 +571,7 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                                                                           linecolor='#000',
                                                                           tickfont = dict(size=16))}]),
                                         
-                                        dict(label="(b) Mean (AP)",
+                                        dict(label="(2) Mean (AP)",
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24},
                                                            
@@ -428,14 +584,14 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                                                                             ))],
                                                             
                                                              "yaxis": dict(range=[0,15],
-                                                                          title='mm<sup>2</sup>',
+                                                                          title='mm',
                                                                           mirror=True,
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
                                                                           tickfont = dict(size=16))}]),
                                     
-                                        dict(label="(c) Mean (RL)",
+                                        dict(label="(3) Mean (RL)",
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12},
                                                            
@@ -448,14 +604,14 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                                                                             ))],
                                                             
                                                              "yaxis": dict(range=[0,15],
-                                                                          title='mm<sup>2</sup>',
+                                                                          title='mm',
                                                                           mirror=True,
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
                                                                           tickfont = dict(size=16))}]),
                                         
-                                        dict(label="(d) Mean (angle)",
+                                        dict(label="(4) Mean (angle)",
                                                      method="update",
                                                      args=[{"visible":  [True] + [False]*36 + [True]*12},
                                                            
@@ -468,7 +624,7 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                                                                             ))],
                                                             
                                                             "yaxis": dict(range=[-10,15],
-                                                                          title='mm<sup>2</sup>',
+                                                                          title='degrees (°)',
                                                                           mirror=True,
                                                                           ticks='outside', 
                                                                           showline=True, 
@@ -487,7 +643,7 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                              linecolor='#000',
                              tickvals = [0, 1, 2, 3, 4, 5],
                              ticktext = labels_subjects,
-                             tickfont = dict(size=13)),
+                             tickfont = dict(size=12)),
                   yaxis_title='mm<sup>2</sup>',
                   yaxis=dict(range=[0,100], 
                              mirror=True,
@@ -499,7 +655,7 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                                dict(text="Display metric: ", 
                                      showarrow=False,
                                      x=1.25,
-                                     y=0.278,
+                                     y=0.75,
                                      xref = 'paper',
                                      yref="paper")],
                   plot_bgcolor='#fff', 
@@ -512,8 +668,7 @@ figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]'
                                         t=35))
 # Plot figure
 # For jupyter-book rendering --=-- jupyter-lab
-plot(figb, filename = './figure-outputs/new-fig.html', config = config)
-display(HTML('./figure-outputs/new-fig.html'))
-
+plot(figb, filename = 'new-fig.html', config = config)
+display(HTML('new-fig.html'))
 # For local jupyter notebook --== binder session
 # iplot(figb,config=config)
