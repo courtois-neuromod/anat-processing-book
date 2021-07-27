@@ -1,11 +1,16 @@
+
 - file: intro
-  title: "Introduction" 
+  title: "Context"
+
+# - part: "Data visualization"
+#   chapters:
+#   - file: intro
+#     title: "Example notebook"
 
 - part: "Data visualization"
   chapters:
   - file: 01/1-test
     title: "Example notebook"
-
 
 - part: "Resources"
   chapters:
