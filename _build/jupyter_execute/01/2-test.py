@@ -82,6 +82,8 @@ import plotly.tools as tls
 from plotly.offline import plot, iplot, init_notebook_mode
 from plotly.validators.scatter.marker import SymbolValidator
 from IPython.core.display import display, HTML
+import numpy as np
+
 
 # Add plotly 
 init_notebook_mode(connected = True)
@@ -483,4 +485,3 @@ plot(figb, filename = 'new-fig-2.html', config = config)
 display(HTML('new-fig-2.html'))
 # For local jupyter notebook --== binder session
 # iplot(figb,config=config)
-

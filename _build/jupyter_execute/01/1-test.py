@@ -212,6 +212,7 @@ import plotly.tools as tls
 from plotly.offline import plot, iplot, init_notebook_mode
 from plotly.validators.scatter.marker import SymbolValidator
 from IPython.core.display import display, HTML
+import numpy as np
 
 # Add plotly 
 init_notebook_mode(connected = True)
