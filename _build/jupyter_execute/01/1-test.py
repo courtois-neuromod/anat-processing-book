@@ -1,4 +1,4 @@
-# Example notebook
+# Example notebook (spinal data)
 
 ## 1: Read and organize anatomical data 
 
@@ -6,8 +6,8 @@ Data used in notebook is avilable [here](https://github.com/courtois-neuromod/an
 
 import pandas as pd
 
-df_t1 = pd.read_csv("./../spinalcord_results/results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
-df_t2 = pd.read_csv("./../spinalcord_results/results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
+df_t1 = pd.read_csv("./../spinalcord_results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
+df_t2 = pd.read_csv("./../spinalcord_results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
 
 df_t1
 
@@ -285,7 +285,7 @@ for trace in range(0, len(mean_area_matrix_1)):
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name= 'T1w',
+                                  name= 'T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
     else: 
         
@@ -299,7 +299,7 @@ for trace in range(0, len(mean_area_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
 # Add MEAN [area] --- > T2w
 for trace in range(0, len(mean_area_matrix_2)):
@@ -316,7 +316,7 @@ for trace in range(0, len(mean_area_matrix_2)):
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name= 'T2w',
+                                  name= 'T<sub>2</sub>w',
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
         
@@ -331,7 +331,7 @@ for trace in range(0, len(mean_area_matrix_2)):
                                   "<b>%{text}</b>", 
                                   showlegend = False, 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
 
@@ -352,7 +352,7 @@ for trace in range(0, len(mean_ap_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
     else: 
         figb.add_trace(go.Scatter(x=t, 
@@ -366,7 +366,7 @@ for trace in range(0, len(mean_ap_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
             
 
@@ -388,7 +388,7 @@ for trace in range(0, len(mean_ap_matrix_2)):
                                   "<b>%{text}</b>", 
                                   marker_symbol=symbols[5],
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_color="rgb"+str(tableau20[3])))
     else: 
         
@@ -404,7 +404,7 @@ for trace in range(0, len(mean_ap_matrix_2)):
                                   "<b>%{text}</b>", 
                                   marker_symbol=symbols[5],
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_color="rgb"+str(tableau20[3])))
     
 # Add MEAN [RL] --- > T1w
@@ -424,7 +424,7 @@ for trace in range(0, len(mean_rl_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
         
     else: 
@@ -439,7 +439,7 @@ for trace in range(0, len(mean_rl_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
         
     
@@ -460,7 +460,7 @@ for trace in range(0, len(mean_rl_matrix_2)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
     else: 
@@ -476,7 +476,7 @@ for trace in range(0, len(mean_rl_matrix_2)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
 # Add MEAN [angle_AP] --- > T1w
@@ -496,7 +496,7 @@ for trace in range(0, len(mean_angle_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
         
     else: 
@@ -511,7 +511,7 @@ for trace in range(0, len(mean_angle_matrix_1)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T1w',
+                                  name='T<sub>1</sub>w',
                                   marker_color="rgb"+str(tableau20[0])))
     
 # Add MEAN [angle_AP] --- > T2w
@@ -531,7 +531,7 @@ for trace in range(0, len(mean_angle_matrix_2)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
 
@@ -547,7 +547,7 @@ for trace in range(0, len(mean_angle_matrix_2)):
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
-                                  name='T2w',
+                                  name='T<sub>2</sub>w',
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
         
@@ -569,7 +569,7 @@ line_8   = get_mean(mean_angle_matrix_2)   # T2w angle    --- mean
 figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
                           y=[line_1]*8,
                           mode='lines',
-                          name='T1w mean',
+                          name='T<sub>1</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[0]), 
                                     width=2,
@@ -578,7 +578,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
 figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
                           y=[line_2]*8,
                           mode='lines',
-                          name='T2w mean',
+                          name='T<sub>2</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[3]), 
                                     width=2,
@@ -589,7 +589,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
                           y=[line_3]*8,
                           mode='lines',
                           visible=False,
-                          name='T1w mean',
+                          name='T<sub>1</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[0]), 
                                     width=2,
@@ -599,7 +599,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
                           y=[line_4]*8,
                           mode='lines',
                           visible=False,
-                          name='T2w mean',
+                          name='T<sub>2</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[3]), 
                                     width=2,
@@ -610,7 +610,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
                           y=[line_5]*8,
                           mode='lines',
                           visible=False,
-                          name='T1w mean',
+                          name='T<sub>1</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[0]), 
                                     width=2,
@@ -620,7 +620,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
                           y=[line_6]*8,
                           mode='lines',
                           visible=False,
-                          name='T2w mean',
+                          name='T<sub>2</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[3]), 
                                     width=2,
@@ -631,7 +631,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
                           y=[line_7]*8,
                           mode='lines',
                           visible=False,
-                          name='T1w mean',
+                          name='T<sub>1</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[0]), 
                                     width=2,
@@ -641,7 +641,7 @@ figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6],
                           y=[line_8]*8,
                           mode='lines',
                           visible=False,
-                          name='T2w mean',
+                          name='T<sub>2</sub>w mean',
                           opacity=0.5, 
                           line=dict(color="rgb"+str(tableau20[3]), 
                                     width=2,
@@ -763,7 +763,7 @@ figb.add_trace(go.Scatter(
 ))
 
 
-figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
+figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                    updatemenus=[
                                 dict(
                                     active = 0, 

@@ -10,7 +10,9 @@
 - part: "Data visualization"
   chapters:
   - file: 01/1-test
-    title: "Example notebook"
+    title: "Example notebook (spinal data)"
+  - file: 01/2-test
+    title: "Example notebook (brain data)"
 
 - part: "Resources"
   chapters:
