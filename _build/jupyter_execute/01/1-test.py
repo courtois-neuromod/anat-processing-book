@@ -6,8 +6,8 @@ Data used in notebook is avilable [here](https://github.com/courtois-neuromod/an
 
 import pandas as pd
 
-df_t1 = pd.read_csv("./../spinalcord_results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
-df_t2 = pd.read_csv("./../spinalcord_results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
+df_t1 = pd.read_csv("./../spinalcord_results/results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
+df_t2 = pd.read_csv("./../spinalcord_results/results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
 
 df_t1
 
@@ -193,8 +193,6 @@ for i in range(0, 6, 1):
 
 Compare *extracted values* and *results* from csv for validity:
 
-mean_area_matrix_2[2]
-
 subs = df_3.loc[df_3['Subject'] == 3]
 
 for index, row in subs.iterrows():
@@ -219,6 +217,26 @@ from IPython.core.display import display, HTML
 init_notebook_mode(connected = True)
 config={'showLink': False, 'displayModeBar': False}
 
+def get_mean(mean_matrix):
+    temp = mean_matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    mean = float('{0:.2f}'.format(np.mean(mean_list)))
+    return mean
+
+def get_std(mean_matrix):
+    temp = mean_matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    std = float('{0:.3f}'.format(np.std(mean_list)))
+    return std
+
 # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
 raw_symbols = SymbolValidator().values
 namestems = []
@@ -242,7 +260,7 @@ tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),
 labels =["Session 1", "Session 2","Session 3","Session 4"]
 labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
 labels_int = [i for i in range(1, 7)]
-
+x_rev = labels_int[::-1]
 # Add first values for labels [Sub1...Sub6]
 figb = go.Figure(data=go.Scatter(x=labels_int,
                                 y=[-1000, -1000, -1000, -1000, -1000, -1000],
@@ -270,6 +288,7 @@ for trace in range(0, len(mean_area_matrix_1)):
                                   name= 'T1w',
                                   marker_color="rgb"+str(tableau20[0])))
     else: 
+        
         figb.add_trace(go.Scatter(x=t, 
                                   y=mean_area_matrix_1[trace], 
                                   mode='markers',
@@ -532,38 +551,232 @@ for trace in range(0, len(mean_angle_matrix_2)):
                                   marker_symbol=symbols[5],
                                   marker_color="rgb"+str(tableau20[3])))
         
-# Add dotted line for first trace
-figb.add_shape(type="line",
-    x0=-1, y0=70, x1=6, y1=70,
-    line=dict(
-        color="red",
-        width=1,
-        dash="dot",
-    )
-)
+# Calculate means 
+line_1   = get_mean(mean_area_matrix_1)    # T1w mean area --- mean 
+line_2   = get_mean(mean_area_matrix_2)    # T2w mean area --- mean 
+
+line_3   = get_mean(mean_ap_matrix_1)      # T1w mean AP   --- mean
+line_4   = get_mean(mean_ap_matrix_2)      # T2w mean AP   --- mean
+
+line_5   = get_mean(mean_rl_matrix_1)      # T1w mean RL  --- mean
+line_6   = get_mean(mean_rl_matrix_2)      # T2w mean RL  --- mean
+
+line_7   = get_mean(mean_angle_matrix_1)   # T1w angle    --- mean
+line_8   = get_mean(mean_angle_matrix_2)   # T2w angle    --- mean
+
+
+# Add dotted lines for first button 
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_1]*8,
+                          mode='lines',
+                          name='T1w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_2]*8,
+                          mode='lines',
+                          name='T2w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[3]), 
+                                    width=2,
+                                    dash='dot')))
+
+# Add dotted lines for second button 
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_3]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T1w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_4]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T2w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[3]), 
+                                    width=2,
+                                    dash='dot')))
+
+# Add dotted lines for thrid button 
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_5]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T1w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_6]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T2w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[3]), 
+                                    width=2,
+                                    dash='dot')))
+
+# Add dotted lines for forth button 
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_7]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T1w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_8]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T2w mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[3]), 
+                                    width=2,
+                                    dash='dot')))
+
+
+x = [-1, 0, 1, 2, 3, 4, 5, 6]
+x_rev = x[::-1]
+
+std_1   = get_std(mean_area_matrix_1)    # T1w mean area --- std 
+std_2   = get_std(mean_area_matrix_2)    # T2w mean area --- std 
+
+std_3   = get_std(mean_ap_matrix_1)      # T1w mean AP   --- std
+std_4   = get_std(mean_ap_matrix_2)      # T2w mean AP   --- std
+
+std_5   = get_std(mean_rl_matrix_1)      # T1w mean RL  --- std
+std_6   = get_std(mean_rl_matrix_2)      # T2w mean RL  --- std
+
+std_7   = get_std(mean_angle_matrix_1) - 2.0  # T1w angle    --- std
+std_8   = get_std(mean_angle_matrix_2)        # T2w angle    --- std
+
+
+# Add STD for 1 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_1+std_1]*8+[line_1-std_1]*8,
+    fill='toself',
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_2+std_2]*8+[line_2-std_2]*8,
+    fill='toself',
+    fillcolor='rgba(255, 187, 120,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T2w STD',
+))
+
+# Add STD for 2 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_3+std_3]*8+[line_3-std_3]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_4+std_4]*8+[line_4-std_4]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(255, 187, 120,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
+# Add STD for 3 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_5+std_5]*8+[line_5-std_5]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_6+std_6]*8+[line_6-std_6]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(255, 187, 120,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
+# Add STD for 4 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_7+std_7]*8+[line_7-std_7]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_8+std_8]*8+[line_8-std_8]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(255, 187, 120,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T1w STD',
+))
+
 
 figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                    updatemenus=[
                                 dict(
                                     active = 0, 
                                     x=1.32,
-                                    y=0.68,
+                                    y=0.58,
                                     direction="down",
                                     yanchor="top",
                                     buttons=list([
                                         dict(label="(1) Mean (area)",
                                                      method="update",
-                                                     args=[{"visible": [True] + [True]*12 + [False]*36},
+                                                     args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
                                                            
-                                                           {"shapes": [dict( type="line",
-                                                                            x0=-1, y0=70, x1=6, y1=70,
-                                                                            line=dict(
-                                                                                color="red",
-                                                                                width=1,
-                                                                                dash="dot",
-                                                                            ))],
-                                                            
-                                                             "yaxis": dict(range=[0,100],
+                                                           {"yaxis": dict(range=[0,100],
                                                                           title='mm<sup>2</sup>',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -573,17 +786,9 @@ figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                                         
                                         dict(label="(2) Mean (AP)",
                                                      method="update",
-                                                     args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24},
+                                                     args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
                                                            
-                                                           {"shapes": [dict( type="line",
-                                                                            x0=-1, y0=7, x1=6, y1=7,
-                                                                            line=dict(
-                                                                                color="red",
-                                                                                width=1,
-                                                                                dash="dot",
-                                                                            ))],
-                                                            
-                                                             "yaxis": dict(range=[0,15],
+                                                           {"yaxis": dict(range=[0,15],
                                                                           title='mm',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -593,17 +798,9 @@ figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                                     
                                         dict(label="(3) Mean (RL)",
                                                      method="update",
-                                                     args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12},
+                                                     args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
                                                            
-                                                           {"shapes": [dict( type="line",
-                                                                            x0=-1, y0=12, x1=8, y1=12,
-                                                                            line=dict(
-                                                                                color="red",
-                                                                                width=1,
-                                                                                dash="dot",
-                                                                            ))],
-                                                            
-                                                             "yaxis": dict(range=[0,15],
+                                                           {"yaxis": dict(range=[0,15],
                                                                           title='mm',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -613,17 +810,9 @@ figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                                         
                                         dict(label="(4) Mean (angle)",
                                                      method="update",
-                                                     args=[{"visible":  [True] + [False]*36 + [True]*12},
+                                                     args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
                                                            
-                                                           {"shapes": [dict( type="line",
-                                                                            x0=-1, y0=0, x1=6, y1=0,
-                                                                            line=dict(
-                                                                                color="red",
-                                                                                width=1,
-                                                                                dash='dot'
-                                                                            ))],
-                                                            
-                                                            "yaxis": dict(range=[-10,15],
+                                                           {"yaxis": dict(range=[-10,15],
                                                                           title='degrees (°)',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -631,11 +820,9 @@ figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                                                                           linecolor='#000',
                                                                           tickfont = dict(size=16))}]) ]) )],
                   title_x = 0.445, 
-                  legend=dict(title='Sessions for:',
-                              orientation = 'v',
+                  legend=dict(orientation = 'v',
                               bordercolor="Gray",
                               borderwidth=1),
-#                    hovermode='y unified',
                   xaxis=dict(range=[-0.45,5.45], 
                              mirror=True,
                              ticks='outside',
@@ -655,10 +842,10 @@ figb.update_layout(title = '(1) Spinal cord CSA [T1w/T2w]',
                                dict(text="Display metric: ", 
                                      showarrow=False,
                                      x=1.25,
-                                     y=0.75,
+                                     y=0.62,
                                      xref = 'paper',
                                      yref="paper")],
-                  plot_bgcolor='#fff', 
+                  plot_bgcolor='rgba(227,233,244, 0.5)',
                   width = 760, 
                   height = 520,
                   font = dict(size = 13),
