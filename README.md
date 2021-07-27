@@ -21,5 +21,5 @@ pip install -r requirements.txt
 
 Build the notebook
 ~~~
-jupyter-book build
+jupyter-book build .
 ~~~
