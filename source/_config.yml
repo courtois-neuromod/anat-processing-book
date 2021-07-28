@@ -16,7 +16,7 @@ html:
   use_repository_button     : true  
   use_issues_button         : true  
   extra_navbar              : Powered by <a href="https://jupyterbook.org">Jupyter Book</a>  
-  home_page_in_navbar       : true  
+  home_page_in_navbar       : false  
   baseurl                   : ""  
   comments:
     hypothesis              : true

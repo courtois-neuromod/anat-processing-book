@@ -1,18 +1,13 @@
+- file: index
 
-- file: intro
-  title: "Context"
-
-# - part: "Data visualization"
-#   chapters:
-#   - file: intro
-#     title: "Example notebook"
-
-- part: "Data visualization"
+- part: "Introduction"
   chapters:
-  - file: 01/1-test
-    title: "Example notebook (spinal data)"
-  - file: 01/2-test
-    title: "Example notebook (brain data)"
+  - file: introduction/introduction
+
+- part: "Results"
+  chapters:
+  - file: results/1-test
+  - file: results/2-test
 
 - part: "Resources"
   chapters:
