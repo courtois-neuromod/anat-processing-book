@@ -1231,7 +1231,7 @@ for trace in range(0, len(matrix_dwi_md)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f} </i>" + 
+                                  "WA(): <i> %{y: .6f} </i> mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1247,7 +1247,7 @@ for trace in range(0, len(matrix_dwi_md)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f}" + 
+                                  "WA(): <i> %{y: .6f} mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1267,7 +1267,7 @@ for trace in range(0, len(matrix_dwi_rd)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f} </i>" + 
+                                  "WA(): <i> %{y: .6f} </i> mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1283,7 +1283,7 @@ for trace in range(0, len(matrix_dwi_rd)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f}" + 
+                                  "WA(): <i> %{y: .6f} mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1373,7 +1373,7 @@ for trace in range(0, len(matrix_t1_2)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "WA(): <i> %{y: .7f} </i> sec" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1389,7 +1389,7 @@ for trace in range(0, len(matrix_t1_2)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f}" + 
+                                  "WA(): <i> %{y: .7f} sec" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1584,7 +1584,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*24 + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
                                                            
                                                            {"yaxis": dict(range=[0,0.0025],
-                                                                          title='',
+                                                                          title='mm<sup>2</sup>/s',
                                                                           mirror=True,
                                                                           ticks='outside', 
                                                                           showline=True, 
@@ -1596,7 +1596,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*18 + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
                                                            
                                                            {"yaxis": dict(range=[0,0.0025],
-                                                                          title='',
+                                                                          title='mm<sup>2</sup>/s',
                                                                           mirror=True,
                                                                           ticks='outside', 
                                                                           showline=True, 
@@ -1631,7 +1631,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      args=[{"visible":  [True] + [False]*30 + [True]*6 + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
                                                            
                                                            {"yaxis": dict(range=[0,0.0025],
-                                                                          title='',
+                                                                          title='s (seconds)',
                                                                           mirror=True,
                                                                           ticks='outside', 
                                                                           showline=True, 
