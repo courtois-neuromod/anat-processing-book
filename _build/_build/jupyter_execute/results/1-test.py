@@ -837,3 +837,220 @@ plot(figb, filename = 'new-fig.html', config = config)
 display(HTML('new-fig.html'))
 # For local jupyter notebook --== binder session
 # iplot(figb,config=config)
+
+import plotly.graph_objects as go
+import plotly.tools as tls
+from plotly.offline import plot, iplot, init_notebook_mode
+from plotly.validators.scatter.marker import SymbolValidator
+from IPython.core.display import display, HTML
+import numpy as np
+import pandas as pd
+# Add plotly 
+init_notebook_mode(connected = True)
+config={'showLink': False, 'displayModeBar': False}
+
+# Load  the data
+df_3 = pd.read_csv("./spinalcord_results/csa-GM_T2s.csv", converters={'project_id': lambda x: str(x)})
+
+# Insert new columns for Subject and Session and start inserting values
+df_3.insert(0, "Subject", "Any")
+df_3.insert(1, "Session", "Any")
+
+# Get Subject and Session from csv
+for index, row in df_3.iterrows():
+    subject = int(row['Filename'].split("/")[6].split('-')[1])
+    session = int(row['Filename'].split("/")[7].split("-")[1])
+    df_3.at[index, 'Subject'] =  subject
+    df_3.at[index, 'Session'] =  session
+
+# Sort values based on Subject -- Session
+df_3 = df_3.sort_values(['Subject', 'Session'], ascending=[True, True])   
+
+# Define lists for metrics
+mean_area_matrix_1 = []
+
+
+# Get the values for all 4 metric [area, mean_AP, mean_RL, angle_AP]
+for i in range(0, 6, 1):
+    sub_values = df_3.loc[df_3['Subject'] == i+1]
+    
+    mean_area_ses = []
+    
+    
+    for j in range(0, 4, 1):
+        ses_values = sub_values.loc[sub_values['Session'] == j+1]
+        
+        mean_area = -100
+        
+        
+        for index, row in ses_values.iterrows():
+            # Read values
+            MEAN_area = row['MEAN(area)']
+            
+            # Store values
+            mean_area = MEAN_area 
+        
+        # Append values to lists for sessions
+        mean_area_ses.append(mean_area)
+
+        
+        
+    # Append session lists to main matrices for each metric
+    mean_area_matrix_1.append(mean_area_ses)
+    
+# Functions for mean and std    
+def get_mean(mean_matrix):
+    temp = mean_matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    mean = float('{0:.2f}'.format(np.mean(mean_list)))
+    return mean
+
+def get_std(mean_matrix):
+    temp = mean_matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    std = float('{0:.3f}'.format(np.std(mean_list)))
+    return std
+
+# Get different symbols (See for reference: https://plotly.com/python/marker-style/)
+raw_symbols = SymbolValidator().values
+namestems = []
+namevariants = []
+symbols = []
+for i in range(0,len(raw_symbols),3):
+    name = raw_symbols[i+2]
+    symbols.append(raw_symbols[i])
+    namestems.append(name.replace("-open", "").replace("-dot", ""))
+    namevariants.append(name[len(namestems[-1]):])
+
+# Load fancy colors
+tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
+             (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
+             (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
+             (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
+(188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
+
+
+
+# Define lists needed for plotting 
+t1 = [-0.2, -0.06, 0.08, 0.22]
+t2 = [0 -0.2 + i*0.14 for i in range(0, 4)]
+labels =["Session 1", "Session 2","Session 3","Session 4"]
+labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
+labels_int = [i for i in range(1, 7)]
+x_rev = labels_int[::-1]
+
+# Add first values for labels [Sub1...Sub6]
+figb = go.Figure(data=go.Scatter(x=labels_int,
+                                y=[-1000, -1000, -1000, -1000, -1000, -1000],
+                                mode='markers',
+                                showlegend=False,
+                                marker_color='red'))
+
+
+# Add MEAN [area] --- > T1w
+for trace in range(0, len(mean_area_matrix_1)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_area_matrix_1[trace], 
+                                  mode='markers',
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'T<sub>2</sub>s',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=mean_area_matrix_1[trace], 
+                                  mode='markers',
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "Mean (area): <i> %{y: .2f} </i> mm<sup>2</sup>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T<sub>2</sub>s',
+                                  marker_color="rgb"+str(tableau20[0])))
+
+# Calculate means 
+line_1   = get_mean(mean_area_matrix_1)    # T2s mean area --- mean 
+
+
+# Add dotted lines for first button 
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_1]*8,
+                          mode='lines',
+                          name='T<sub>2</sub>s mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+x = [-1, 0, 1, 2, 3, 4, 5, 6]
+x_rev = x[::-1]
+
+std_1   = get_std(mean_area_matrix_1)    # T1s mean area --- std 
+
+
+# Add STD for 1 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_1+std_1]*8+[line_1-std_1]*8,
+    fill='toself',
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='T2s STD',
+))
+
+figb.update_layout(title = '(2) Spinal cord CSA [T<sub>2</sub>s]',
+                  title_x = 0.445, 
+                  legend=dict(orientation = 'v',
+                              bordercolor="Gray",
+                              borderwidth=1),
+                  xaxis=dict(range=[-0.45,5.45], 
+                             mirror=True,
+                             ticks='outside',
+                             showline=True,
+                             linecolor='#000',
+                             tickvals = [0, 1, 2, 3, 4, 5],
+                             ticktext = labels_subjects,
+                             tickfont = dict(size=12)),
+                  yaxis_title='mm<sup>2</sup>',
+                  yaxis=dict(range=[0,25], 
+                             mirror=True,
+                             ticks='outside', 
+                             showline=True, 
+                             linecolor='#000',
+                             tickfont = dict(size=14)),
+                  plot_bgcolor='rgba(227,233,244, 0.5)',
+                  width = 740, 
+                  height = 520,
+                  font = dict(size = 13),
+                  margin=go.layout.Margin(l=50,
+                                         r=50,
+                                         b=60,
+                                        t=35))
+# Plot figure
+# For jupyter-book rendering --=-- jupyter-lab
+plot(figb, filename = 'new-fig-2.html', config = config)
+display(HTML('new-fig-2.html'))
+# For local jupyter notebook --== binder session
+# iplot(figb,config=config)
