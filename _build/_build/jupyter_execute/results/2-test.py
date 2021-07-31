@@ -402,7 +402,7 @@ figb.add_trace(go.Scatter(
 ))
 
 
-figb.update_layout(title = '(2)  Neuromod anat QMRI (GM)',
+figb.update_layout(title = 'Neuromod anat QMRI (GM)',
                    updatemenus=[
                                 dict(
                                     active = 0, 
