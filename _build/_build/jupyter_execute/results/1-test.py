@@ -7,7 +7,7 @@ Data used in notebook is avilable [here](https://github.com/courtois-neuromod/an
 !wget -O spinalcord_results.zip https://github.com/courtois-neuromod/anat-processing/releases/download/r20210610/spinalcord_results.zip
 !unzip -j spinalcord_results.zip -d ./spinalcord_results/
 
-## 2: Plot data [T<sub>1</sub>w / T<sub>2</sub>w]
+## 2: Plot data 
 
 import plotly.graph_objects as go
 import plotly.tools as tls
@@ -741,7 +741,7 @@ figb.add_trace(go.Scatter(
 ))
 
 
-figb.update_layout(title = '(1) Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
+figb.update_layout(title = '  Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                    updatemenus=[
                                 dict(
                                     active = 0, 
@@ -1020,11 +1020,9 @@ figb.add_trace(go.Scatter(
     name='T2s STD',
 ))
 
-figb.update_layout(title = '(2) Spinal cord CSA [T<sub>2</sub>s]',
-                  title_x = 0.445, 
-                  legend=dict(orientation = 'v',
-                              bordercolor="Gray",
-                              borderwidth=1),
+figb.update_layout(title = 'Spinal cord gray matter CSA',
+                  title_x = 0.5, 
+                  showlegend=False,
                   xaxis=dict(range=[-0.45,5.45], 
                              mirror=True,
                              ticks='outside',
@@ -1041,9 +1039,9 @@ figb.update_layout(title = '(2) Spinal cord CSA [T<sub>2</sub>s]',
                              linecolor='#000',
                              tickfont = dict(size=14)),
                   plot_bgcolor='rgba(227,233,244, 0.5)',
-                  width = 740, 
+                  width = 640, 
                   height = 520,
-                  font = dict(size = 13),
+                  font = dict(size = 12),
                   margin=go.layout.Margin(l=50,
                                          r=50,
                                          b=60,
