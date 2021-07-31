@@ -4,12 +4,23 @@
 
 Data used in notebook is avilable [here](https://github.com/courtois-neuromod/anat-processing/releases).
 
+!wget -O neuromod-anat-brain-qmri.zip https://github.com/courtois-neuromod/anat-processing/releases/download/r20210726/neuromod-anat-brain-qmri.zip
+!unzip -j neuromod-anat-brain-qmri.zip -d ./neuromod-anat-brain-qmri/
+
+## 2: Plot brain data
+
+import plotly.graph_objects as go
+import plotly.tools as tls
+from plotly.offline import plot, iplot, init_notebook_mode
+from plotly.validators.scatter.marker import SymbolValidator
+from IPython.core.display import display, HTML
+import numpy as np
 import pandas as pd
 
-df = pd.read_csv("./../neuromod-anat-brain-qmri/results-neuromod-anat-brain-qmri.csv", converters={'project_id': lambda x: str(x)})
+# Read data
+df = pd.read_csv("./neuromod-anat-brain-qmri/results-neuromod-anat-brain-qmri.csv", converters={'project_id': lambda x: str(x)})
 
-df
-
+# Sort data acording to subject and session columns 
 df.sort_values(['subject', 'session'], ascending=[True, True]) 
 
 # Define lists for metrics
@@ -74,16 +85,6 @@ for i in range(1, 7, 1):
     mean_mtr_matrix.append(mean_mtr_ses)
     
     mean_mtsat_matrix.append(mean_mtsat_ses)
-
-## 2: Plot data
-
-import plotly.graph_objects as go
-import plotly.tools as tls
-from plotly.offline import plot, iplot, init_notebook_mode
-from plotly.validators.scatter.marker import SymbolValidator
-from IPython.core.display import display, HTML
-import numpy as np
-
 
 # Add plotly 
 init_notebook_mode(connected = True)

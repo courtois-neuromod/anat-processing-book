@@ -4,16 +4,25 @@
 
 Data used in notebook is avilable [here](https://github.com/courtois-neuromod/anat-processing/releases).
 
+!wget -O spinalcord_results.zip https://github.com/courtois-neuromod/anat-processing/releases/download/r20210610/spinalcord_results.zip
+!unzip -j spinalcord_results.zip -d ./spinalcord_results/
+
+## 2: Plot data [T<sub>1</sub>w / T<sub>2</sub>w]
+
+import plotly.graph_objects as go
+import plotly.tools as tls
+from plotly.offline import plot, iplot, init_notebook_mode
+from plotly.validators.scatter.marker import SymbolValidator
+from IPython.core.display import display, HTML
+import numpy as np
 import pandas as pd
+# Add plotly 
+init_notebook_mode(connected = True)
+config={'showLink': False, 'displayModeBar': False}
 
-df_t1 = pd.read_csv("./../spinalcord_results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
-df_t2 = pd.read_csv("./../spinalcord_results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
-
-df_t1
-
-df_t2
-
-### 1.1: Modify <code>df_t1</code>
+# Load  the data
+df_t1 = pd.read_csv("./spinalcord_results/csa-SC_T1w.csv", converters={'project_id': lambda x: str(x)})
+df_t2 = pd.read_csv("./spinalcord_results/csa-SC_T2w.csv", converters={'project_id': lambda x: str(x)})
 
 # Insert new columns for Subject and Session and start inserting values
 df_t1.insert(0, "Subject", "Any")
@@ -95,17 +104,6 @@ for i in range(0, 6, 1):
     mean_rl_matrix_1.append(mean_rl_ses)
     
     mean_angle_matrix_1.append(mean_angle_ses)
-
-Compare *extracted values* and *results* from csv for validity:
-
-mean_area_matrix_1[2]
-
-subs = df_2.loc[df_2['Subject'] == 3]
-
-for index, row in subs.iterrows():
-    print("Subject", row['Subject'], "----Session", row['Session'], "---- MEAN(area):", row['MEAN(area)'])
-
-### 1.2: Modify <code>df_t2</code>
 
 # Insert new columns for Subject and Session and start inserting values
 df_t2.insert(0, "Subject", "Any")
@@ -191,33 +189,8 @@ for i in range(0, 6, 1):
     
     mean_angle_matrix_2.append(mean_angle_ses)
 
-Compare *extracted values* and *results* from csv for validity:
 
-subs = df_3.loc[df_3['Subject'] == 3]
-
-for index, row in subs.iterrows():
-    print("Subject", row['Subject'], "----Session", row['Session'], "---- MEAN(area):", row['MEAN(area)'])
-
-## 2: Plot data [T<sub>1</sub>w / T<sub>2</sub>w]
-
-t1 = [-0.2, -0.06, 0.08, 0.22]
-t2 = [0 -0.2 + i*0.14 for i in range(0, 4)]
-
-for trace in range(0, len(mean_ap_matrix_1)):
-    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
-    print(trace, ": ", t)
-
-import plotly.graph_objects as go
-import plotly.tools as tls
-from plotly.offline import plot, iplot, init_notebook_mode
-from plotly.validators.scatter.marker import SymbolValidator
-from IPython.core.display import display, HTML
-import numpy as np
-
-# Add plotly 
-init_notebook_mode(connected = True)
-config={'showLink': False, 'displayModeBar': False}
-
+# Functions for mean and std    
 def get_mean(mean_matrix):
     temp = mean_matrix[::]
     mean_list = []
@@ -257,11 +230,15 @@ tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),
 (188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
 
 
-# Define labels lists (just in case)
+
+# Define lists needed for plotting 
+t1 = [-0.2, -0.06, 0.08, 0.22]
+t2 = [0 -0.2 + i*0.14 for i in range(0, 4)]
 labels =["Session 1", "Session 2","Session 3","Session 4"]
 labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
 labels_int = [i for i in range(1, 7)]
 x_rev = labels_int[::-1]
+
 # Add first values for labels [Sub1...Sub6]
 figb = go.Figure(data=go.Scatter(x=labels_int,
                                 y=[-1000, -1000, -1000, -1000, -1000, -1000],
@@ -661,8 +638,8 @@ std_4   = get_std(mean_ap_matrix_2)      # T2w mean AP   --- std
 std_5   = get_std(mean_rl_matrix_1)      # T1w mean RL  --- std
 std_6   = get_std(mean_rl_matrix_2)      # T2w mean RL  --- std
 
-std_7   = get_std(mean_angle_matrix_1) - 2.0  # T1w angle    --- std
-std_8   = get_std(mean_angle_matrix_2)        # T2w angle    --- std
+std_7   = get_std(mean_angle_matrix_1)   # T1w angle    --- std
+std_8   = get_std(mean_angle_matrix_2)   # T2w angle    --- std
 
 
 # Add STD for 1 button
