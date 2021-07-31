@@ -1052,3 +1052,628 @@ plot(figb, filename = 'new-fig-2.html', config = config)
 display(HTML('new-fig-2.html'))
 # For local jupyter notebook --== binder session
 # iplot(figb,config=config)
+
+import plotly.graph_objects as go
+import plotly.tools as tls
+from plotly.offline import plot, iplot, init_notebook_mode
+from plotly.validators.scatter.marker import SymbolValidator
+from IPython.core.display import display, HTML
+import numpy as np
+import pandas as pd
+
+# Add plotly 
+init_notebook_mode(connected = True)
+config={'showLink': False, 'displayModeBar': False}
+
+# Read data for (DWI_FA, DWI_MD, DWI_RD, MTR, MTsat, T1)
+df_dwi_fa = pd.read_csv("./spinalcord_results/DWI_FA.csv", converters={'project_id': lambda x: str(x)})
+df_dwi_md = pd.read_csv("./spinalcord_results/DWI_MD.csv", converters={'project_id': lambda x: str(x)})
+df_dwi_rd = pd.read_csv("./spinalcord_results/DWI_RD.csv", converters={'project_id': lambda x: str(x)})
+df_mtr    = pd.read_csv("./spinalcord_results/MTR.csv", converters={'project_id': lambda x: str(x)})
+df_mtsat  = pd.read_csv("./spinalcord_results/MTsat.csv", converters={'project_id': lambda x: str(x)})
+df_t1_2   = pd.read_csv("./spinalcord_results/T1.csv", converters={'project_id': lambda x: str(x)})
+
+# Function for reading session values 
+def get_sessions_values(df, metric):
+    '''
+
+    :param df: pandas dataframe with results
+    :param metric: column in dataframe
+    :return: session values as matrix 
+    '''
+    df.insert(0, "Subject", "Any")
+    df.insert(1, "Session", "Any")
+
+    # Get Subject and Session from csv
+    for index, row in df.iterrows():
+        subject = int(row['Filename'].split("/")[6].split('-')[1])
+        session = int(row['Filename'].split("/")[7].split("-")[1])
+        df.at[index, 'Subject'] = subject
+        df.at[index, 'Session'] = session
+
+    # Sort values based on Subject -- Session
+    df_2 = df.sort_values(['Subject', 'Session'], ascending=[True, True])
+
+    # Define lists for metrics
+    matrix_1 = []
+
+    # Get the values for all desired column (metric)
+    for i in range(0, 6, 1):
+        sub_values = df_2.loc[df_2['Subject'] == i + 1]
+        ses = []
+
+        for j in range(0, 4, 1):
+            ses_values = sub_values.loc[sub_values['Session'] == j + 1]
+
+            temp = -100
+
+            for index, row in ses_values.iterrows():
+                # Read values
+                my_value = row[metric]
+
+                # Store values
+                temp = my_value
+
+                # Append values to lists for sessions
+            ses.append(temp)
+
+        # Append session lists to main matrices for each metric
+        matrix_1.append(ses)
+
+    return matrix_1
+
+# Get values for sessions, store in lists 
+matrix_dwi_fa = get_sessions_values(df=df_dwi_fa,metric="WA()")
+matrix_dwi_md = get_sessions_values(df=df_dwi_md, metric="WA()")
+matrix_dwi_rd = get_sessions_values(df=df_dwi_rd, metric="WA()")
+matrix_mtr    = get_sessions_values(df=df_mtr, metric="WA()")
+matrix_mtsat  = get_sessions_values(df=df_mtsat, metric="WA()")
+matrix_t1_2   = get_sessions_values(df=df_t1_2, metric="WA()")
+
+
+# Functions for calculating mean and std from lists   
+def get_mean(mean_matrix):
+    temp = mean_matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    mean = float('{0:.7f}'.format(np.mean(mean_list)))
+    return mean
+
+def get_std(mean_matrix):
+    temp = mean_matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    std = float('{0:.7}'.format(np.std(mean_list)))
+    return std
+
+# Get different symbols (See for reference: https://plotly.com/python/marker-style/)
+raw_symbols = SymbolValidator().values
+namestems = []
+namevariants = []
+symbols = []
+for i in range(0,len(raw_symbols),3):
+    name = raw_symbols[i+2]
+    symbols.append(raw_symbols[i])
+    namestems.append(name.replace("-open", "").replace("-dot", ""))
+    namevariants.append(name[len(namestems[-1]):])
+
+# Load fancy colors
+tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
+             (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
+             (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
+             (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
+(188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
+
+
+# Define lists needed for plotting 
+t1 = [-0.2, -0.06, 0.08, 0.22]
+t2 = [0 -0.2 + i*0.14 for i in range(0, 4)]
+labels =["Session 1", "Session 2","Session 3","Session 4"]
+labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
+labels_int = [i for i in range(1, 7)]
+x_rev = labels_int[::-1]
+
+# Add first values for labels [Sub1...Sub6]
+figb = go.Figure(data=go.Scatter(x=labels_int,
+                                y=[-1000, -1000, -1000, -1000, -1000, -1000],
+                                mode='markers',
+                                showlegend=False,
+                                marker_color='red'))
+# Add DWI_FA 
+for trace in range(0, len(matrix_dwi_fa)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_dwi_fa[trace], 
+                                  mode='markers',
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'DWI_FA',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_dwi_fa[trace], 
+                                  mode='markers',
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f}" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='DWI_FA',
+                                  marker_color="rgb"+str(tableau20[0])))
+
+
+# Add DWI_MD
+for trace in range(0, len(matrix_dwi_md)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_dwi_md[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .6f} </i>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'DWI_MD',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_dwi_md[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .6f}" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='DWI_MD',
+                                  marker_color="rgb"+str(tableau20[0])))
+
+        
+# Add DWI_RD
+for trace in range(0, len(matrix_dwi_rd)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_dwi_rd[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .6f} </i>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'DWI_RD',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_dwi_rd[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .6f}" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='DWI_RD',
+                                  marker_color="rgb"+str(tableau20[0])))
+
+        
+# Add MTR
+for trace in range(0, len(matrix_mtr)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_mtr[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'MTR',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_mtr[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f}" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='MTR',
+                                  marker_color="rgb"+str(tableau20[0])))
+
+# Add MTsat
+for trace in range(0, len(matrix_mtsat)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_mtsat[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'MTsat',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_mtsat[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f}" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='MTsat',
+                                  marker_color="rgb"+str(tableau20[0])))
+
+# Add T1
+for trace in range(0, len(matrix_t1_2)):
+    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+    
+    if trace == 0: 
+    
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_t1_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  showlegend = True, 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name= 'T<sub>1</sub>',
+                                  marker_color="rgb"+str(tableau20[0])))
+    else: 
+        
+        figb.add_trace(go.Scatter(x=t, 
+                                  y=matrix_t1_2[trace], 
+                                  mode='markers',
+                                  visible=False,
+                                  legendgroup="group1",
+                                  showlegend = False, 
+                                  hovertemplate = 
+                                  "WA(): <i> %{y: .2f}" + 
+                                  "<br>" + 
+                                  "<b>%{text}</b>", 
+                                  text = ['Session {}'.format(i + 1) for i in range(4)],
+                                  name='T<sub>1</sub>',
+                                  marker_color="rgb"+str(tableau20[0])))
+        
+        
+# Calculate means 
+line_1   = get_mean(matrix_dwi_fa)      # DWI_FA  --- mean 
+line_2   = get_mean(matrix_dwi_md)      # DWI_MD  --- mean 
+line_3   = get_mean(matrix_dwi_rd)      # DWI_RD  --- mean
+line_4   = get_mean(matrix_mtr)         # MTR     --- mean
+line_5   = get_mean(matrix_mtsat)       # MTsat   --- mean
+line_6   = get_mean(matrix_t1_2)        # T1      --- mean
+
+
+
+# Add dotted lines for buttons
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_1]*8,
+                          mode='lines',
+                          name='DWI_FA mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_2]*8,
+                          mode='lines',
+                          visible=False,
+                          name='DWI_MD mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_3]*8,
+                          mode='lines',
+                          visible=False,
+                          name='DWI_RD mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_4]*8,
+                          mode='lines',
+                          visible=False,
+                          name='MTR mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_5]*8,
+                          mode='lines',
+                          visible=False,
+                          name='MTsat mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                          y=[line_6]*8,
+                          mode='lines',
+                          visible=False,
+                          name='T<sub>1</sub> mean',
+                          opacity=0.5, 
+                          line=dict(color="rgb"+str(tableau20[0]), 
+                                    width=2,
+                                    dash='dot')))
+
+
+x = [-1, 0, 1, 2, 3, 4, 5, 6]
+x_rev = x[::-1]
+
+std_1   = get_std(matrix_dwi_fa)     # DWI_FA   --- std 
+std_2   = get_std(matrix_dwi_md)     # DWI_MD   --- std 
+
+std_3   = get_std(matrix_dwi_rd)     # DWI_RD   --- std
+std_4   = get_std(matrix_mtr)        # MTR      --- std
+
+std_5   = get_std(matrix_mtsat)      # MTsat    --- std
+std_6   = get_std(matrix_t1_2)       # T1       --- std
+
+
+
+
+# Add STD for buttons
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_1+std_1]*8+[line_1-std_1]*8,
+    fill='toself',
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_2+std_2]*8+[line_2-std_2]*8,
+    fill='toself',
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='',
+))
+
+# Add STD for 2 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_3+std_3]*8+[line_3-std_3]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_4+std_4]*8+[line_4-std_4]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='',
+))
+
+# Add STD for 3 button
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_5+std_5]*8+[line_5-std_5]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='',
+))
+
+figb.add_trace(go.Scatter(
+    x=x+x_rev,
+    y=[line_6+std_6]*8+[line_6-std_6]*8,
+    fill='toself',
+    visible=False,
+    fillcolor='rgba(31, 119, 180,0.15)',
+    line_color='rgba(255,255,255,0)',
+    showlegend=False,
+    hoverinfo='skip',
+    name='',
+))
+
+figb.update_layout(title = 'Spinal cord qMRI microstructure ',
+                   updatemenus=[
+                                dict(
+                                    active = 0, 
+                                    x=1.27,
+                                    y=0.58,
+                                    direction="down",
+                                    yanchor="top",
+                                    buttons=list([
+                                        dict(label="(1) DWI_FA",
+                                                     method="update",
+                                                     args=[{"visible": [True] + [True]*6 + [False]*30 + [True]*1 + [False]*5 + [True]*1 + [False]*5},
+                                                           
+                                                           {"yaxis": dict(range=[0,1.6],
+                                                                          title='',
+                                                                          mirror=True,
+                                                                          ticks='outside', 
+                                                                          showline=True, 
+                                                                          linecolor='#000',
+                                                                          tickfont = dict(size=16))}]),
+                                        
+                                        dict(label="(2) DWI_MD",
+                                                     method="update",
+                                                     args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*24 + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
+                                                           
+                                                           {"yaxis": dict(range=[0,0.0025],
+                                                                          title='',
+                                                                          mirror=True,
+                                                                          ticks='outside', 
+                                                                          showline=True, 
+                                                                          linecolor='#000',
+                                                                          tickfont = dict(size=16))}]),
+                                        
+                                        dict(label="(3) DWI_RD",
+                                                     method="update",
+                                                     args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*18 + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
+                                                           
+                                                           {"yaxis": dict(range=[0,0.0025],
+                                                                          title='',
+                                                                          mirror=True,
+                                                                          ticks='outside', 
+                                                                          showline=True, 
+                                                                          linecolor='#000',
+                                                                          tickfont = dict(size=16))}]),
+                                        dict(label="(4) MTR",
+                                                     method="update",
+                                                     args=[{"visible": [True] + [False]*18 + [True]*6 + [False]*12 + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
+                                                           
+                                                           {"yaxis": dict(range=[0,60],
+                                                                          title='',
+                                                                          mirror=True,
+                                                                          ticks='outside', 
+                                                                          showline=True, 
+                                                                          linecolor='#000',
+                                                                          tickfont = dict(size=16))}]),
+                                    
+                                        dict(label="(5) MTsat",
+                                                     method="update",
+                                                     args=[{"visible": [True] + [False]*24 + [True]*6 + [False]*6 + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
+                                                           
+                                                           {"yaxis": dict(range=[0,6],
+                                                                          title='',
+                                                                          mirror=True,
+                                                                          ticks='outside', 
+                                                                          showline=True, 
+                                                                          linecolor='#000',
+                                                                          tickfont = dict(size=16))}]),
+                                        
+                                        dict(label="(6) T<sub>1</sub>",
+                                                     method="update",
+                                                     args=[{"visible":  [True] + [False]*30 + [True]*6 + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
+                                                           
+                                                           {"yaxis": dict(range=[0,0.0025],
+                                                                          title='',
+                                                                          mirror=True,
+                                                                          ticks='outside', 
+                                                                          showline=True, 
+                                                                          linecolor='#000',
+                                                                          tickfont = dict(size=16))}]) ]) )],
+                  title_x = 0.445, 
+                  legend=dict(orientation = 'v',
+                              bordercolor="Gray",
+                              borderwidth=1),
+                  xaxis=dict(range=[-0.45,5.45], 
+                             mirror=True,
+                             ticks='outside',
+                             showline=True,
+                             linecolor='#000',
+                             tickvals = [0, 1, 2, 3, 4, 5],
+                             ticktext = labels_subjects,
+                             tickfont = dict(size=12)),
+                  yaxis_title='',
+                  yaxis=dict(range=[0,1.6], 
+                             mirror=True,
+                             ticks='outside', 
+                             showline=True, 
+                             linecolor='#000',
+                             tickfont = dict(size=14)),
+                   annotations=[
+                               dict(text="Display metric: ", 
+                                     showarrow=False,
+                                     x=1.25,
+                                     y=0.62,
+                                     xref = 'paper',
+                                     yref="paper")],
+                  plot_bgcolor='rgba(227,233,244, 0.5)',
+                  width = 760, 
+                  height = 520,
+                  font = dict(size = 13),
+                  margin=go.layout.Margin(l=50,
+                                         r=50,
+                                         b=60,
+                                        t=35))
+# Plot figure
+# For jupyter-book rendering --=-- jupyter-lab
+plot(figb, filename = 'new-fig-3.html', config = config)
+display(HTML('new-fig-3.html'))
+# For local jupyter notebook --== binder session
+# iplot(figb,config=config)
