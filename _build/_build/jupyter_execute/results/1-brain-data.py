@@ -111,6 +111,24 @@ def get_std(mean_matrix):
     std = float('{0:.3f}'.format(np.std(mean_list)))
     return std
 
+def get_limit_max(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
+
+def get_limit_min(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
+
 # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
 raw_symbols = SymbolValidator().values
 namestems = []
@@ -413,7 +431,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                                                      method="update",
                                                      args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
                                                            
-                                                           {"yaxis": dict(range=[0,3],
+                                                           {"yaxis": dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))],
                                                                           title='T<sub>1</sub> [s]',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -425,7 +443,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                            
-                                                           {"yaxis": dict(range=[30,60],
+                                                           {"yaxis": dict(range=[get_limit_min(mean_mtr_matrix), get_limit_max(mean_mtr_matrix)],
                                                                           title='MTR [a.u.]',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -437,7 +455,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                                                      method="update",
                                                      args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                            
-                                                           {"yaxis": dict(range=[-10,15],
+                                                           {"yaxis": dict(range=[get_limit_min(mean_mtsat_matrix),get_limit_max(mean_mtsat_matrix)],
                                                                           title='MTsat [a.u.]',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -457,7 +475,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                              ticktext = labels_subjects,
                              tickfont = dict(size=12)),
                   yaxis_title='T<sub>1</sub> [s]',
-                  yaxis=dict(range=[0,3], 
+                  yaxis=dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 
@@ -893,7 +911,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                                                      method="update",
                                                      args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
                                                            
-                                                           {"yaxis": dict(range=[0,3],
+                                                           {"yaxis": dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))],
                                                                           title='T<sub>1</sub> [s]',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -905,7 +923,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                            
-                                                           {"yaxis": dict(range=[30,60],
+                                                           {"yaxis": dict(range=[get_limit_min(mean_mtr_matrix), get_limit_max(mean_mtr_matrix)],
                                                                           title='MTR [a.u.]',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -917,7 +935,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                                                      method="update",
                                                      args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                            
-                                                           {"yaxis": dict(range=[-10,15],
+                                                           {"yaxis": dict(range=[get_limit_min(mean_mtsat_matrix),get_limit_max(mean_mtsat_matrix)],
                                                                           title='MTsat [a.u.]',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -937,7 +955,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                              ticktext = labels_subjects,
                              tickfont = dict(size=12)),
                   yaxis_title='T<sub>1</sub> [s]',
-                  yaxis=dict(range=[0,3], 
+                  yaxis=dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 

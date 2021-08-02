@@ -210,6 +210,26 @@ def get_std(mean_matrix):
     std = float('{0:.3f}'.format(np.std(mean_list)))
     return std
 
+# Functions for getting y label limits
+def get_limit_max(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
+
+def get_limit_min(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
+
+
 # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
 raw_symbols = SymbolValidator().values
 namestems = []
@@ -753,7 +773,7 @@ figb.update_layout(title = '  Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                                                      method="update",
                                                      args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
                                                            
-                                                           {"yaxis": dict(range=[0,100],
+                                                           {"yaxis": dict(range=[get_limit_min(np.append(mean_area_matrix_1, mean_area_matrix_2, axis=0)), get_limit_max(np.append(mean_area_matrix_1, mean_area_matrix_2, axis=0))],
                                                                           title='mm<sup>2</sup>',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -765,7 +785,7 @@ figb.update_layout(title = '  Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
                                                            
-                                                           {"yaxis": dict(range=[0,15],
+                                                           {"yaxis": dict(range=[get_limit_min(np.append(mean_ap_matrix_1, mean_ap_matrix_2, axis=0)), get_limit_max(np.append(mean_ap_matrix_1, mean_ap_matrix_2, axis=0))],
                                                                           title='mm',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -777,7 +797,7 @@ figb.update_layout(title = '  Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
                                                     
-                                                           {"yaxis": dict(range=[0,15],
+                                                           {"yaxis": dict(range=[get_limit_min(np.append(mean_rl_matrix_1, mean_rl_matrix_2, axis=0)), get_limit_max(np.append(mean_rl_matrix_1, mean_rl_matrix_2, axis=0))],
                                                                           title='mm',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -789,7 +809,7 @@ figb.update_layout(title = '  Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                                                      method="update",
                                                      args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
                                                            
-                                                           {"yaxis": dict(range=[-10,15],
+                                                           {"yaxis": dict(range=[get_limit_min(np.append(mean_angle_matrix_1, mean_angle_matrix_2, axis=0)), get_limit_max(np.append(mean_angle_matrix_1, mean_angle_matrix_2, axis=0))],
                                                                           title='degrees (°)',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -809,7 +829,7 @@ figb.update_layout(title = '  Spinal cord CSA [T<sub>1</sub>w/T<sub>2</sub>w]',
                              ticktext = labels_subjects,
                              tickfont = dict(size=12)),
                   yaxis_title='mm<sup>2</sup>',
-                  yaxis=dict(range=[0,100], 
+                  yaxis=dict(range=[get_limit_min(np.append(mean_area_matrix_1, mean_area_matrix_2, axis=0)), get_limit_max(np.append(mean_area_matrix_1, mean_area_matrix_2, axis=0))], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 
@@ -919,6 +939,25 @@ def get_std(mean_matrix):
     
     std = float('{0:.3f}'.format(np.std(mean_list)))
     return std
+
+# Functions for getting y label limits
+def get_limit_max(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
+
+def get_limit_min(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
 
 # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
 raw_symbols = SymbolValidator().values
@@ -1033,7 +1072,7 @@ figb.update_layout(title = 'Spinal cord gray matter CSA',
                              ticktext = labels_subjects,
                              tickfont = dict(size=12)),
                   yaxis_title='mm<sup>2</sup>',
-                  yaxis=dict(range=[0,25], 
+                  yaxis=dict(range=[get_limit_min(mean_area_matrix_1), get_limit_max(mean_area_matrix_1)], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 
@@ -1154,6 +1193,25 @@ def get_std(mean_matrix):
     
     std = float('{0:.7}'.format(np.std(mean_list)))
     return std
+
+# Functions for getting y label limits
+def get_limit_max(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
+
+def get_limit_min(matrix):
+    temp = matrix[::]
+    mean_list = []
+    for ele in temp: 
+        ele = [i for i in ele if i!=-100]
+        mean_list.extend(ele)
+    
+    return np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
 
 # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
 raw_symbols = SymbolValidator().values
@@ -1574,7 +1632,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      method="update",
                                                      args=[{"visible": [True] + [True]*6 + [False]*30 + [True]*1 + [False]*5 + [True]*1 + [False]*5},
                                                            
-                                                           {"yaxis": dict(range=[0,1.6],
+                                                           {"yaxis": dict(range=[get_limit_min(matrix_dwi_fa), get_limit_max(matrix_dwi_fa)],
                                                                           title='a.u.',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -1586,7 +1644,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*24 + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
                                                            
-                                                           {"yaxis": dict(range=[0,0.0025],
+                                                           {"yaxis": dict(range=[get_limit_min(matrix_dwi_md), get_limit_max(matrix_dwi_md)],
                                                                           title='mm<sup>2</sup>/s',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -1598,7 +1656,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*18 + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
                                                            
-                                                           {"yaxis": dict(range=[0,0.0025],
+                                                           {"yaxis": dict(range=[get_limit_min(matrix_dwi_rd), get_limit_max(matrix_dwi_rd)],
                                                                           title='mm<sup>2</sup>/s',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -1609,7 +1667,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*18 + [True]*6 + [False]*12 + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
                                                            
-                                                           {"yaxis": dict(range=[0,60],
+                                                           {"yaxis": dict(range=[get_limit_min(matrix_mtr), get_limit_max(matrix_mtr)],
                                                                           title='a.u.',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -1621,7 +1679,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      method="update",
                                                      args=[{"visible": [True] + [False]*24 + [True]*6 + [False]*6 + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
                                                            
-                                                           {"yaxis": dict(range=[0,6],
+                                                           {"yaxis": dict(range=[get_limit_min(matrix_mtsat), get_limit_max(matrix_mtsat)],
                                                                           title='a.u.',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -1633,7 +1691,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                                                      method="update",
                                                      args=[{"visible":  [True] + [False]*30 + [True]*6 + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
                                                            
-                                                           {"yaxis": dict(range=[0,0.0025],
+                                                           {"yaxis": dict(range=[get_limit_min(matrix_t1_2), get_limit_max(matrix_t1_2)],
                                                                           title='s (seconds)',
                                                                           mirror=True,
                                                                           ticks='outside', 
@@ -1653,7 +1711,7 @@ figb.update_layout(title = 'Spinal cord qMRI microstructure ',
                              ticktext = labels_subjects,
                              tickfont = dict(size=12)),
                   yaxis_title='a.u.',
-                  yaxis=dict(range=[0,1.6], 
+                  yaxis=dict(range=[get_limit_min(matrix_dwi_fa), get_limit_max(matrix_dwi_fa)], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 
