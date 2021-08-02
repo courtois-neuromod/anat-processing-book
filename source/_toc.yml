@@ -6,8 +6,8 @@
 
 - part: "Results"
   chapters:
-  - file: results/1-test
-  - file: results/2-test
+  - file: results/1-brain-data
+  - file: results/2-spinal-data
 
 - part: "Resources"
   chapters:
