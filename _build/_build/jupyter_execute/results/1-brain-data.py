@@ -154,6 +154,11 @@ labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 
 labels_int = [i for i in range(1, 7)]
 x_rev = labels_int[::-1]
 
+# Def global variables for fonts 
+x_label_tick_font = 12
+y_label_tick_font = 14
+general_font = 13
+
 # Add first values for labels [Sub1...Sub6]
 figb = go.Figure(data=go.Scatter(x=labels_int,
                                 y=[-1000, -1000, -1000, -1000, -1000, -1000],
@@ -437,7 +442,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
-                                                                          tickfont = dict(size=16))}]),
+                                                                          tickfont = dict(size=y_label_tick_font))}]),
                                         
                                         dict(label="MTR",
                                                      method="update",
@@ -449,7 +454,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
-                                                                          tickfont = dict(size=16))}]),
+                                                                          tickfont = dict(size=y_label_tick_font))}]),
                                         
                                         dict(label="MTsat",
                                                      method="update",
@@ -461,7 +466,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
-                                                                          tickfont = dict(size=16))}]) ]) )],
+                                                                          tickfont = dict(size=y_label_tick_font))}]) ]) )],
                   title_x = 0.445, 
                   legend=dict(orientation = 'v',
                               bordercolor="Gray",
@@ -473,14 +478,14 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                              linecolor='#000',
                              tickvals = [0, 1, 2, 3, 4, 5],
                              ticktext = labels_subjects,
-                             tickfont = dict(size=12)),
+                             tickfont = dict(size=x_label_tick_font)),
                   yaxis_title='T<sub>1</sub> [s]',
                   yaxis=dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 
                              linecolor='#000',
-                             tickfont = dict(size=14)),
+                             tickfont = dict(size=y_label_tick_font)),
                    annotations=[
                                dict(text="Display metric: ", 
                                      showarrow=False,
@@ -491,7 +496,7 @@ figb.update_layout(title = 'Brain gray matter qMRI microstructure',
                   plot_bgcolor='rgba(227,233,244, 0.5)',
                   width = 760, 
                   height = 520,
-                  font = dict(size = 13),
+                  font = dict(size = general_font),
                   margin=go.layout.Margin(l=50,
                                          r=50,
                                          b=60,
@@ -633,6 +638,11 @@ labels =["Session 1", "Session 2","Session 3","Session 4"]
 labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
 labels_int = [i for i in range(1, 7)]
 x_rev = labels_int[::-1]
+
+# Def global variables for font sizes
+x_label_tick_font = 12
+y_label_tick_font = 14
+general_font = 13
 
 # Add first values for labels [Sub1...Sub6]
 figb = go.Figure(data=go.Scatter(x=labels_int,
@@ -898,6 +908,7 @@ figb.add_trace(go.Scatter(
 ))
 
 
+
 figb.update_layout(title = 'Brain white matter qMRI microstructure',
                    updatemenus=[
                                 dict(
@@ -917,7 +928,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
-                                                                          tickfont = dict(size=16))}]),
+                                                                          tickfont = dict(size=y_label_tick_font))}]),
                                         
                                         dict(label="MTR",
                                                      method="update",
@@ -929,7 +940,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
-                                                                          tickfont = dict(size=16))}]),
+                                                                          tickfont = dict(size=y_label_tick_font))}]),
                                         
                                         dict(label="MTsat",
                                                      method="update",
@@ -941,7 +952,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                                                                           ticks='outside', 
                                                                           showline=True, 
                                                                           linecolor='#000',
-                                                                          tickfont = dict(size=16))}]) ]) )],
+                                                                          tickfont = dict(size=y_label_tick_font))}]) ]) )],
                   title_x = 0.445, 
                   legend=dict(orientation = 'v',
                               bordercolor="Gray",
@@ -953,14 +964,14 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                              linecolor='#000',
                              tickvals = [0, 1, 2, 3, 4, 5],
                              ticktext = labels_subjects,
-                             tickfont = dict(size=12)),
+                             tickfont = dict(size=x_label_tick_font)),
                   yaxis_title='T<sub>1</sub> [s]',
                   yaxis=dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))], 
                              mirror=True,
                              ticks='outside', 
                              showline=True, 
                              linecolor='#000',
-                             tickfont = dict(size=14)),
+                             tickfont = dict(size=y_label_tick_font)),
                    annotations=[
                                dict(text="Display metric: ", 
                                      showarrow=False,
@@ -971,7 +982,7 @@ figb.update_layout(title = 'Brain white matter qMRI microstructure',
                   plot_bgcolor='rgba(227,233,244, 0.5)',
                   width = 760, 
                   height = 520,
-                  font = dict(size = 13),
+                  font = dict(size = general_font),
                   margin=go.layout.Margin(l=50,
                                          r=50,
                                          b=60,
