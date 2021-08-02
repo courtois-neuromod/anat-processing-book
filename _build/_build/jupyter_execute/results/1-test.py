@@ -1196,7 +1196,7 @@ for trace in range(0, len(matrix_dwi_fa)):
                                   mode='markers',
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<i> %{y: .2f} </i>" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1211,7 +1211,7 @@ for trace in range(0, len(matrix_dwi_fa)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f}" + 
+                                  "<i> %{y: .2f}" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1231,7 +1231,7 @@ for trace in range(0, len(matrix_dwi_md)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f} </i> mm<sup>2</sup>/s" + 
+                                  "<i> %{y: .6f} </i> mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1247,7 +1247,7 @@ for trace in range(0, len(matrix_dwi_md)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f} mm<sup>2</sup>/s" + 
+                                  "<i> %{y: .6f} mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1267,7 +1267,7 @@ for trace in range(0, len(matrix_dwi_rd)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f} </i> mm<sup>2</sup>/s" + 
+                                  "<i> %{y: .6f} </i> mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1283,7 +1283,7 @@ for trace in range(0, len(matrix_dwi_rd)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .6f} mm<sup>2</sup>/s" + 
+                                  "<i> %{y: .6f} mm<sup>2</sup>/s" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1303,7 +1303,7 @@ for trace in range(0, len(matrix_mtr)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<i> %{y: .2f} </i>" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1319,7 +1319,7 @@ for trace in range(0, len(matrix_mtr)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f}" + 
+                                  "<i> %{y: .2f}" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1338,7 +1338,7 @@ for trace in range(0, len(matrix_mtsat)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f} </i>" + 
+                                  "<i> %{y: .2f} </i>" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1354,7 +1354,7 @@ for trace in range(0, len(matrix_mtsat)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .2f}" + 
+                                  "<i> %{y: .2f}" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
@@ -1373,7 +1373,7 @@ for trace in range(0, len(matrix_t1_2)):
                                   visible=False,
                                   legendgroup="group1",
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .7f} </i> sec" + 
+                                  "<i> %{y: .7f} </i> sec" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   showlegend = True, 
@@ -1389,7 +1389,7 @@ for trace in range(0, len(matrix_t1_2)):
                                   legendgroup="group1",
                                   showlegend = False, 
                                   hovertemplate = 
-                                  "WA(): <i> %{y: .7f} sec" + 
+                                  "<i> %{y: .7f} sec" + 
                                   "<br>" + 
                                   "<b>%{text}</b>", 
                                   text = ['Session {}'.format(i + 1) for i in range(4)],
