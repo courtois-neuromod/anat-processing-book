@@ -12,12 +12,14 @@ A [GitHub Action](https://github.com/courtois-neuromod/anat-processing-book/blob
 
 * GitHub actions will not re-execute the notebooks, only the html outputs will be built based on what's saved in the notebooks (e.g. interactive figures). 
 
-**2. Please do not push changes the following lines of the `source/_config.yml`:**
+**2. Please be careful with pushing changes to the following lines of the `source/_config.yml` if [`requirements.txt`](https://github.com/courtois-neuromod/anat-processing-book/blob/main/requirements.txt):**
 
 ```yaml
 execute:
   execute_notebooks: 'off'
 ```
+
+* Setting this to `auto` or `on` will enforce book build to re-execute the notebooks during GitHub Actions build, which may fail if there are dependencies additional to those listed by `requirements.txt`. 
 
 ## Build the Notebook locally
 
