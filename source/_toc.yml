@@ -14,4 +14,8 @@
   - url: https://github.com/courtois-neuromod/anat-processing/releases
     title: "Results of spinal cord analysis" 
   - url: https://github.com/courtois-neuromod/anat-processing
-    title: "GitHub repository" 
+    title: "GitHub repository"
+
+- part: "Bibliography"
+  chapters:
+  - file: bibliography/bibliography
