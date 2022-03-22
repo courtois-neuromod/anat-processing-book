@@ -17,7 +17,7 @@ The software requirements include:
 - Nextflow and Docker for brain data analysis
 - SCT for spinal cord data analysis
 
-The repository containing the code and instructions to reproduce this analysis is available at: XXX
+The repository containing the code and instructions to reproduce this analysis is available at: https://github.com/courtois-neuromod/anat-processing.
 
 In brief, brain analysis consisted in:
 - co-registering MT0 and MT1 data,
