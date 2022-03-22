@@ -128,3 +128,6 @@ dmypy.json
 .pyre/
 
 _build/
+
+# macos garbage
+.DS_Store
