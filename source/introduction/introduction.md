@@ -19,6 +19,6 @@ While the Courtois Neuromod project is particularly focused on decyphering funct
 ## Objectives
 
 The objective of this study is two-fold:
-- Develop an open-source pipeline for fully-automatic analysis pipeline of structural qMRI of the brain and spinal cord. Importantly, this pipeline is built using state-of-the-art tools in terms of pipeline management (NextFlow), structural data analyses (FSL, ANTs, SCT) and Jupyter notebook for presenting curated and interactive results in the present Jupyter book. 
+- Develop an open-source pipeline for fully-automatic analysis pipeline of structural qMRI of the brain and spinal cord. Importantly, this pipeline is built using state-of-the-art tools in terms of pipeline management (NextFlow), structural data analyses (FSL, ANTs, qMRLab, SCT, etc.) and Jupyter notebook for presenting curated and interactive results in the present Jupyter book. 
 - Study the stability of morphometric and microstructure measurements from qMRI measured across multiple time points in the brain and cervical spinal cord. 
 
