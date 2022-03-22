@@ -1,17 +1,9 @@
 - file: index
+- file: introduction/introduction
+- file: results/1-brain-data
+- file: results/2-spinal-data
 
-- part: "Introduction"
-  chapters:
-  - file: introduction/introduction
-
-- part: "Results"
-  chapters:
-  - file: results/1-brain-data
-  - file: results/2-spinal-data
-
-- part: "Resources"
-  chapters:
-  - url: https://github.com/courtois-neuromod/anat-processing/releases
-    title: "Results of spinal cord analysis" 
-  - url: https://github.com/courtois-neuromod/anat-processing
-    title: "GitHub repository" 
+- url: https://github.com/courtois-neuromod/anat-processing/releases
+  title: "Results of spinal cord analysis" 
+- url: https://github.com/courtois-neuromod/anat-processing
+  title: "GitHub repository" 
