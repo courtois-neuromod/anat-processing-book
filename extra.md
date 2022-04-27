@@ -1,3 +1,0 @@
-# Extra
-
-Resources and links 
