@@ -1,3 +1,7 @@
+# DEPRECATED 
+
+The master branch is currently deprecated. Work is in progress in the [v2](https://github.com/courtois-neuromod/anat-processing-book/tree/v2) branch. Github pages links to the book in the main branch may not be pointing to the version described below, and instead may be pointing to the incomplete v2 branch. The build v1 of the book was copied to the gh-pages-v1 branch.
+
 # anat-processing-book
 
 Notebook that describes processing of anatomical data for the [Courtois-Neuromod Project](https://www.cneuromod.ca/). 
