@@ -131,3 +131,11 @@ _build/
 
 # macos garbage
 .DS_Store
+
+# builds
+*.html
+
+# data
+*.zip
+source/neuromod-anat-brain-qmri/
+source/spinalcord_results/
