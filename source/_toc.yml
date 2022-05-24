@@ -3,12 +3,19 @@
 
 format: jb-book
 root: index
-chapters:
-- file: intro
-- file: methods
-- file: 1-brain-data-new
-- file: 1-brain-data
-- file: 2-spinal-data
-- file: results
-- file: notebooks
 
+parts:
+  - chapters:
+    - file: intro
+    - file: methods
+  - caption: Legacy Pages (Kiril)
+    chapters:
+    - file: 1-brain-data
+    - file: 2-spinal-data
+    - file: results
+  - caption: New Pages (Mathieu)
+    chapters:
+    - file: 1-brain-data-new
+  - caption: Testing area
+    chapters:
+    - file: notebooks
