@@ -2,8 +2,13 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 format: jb-book
-root: intro
+root: index
 chapters:
-- file: markdown
+- file: intro
+- file: methods
+- file: 1-brain-data-new
+- file: 1-brain-data
+- file: 2-spinal-data
+- file: results
 - file: notebooks
-- file: markdown-notebooks
+
