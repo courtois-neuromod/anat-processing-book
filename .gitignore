@@ -137,5 +137,6 @@ _build/
 
 # data
 *.zip
+source/data/
 source/neuromod-anat-brain-qmri/
 source/spinalcord_results/
