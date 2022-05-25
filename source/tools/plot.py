@@ -16,7 +16,7 @@ class Plot:
         self.title = None
         self.xlabel = None
 
-    def display(self, env):
+    def display(self, env, tissue):
         df = self.dataset.data
 
         # Define lists for metrics
@@ -51,16 +51,16 @@ class Plot:
                 
                 for index, row in ses_values.iterrows():
 
-                    if row['acquisition'] == 'MP2RAGE' and row['metric'] == 'T1map' and row['label'] == 'GM': 
+                    if row['acquisition'] == 'MP2RAGE' and row['metric'] == 'T1map' and row['label'] == tissue: 
                         MEAN_mp2 = row['mean']
                     
-                    if row['acquisition'] == 'MTS' and row['metric'] == 'T1map' and row['label'] == 'GM':
+                    if row['acquisition'] == 'MTS' and row['metric'] == 'T1map' and row['label'] == tissue:
                         MEAN_mts = row['mean']
                         
-                    if row['metric'] == 'MTRmap' and row['label'] == 'GM': 
+                    if row['metric'] == 'MTRmap' and row['label'] == tissue: 
                         MEAN_mtr = row['mean']
                         
-                    if row['metric'] == 'MTsat' and row['label'] == 'GM': 
+                    if row['metric'] == 'MTsat' and row['label'] == tissue: 
                         MEAN_mtsat = row['mean']
                     
                 # Append values to lists for sessions
