@@ -86,9 +86,6 @@ class Plot:
         init_notebook_mode(connected = True)
         config={'showLink': False, 'displayModeBar': False}
 
-        t1 = [-0.2, -0.06, 0.08, 0.22]
-        t2 = [0 -0.2 + i*0.14 for i in range(0, 4)]
-
         def get_mean(mean_matrix):
             temp = mean_matrix[::]
             mean_list = []
