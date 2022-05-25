@@ -10,9 +10,12 @@ import pandas as pd
 from tools.data import Data
 
 class Plot:
-    def __init__(self, dataset):
+    def __init__(self, dataset, plot_name):
         self.dataset = dataset
-    
+        self.plot_name = plot_name
+        self.title = None
+        self.xlabel = None
+
     def display(self, env):
         df = self.dataset.data
 
@@ -167,101 +170,68 @@ class Plot:
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
-            
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_MP2RAGE_t1_matrix[trace], 
-                                        mode='markers',
-                                        legendgroup="group1",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i> sec" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        showlegend = True, 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name= 'T<sub>1</sub> (mp2rage)',
-                                        marker_color="rgb"+str(tableau20[0])))
-            else: 
-                
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_MP2RAGE_t1_matrix[trace], 
-                                        mode='markers',
-                                        legendgroup="group1",
-                                        showlegend = False, 
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i> sec" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name='T<sub>1</sub> (mp2rage)',
-                                        marker_color="rgb"+str(tableau20[0])))
+                showlegend = True
+            else:
+                showlegend = False
+
+            figb.add_trace(go.Scatter(x=t, 
+                                    y=mean_MP2RAGE_t1_matrix[trace], 
+                                    mode='markers',
+                                    legendgroup="group1",
+                                    hovertemplate = 
+                                    "Mean : <i> %{y: .2f} </i> sec" + 
+                                    "<br>" + 
+                                    "<b>%{text}</b>", 
+                                    showlegend = showlegend, 
+                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                    name= 'T<sub>1</sub> (mp2rage)',
+                                    marker_color="rgb"+str(tableau20[0])))
 
         # Add MEAN ------ mts ------ T1
         for trace in range(0, len(mean_MTS_t1_matrix)):
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_MTS_t1_matrix[trace], 
-                                        mode='markers',
-                                        legendgroup="group2",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i> sec" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        showlegend = True, 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name= 'T<sub>1</sub> (mts)',
-                                        marker_symbol=symbols[5],
-                                        marker_color="rgb"+str(tableau20[3])))
-                
-            else: 
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_MTS_t1_matrix[trace], 
-                                        mode='markers',
-                                        legendgroup="group2",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i> sec" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        showlegend = False, 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name='T<sup>1</sup> (mts)',
-                                        marker_symbol=symbols[5],
-                                        marker_color="rgb"+str(tableau20[3])))
+                showlegend = True
+            else:
+                showlegend = False
+            
+            figb.add_trace(go.Scatter(x=t, 
+                                    y=mean_MTS_t1_matrix[trace], 
+                                    mode='markers',
+                                    legendgroup="group2",
+                                    hovertemplate = 
+                                    "Mean : <i> %{y: .2f} </i> sec" + 
+                                    "<br>" + 
+                                    "<b>%{text}</b>", 
+                                    showlegend = showlegend, 
+                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                    name= 'T<sub>1</sub> (mts)',
+                                    marker_symbol=symbols[5],
+                                    marker_color="rgb"+str(tableau20[3])))
 
         # Add MEAN ------ nAn ------ MTR
         for trace in range(0, len(mean_mtr_matrix)):
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
-            
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_mtr_matrix[trace], 
-                                        mode='markers',
-                                        visible=False,
-                                        showlegend = True, 
-                                        legendgroup="group1",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i>" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name='MTR',
-                                        marker_color="rgb"+str(tableau20[0])))
-            else: 
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_mtr_matrix[trace], 
-                                        mode='markers',
-                                        visible=False,
-                                        showlegend = False, 
-                                        legendgroup="group1",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i>" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name='MTR',
-                                        marker_color="rgb"+str(tableau20[0])))
+                showlegend = True
+            else:
+                showlegend = False
+
+            figb.add_trace(go.Scatter(x=t, 
+                                    y=mean_mtr_matrix[trace], 
+                                    mode='markers',
+                                    visible=False,
+                                    showlegend = showlegend, 
+                                    legendgroup="group1",
+                                    hovertemplate = 
+                                    "Mean : <i> %{y: .2f} </i>" + 
+                                    "<br>" + 
+                                    "<b>%{text}</b>", 
+                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                    name='MTR',
+                                    marker_color="rgb"+str(tableau20[0])))
                     
 
         # Add MEAN ------ nAn ------ MTsat
@@ -269,36 +239,23 @@ class Plot:
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
-            
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_mtsat_matrix[trace], 
-                                        mode='markers',
-                                        visible=False,
-                                        showlegend = True, 
-                                        legendgroup="group1",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i>" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name='MTsat',
-                                        marker_color="rgb"+str(tableau20[0])))
-                
-            else: 
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=mean_mtsat_matrix[trace], 
-                                        mode='markers',
-                                        visible=False,
-                                        showlegend = False, 
-                                        legendgroup="group1",
-                                        hovertemplate = 
-                                        "Mean : <i> %{y: .2f} </i>" + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name='MTsat',
-                                        marker_color="rgb"+str(tableau20[0])))
-                
+                showlegend = True
+            else:
+                showlegend = False
+
+            figb.add_trace(go.Scatter(x=t, 
+                                    y=mean_mtsat_matrix[trace], 
+                                    mode='markers',
+                                    visible=False,
+                                    showlegend = showlegend, 
+                                    legendgroup="group1",
+                                    hovertemplate = 
+                                    "Mean : <i> %{y: .2f} </i>" + 
+                                    "<br>" + 
+                                    "<b>%{text}</b>", 
+                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                    name='MTsat',
+                                    marker_color="rgb"+str(tableau20[0])))          
 
         # Calculate means 
         line_1   = get_mean(mean_MP2RAGE_t1_matrix)    # MP2RAGE_t1 --- mean 
@@ -308,8 +265,6 @@ class Plot:
         line_3   = get_mean(mean_mtr_matrix)           # MTR   --- mean
 
         line_4   = get_mean(mean_mtsat_matrix)         # MTsat  --- mean
-
-
 
         # Add dotted lines for first button 
         figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
@@ -418,7 +373,7 @@ class Plot:
         ))
 
 
-        figb.update_layout(title = 'Brain gray matter qMRI microstructure',
+        figb.update_layout(title = self.title,
                         updatemenus=[
                                         dict(
                                             active = 0, 
@@ -500,8 +455,8 @@ class Plot:
 
         if env == 'jupyter-book':
             # For jupyter-book rendering --=-- jupyter-lab
-            plot(figb, filename = 'new-fig-2.html', config = config)
-            display(HTML('new-fig-2.html'))
+            plot(figb, filename = self.plot_name + '.html', config = config)
+            display(HTML(self.plot_name + '.html'))
         elif env == 'notebook':
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
