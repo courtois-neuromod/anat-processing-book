@@ -1,8 +1,8 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: My sample book
-author: The Jupyter Book Community
+title: "Anatomical analysis" # The title of the book. Will be placed in the left navbar.
+author: Mathieu Boudreau and Kiril 
 logo: logo.png
 
 # Force re-execution of notebooks on each build.
@@ -21,9 +21,9 @@ bibtex_bibfiles:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/mathieuboudreau/jb-ghp  # Online location of your book
+  url: https://github.com/courtois-neuromod/anat-processing-book  # Online location of your book
   path_to_book: source  # Optional path to your book, relative to the repository root
-  branch: main  # Which branch of the repository should be used when creating links (optional)
+  branch: v2  # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
