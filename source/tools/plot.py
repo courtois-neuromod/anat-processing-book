@@ -57,68 +57,41 @@ class Plot:
         # Get database
         df = self.dataset.data
 
-        # Define lists for metrics
-        mean_MP2RAGE_t1_matrix = []
-        mean_MTS_t1_matrix     = []
-        mean_mtr_matrix        = []
-        mean_mtsat_matrix      = []
+        matrix = {
+            'MP2RAGE': [],
+            'MTS': [],
+            'MTR': [],
+            'MTsat': []
+        }
 
-        # Get the values for all 4 metric [area, mean_AP, mean_RL, angle_AP]
-        for i in range(1, 7, 1):
-            sub_values = df.loc[df['subject'] == i]
-            
-            mean_MP2RAGE_ses = []
-            
-            mean_MTS_ses     = []
-            
-            mean_mtr_ses     = []
+        default_val = -100
 
-            mean_mtsat_ses   = []
-            
-            for j in range(1, 5, 1):
-                ses_values = sub_values.loc[sub_values['session'] == j]
-                
-                MEAN_mp2   = -100
-                
-                MEAN_mts   = -100
-                
-                MEAN_mtr   = -100
-                
-                MEAN_mtsat = -100
+        for metric in matrix:
+            for i in range(1, 7, 1):
+                sub_values = df.loc[df['subject'] == i]
+                metric_ses = []
 
-                
-                for index, row in ses_values.iterrows():
+                for j in range(1, 5, 1):
+                    ses_values = sub_values.loc[sub_values['session'] == j]
 
-                    if row['acquisition'] == 'MP2RAGE' and row['metric'] == 'T1map' and row['label'] == tissue: 
-                        MEAN_mp2 = row['mean']
-                    
-                    if row['acquisition'] == 'MTS' and row['metric'] == 'T1map' and row['label'] == tissue:
-                        MEAN_mts = row['mean']
-                        
-                    if row['metric'] == 'MTRmap' and row['label'] == tissue: 
-                        MEAN_mtr = row['mean']
-                        
-                    if row['metric'] == 'MTsat' and row['label'] == tissue: 
-                        MEAN_mtsat = row['mean']
-                    
-                # Append values to lists for sessions
-                mean_MP2RAGE_ses.append(MEAN_mp2)
+                    mean_val = default_val
+
+                    for index, row in ses_values.iterrows():
+
+                        if metric == 'MP2RAGE' or metric == 'MTS':
+                            if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'MTR':
+                            if row['metric'] == 'MTRmap' and row['label'] == tissue: 
+                                mean_val = row['mean']
+                        elif metric == 'MTsat':
+                            if row['metric'] == 'MTsat' and row['label'] == tissue:
+                                mean_val = row['mean']
+
+                    # Append values to lists for sessions
+                    metric_ses.append(mean_val)
                 
-                mean_MTS_ses.append(MEAN_mts)
-                
-                mean_mtr_ses.append(MEAN_mtr)
-                
-                mean_mtsat_ses.append(MEAN_mtsat)
-                
-                
-            # Append session lists to main matrices for each metric
-            mean_MP2RAGE_t1_matrix.append(mean_MP2RAGE_ses)
-            
-            mean_MTS_t1_matrix.append(mean_MTS_ses)
-            
-            mean_mtr_matrix.append(mean_mtr_ses)
-            
-            mean_mtsat_matrix.append(mean_mtsat_ses)
+                matrix[metric].append(metric_ses)
 
         # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
         raw_symbols = SymbolValidator().values
@@ -144,7 +117,7 @@ class Plot:
 
 
         # Add MEAN ------ mp2rage ------ T1
-        for trace in range(0, len(mean_MP2RAGE_t1_matrix)):
+        for trace in range(0, len(matrix['MP2RAGE'])):
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
@@ -153,7 +126,7 @@ class Plot:
                 showlegend = False
 
             figb.add_trace(go.Scatter(x=t, 
-                                    y=mean_MP2RAGE_t1_matrix[trace], 
+                                    y=matrix['MP2RAGE'][trace], 
                                     mode='markers',
                                     legendgroup="group1",
                                     hovertemplate = 
@@ -166,7 +139,7 @@ class Plot:
                                     marker_color="rgb"+str(Plot.colours[0])))
 
         # Add MEAN ------ mts ------ T1
-        for trace in range(0, len(mean_MTS_t1_matrix)):
+        for trace in range(0, len(matrix['MTS'])):
             t = [trace - 0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
@@ -175,7 +148,7 @@ class Plot:
                 showlegend = False
             
             figb.add_trace(go.Scatter(x=t, 
-                                    y=mean_MTS_t1_matrix[trace], 
+                                    y=matrix['MTS'][trace], 
                                     mode='markers',
                                     legendgroup="group2",
                                     hovertemplate = 
@@ -189,7 +162,7 @@ class Plot:
                                     marker_color="rgb"+str(Plot.colours[3])))
 
         # Add MEAN ------ nAn ------ MTR
-        for trace in range(0, len(mean_mtr_matrix)):
+        for trace in range(0, len(matrix['MTR'])):
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
@@ -198,7 +171,7 @@ class Plot:
                 showlegend = False
 
             figb.add_trace(go.Scatter(x=t, 
-                                    y=mean_mtr_matrix[trace], 
+                                    y=matrix['MTR'][trace], 
                                     mode='markers',
                                     visible=False,
                                     showlegend = showlegend, 
@@ -213,7 +186,7 @@ class Plot:
                     
 
         # Add MEAN ------ nAn ------ MTsat
-        for trace in range(0, len(mean_mtsat_matrix)):
+        for trace in range(0, len(matrix['MTsat'])):
             t = [trace -0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
@@ -222,7 +195,7 @@ class Plot:
                 showlegend = False
 
             figb.add_trace(go.Scatter(x=t, 
-                                    y=mean_mtsat_matrix[trace], 
+                                    y=matrix['MTsat'][trace], 
                                     mode='markers',
                                     visible=False,
                                     showlegend = showlegend, 
@@ -243,10 +216,10 @@ class Plot:
             'MTsat': None
         }
 
-        line['T<sub>1</sub>(mp2rage)'] =  self.get_val(mean_MP2RAGE_t1_matrix, 'mean')    # MP2RAGE_t1 --- mean 
-        line['T<sub>1</sub>(mts)'] =  self.get_val(mean_MTS_t1_matrix, 'mean')        # MTS_t1     --- mean 
-        line['MTR'] = self.get_val(mean_mtr_matrix, 'mean')           # MTR   --- mean
-        line['MTsat'] = self.get_val(mean_mtsat_matrix, 'mean')         # MTsat  --- mean
+        line['T<sub>1</sub>(mp2rage)'] =  self.get_val(matrix['MP2RAGE'], 'mean')    # MP2RAGE_t1 --- mean 
+        line['T<sub>1</sub>(mts)'] =  self.get_val(matrix['MTS'], 'mean')        # MTS_t1     --- mean 
+        line['MTR'] = self.get_val(matrix['MTR'], 'mean')           # MTR   --- mean
+        line['MTsat'] = self.get_val(matrix['MTsat'], 'mean')         # MTsat  --- mean
 
         for key in line:
 
@@ -281,10 +254,10 @@ class Plot:
             'MTsat': None
         }
 
-        std_area['T<sub>1</sub>(mp2rage)'] =  self.get_val(mean_MP2RAGE_t1_matrix, 'std')   # MP2RAGE_t1      --- std 
-        std_area['T<sub>1</sub>(mts)'] =  self.get_val(mean_MTS_t1_matrix, 'std')       # MTS_t1          --- std 
-        std_area['MTR'] = self.get_val(mean_mtr_matrix, 'std')          # N/A_mtr         --- std
-        std_area['MTsat'] = self.get_val(mean_mtsat_matrix, 'std')        # MTS_mtsat       --- std
+        std_area['T<sub>1</sub>(mp2rage)'] =  self.get_val(matrix['MP2RAGE'], 'std')   # MP2RAGE_t1      --- std 
+        std_area['T<sub>1</sub>(mts)'] =  self.get_val(matrix['MTS'], 'std')       # MTS_t1          --- std 
+        std_area['MTR'] = self.get_val(matrix['MTR'], 'std')          # N/A_mtr         --- std
+        std_area['MTsat'] = self.get_val(matrix['MTsat'], 'std')        # MTS_mtsat       --- std
 
         for key in std_area:
 
@@ -322,7 +295,7 @@ class Plot:
                                                             method="update",
                                                             args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
                                                                 
-                                                                {"yaxis": dict(range=[self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'min'), self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'max')],
+                                                                {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
                                                                                 title='T<sub>1</sub> [s]',
                                                                                 mirror=True,
                                                                                 ticks='outside', 
@@ -334,7 +307,7 @@ class Plot:
                                                             method="update",
                                                             args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                                 
-                                                                {"yaxis": dict(range=[self.get_val(mean_mtr_matrix, 'min'), self.get_val(mean_mtr_matrix, 'max')],
+                                                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
                                                                                 title='MTR [a.u.]',
                                                                                 mirror=True,
                                                                                 ticks='outside', 
@@ -346,7 +319,7 @@ class Plot:
                                                             method="update",
                                                             args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                                 
-                                                                {"yaxis": dict(range=[self.get_val(mean_mtsat_matrix, 'min'), self.get_val(mean_mtsat_matrix, 'max')],
+                                                                {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
                                                                                 title='MTsat [a.u.]',
                                                                                 mirror=True,
                                                                                 ticks='outside', 
@@ -366,7 +339,7 @@ class Plot:
                                     ticktext = labels_subjects,
                                     tickfont = dict(size=self.x_label_tick_font_size)),
                         yaxis_title='T<sub>1</sub> [s]',
-                        yaxis=dict(range=[self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'min'), self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'max')], 
+                        yaxis=dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')], 
                                     mirror=True,
                                     ticks='outside', 
                                     showline=True, 
