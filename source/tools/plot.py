@@ -69,17 +69,17 @@ class Plot:
         symbols = self.get_symbols()
 
         # Define labels lists (just in case)
-        labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
+        labels_subjects = ['Subject ' + str(i) for i in range(1,7)]
         labels_int = [i for i in range(1, 7)]
 
         # Add first values for labels [Sub1...Sub6]
         figb = go.Figure(data=go.Scatter(x=labels_int,
-                                        y=[-1000, -1000, -1000, -1000, -1000, -1000],
+                                        y=[-1000 for i in range(1,len(labels_subjects)+1)],
                                         mode='markers',
                                         showlegend=False,
                                         marker_color='red'))
 
-        # Add mean datapoints to plot
+        # Add datapoints to plot
         trace_name = {
             'MP2RAGE': 'T<sub>1</sub> (mp2rage)',
             'MTS': 'T<sub>1</sub> (mts)',
@@ -127,7 +127,7 @@ class Plot:
                                         name= trace_name[metric],
                                         marker_color=marker_color))
 
-        # Calculate means 
+        # Add mean line to plot
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
 
         line = {
@@ -164,7 +164,7 @@ class Plot:
                                                 width=2,
                                                 dash='dot')))
 
-        # Calculate stds 
+        # Add std shaded area to plot
         std_area = {
             'T<sub>1</sub>(mp2rage)': None,
             'T<sub>1</sub>(mts)': None,
@@ -200,6 +200,45 @@ class Plot:
                 hoverinfo=self.hoverinfo,
             ))
 
+        # Set layout
+
+        buttons = list([
+                        dict(label="T<sub>1</sub>",
+                             method="update",
+                             args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
+                                                                
+                             {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
+                                            title='T<sub>1</sub> [s]',
+                                            mirror=True,
+                                            ticks='outside', 
+                                            showline=True, 
+                                            linecolor='#000',
+                                            tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                                
+                        dict(label="MTR",
+                             method="update",
+                             args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
+                                                                
+                             {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
+                                            title='MTR [a.u.]',
+                                            mirror=True,
+                                            ticks='outside', 
+                                            showline=True, 
+                                            linecolor='#000',
+                                            tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                                
+                        dict(label="MTsat",
+                             method="update",
+                             args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
+                                                                
+                             {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
+                                            title='MTsat [a.u.]',
+                                            mirror=True,
+                                            ticks='outside', 
+                                            showline=True, 
+                                            linecolor='#000',
+                                            tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+        
         figb.update_layout(title = self.title,
                         updatemenus=[
                                         dict(
@@ -208,42 +247,7 @@ class Plot:
                                             y=0.58,
                                             direction="down",
                                             yanchor="top",
-                                            buttons=list([
-                                                dict(label="T<sub>1</sub>",
-                                                            method="update",
-                                                            args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
-                                                                
-                                                                {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
-                                                                                title='T<sub>1</sub> [s]',
-                                                                                mirror=True,
-                                                                                ticks='outside', 
-                                                                                showline=True, 
-                                                                                linecolor='#000',
-                                                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                
-                                                dict(label="MTR",
-                                                            method="update",
-                                                            args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
-                                                                
-                                                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
-                                                                                title='MTR [a.u.]',
-                                                                                mirror=True,
-                                                                                ticks='outside', 
-                                                                                showline=True, 
-                                                                                linecolor='#000',
-                                                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                
-                                                dict(label="MTsat",
-                                                            method="update",
-                                                            args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
-                                                                
-                                                                {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
-                                                                                title='MTsat [a.u.]',
-                                                                                mirror=True,
-                                                                                ticks='outside', 
-                                                                                showline=True, 
-                                                                                linecolor='#000',
-                                                                                tickfont = dict(size=self.y_label_tick_font_size))}]) ]) )],
+                                            buttons=buttons)],
                         title_x = 0.445, 
                         legend=dict(orientation = 'v',
                                     bordercolor="Gray",
