@@ -21,7 +21,7 @@ bibtex_bibfiles:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/courtois-neuromod/anat-processing-book  # Online location of your book
+  url: https://www.github.com/courtois-neuromod/anat-processing-book  # Online location of your book
   path_to_book: source  # Optional path to your book, relative to the repository root
   branch: v2  # Which branch of the repository should be used when creating links (optional)
 
