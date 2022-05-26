@@ -55,43 +55,7 @@ class Plot:
         config={'showLink': False, 'displayModeBar': False}
 
         # Get database
-        df = self.dataset.data
-
-        matrix = {
-            'MP2RAGE': [],
-            'MTS': [],
-            'MTR': [],
-            'MTsat': []
-        }
-
-        default_val = -100
-
-        for metric in matrix:
-            for i in range(1, 7, 1):
-                sub_values = df.loc[df['subject'] == i]
-                metric_ses = []
-
-                for j in range(1, 5, 1):
-                    ses_values = sub_values.loc[sub_values['session'] == j]
-
-                    mean_val = default_val
-
-                    for index, row in ses_values.iterrows():
-
-                        if metric == 'MP2RAGE' or metric == 'MTS':
-                            if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
-                                mean_val = row['mean']
-                        elif metric == 'MTR':
-                            if row['metric'] == 'MTRmap' and row['label'] == tissue: 
-                                mean_val = row['mean']
-                        elif metric == 'MTsat':
-                            if row['metric'] == 'MTsat' and row['label'] == tissue:
-                                mean_val = row['mean']
-
-                    # Append values to lists for sessions
-                    metric_ses.append(mean_val)
-                
-                matrix[metric].append(metric_ses)
+        matrix = self.dataset.extract_data(tissue)
 
         # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
         raw_symbols = SymbolValidator().values

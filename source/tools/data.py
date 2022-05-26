@@ -108,3 +108,42 @@ class Data:
 
                 # Sort values based on Subject -- Session
                 self.data[acq].sort_values(['Subject', 'Session'], ascending=[True, True])
+
+    def extract_data(self, tissue):
+        matrix = {
+            'MP2RAGE': [],
+            'MTS': [],
+            'MTR': [],
+            'MTsat': []
+        }
+
+        default_val = -100
+
+        for metric in matrix:
+            for i in range(1, 7, 1):
+                sub_values = self.data.loc[self.data['subject'] == i]
+                metric_ses = []
+
+                for j in range(1, 5, 1):
+                    ses_values = sub_values.loc[sub_values['session'] == j]
+
+                    mean_val = default_val
+
+                    for index, row in ses_values.iterrows():
+
+                        if metric == 'MP2RAGE' or metric == 'MTS':
+                            if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'MTR':
+                            if row['metric'] == 'MTRmap' and row['label'] == tissue: 
+                                mean_val = row['mean']
+                        elif metric == 'MTsat':
+                            if row['metric'] == 'MTsat' and row['label'] == tissue:
+                                mean_val = row['mean']
+
+                    # Append values to lists for sessions
+                    metric_ses.append(mean_val)
+                
+                matrix[metric].append(metric_ses)
+        
+        return matrix
