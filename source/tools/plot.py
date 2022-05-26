@@ -47,6 +47,15 @@ class Plot:
             val = np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
             
         return val
+    
+    def get_symbols(self):
+        # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
+        raw_symbols = SymbolValidator().values
+        symbols = []
+        for i in range(0,len(raw_symbols),3):
+            symbols.append(raw_symbols[i])
+        
+        return symbols
 
     def display(self, env, tissue):
 
@@ -57,16 +66,7 @@ class Plot:
         # Get database
         matrix = self.dataset.extract_data(tissue)
 
-        # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
-        raw_symbols = SymbolValidator().values
-        namestems = []
-        namevariants = []
-        symbols = []
-        for i in range(0,len(raw_symbols),3):
-            name = raw_symbols[i+2]
-            symbols.append(raw_symbols[i])
-            namestems.append(name.replace("-open", "").replace("-dot", ""))
-            namevariants.append(name[len(namestems[-1]):])
+        symbols = self.get_symbols()
 
         # Define labels lists (just in case)
         labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
@@ -208,7 +208,6 @@ class Plot:
                                                 dash='dot')))
 
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
-        x_rev = x[::-1]
 
         # Calculate means 
         std_area = {
@@ -236,7 +235,7 @@ class Plot:
 
             # Add STD
             figb.add_trace(go.Scatter(
-                x=x+x_rev,
+                x=x+x[::-1],
                 y=[line[key]+std_area[key]]*8+[line[key]-std_area[key]]*8,
                 fill='toself',
                 visible=visible,
