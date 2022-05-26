@@ -10,11 +10,20 @@ import pandas as pd
 from tools.data import Data
 
 class Plot:
+
+    colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
+               (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
+               (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
+               (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
+               (188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
+
     def __init__(self, dataset, plot_name):
         self.dataset = dataset
         self.plot_name = plot_name
         self.title = None
         self.xlabel = None
+
+        self.hoverinfo = 'skip'
 
     def display(self, env, tissue):
         df = self.dataset.data
@@ -135,16 +144,7 @@ class Plot:
             namestems.append(name.replace("-open", "").replace("-dot", ""))
             namevariants.append(name[len(namestems[-1]):])
 
-        # Load fancy colors
-        tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
-                    (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
-                    (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
-                    (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
-        (188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
-
-
         # Define labels lists (just in case)
-        labels =["Session 1", "Session 2","Session 3","Session 4"]
         labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
         labels_int = [i for i in range(1, 7)]
         x_rev = labels_int[::-1]
@@ -182,7 +182,7 @@ class Plot:
                                     showlegend = showlegend, 
                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                     name= 'T<sub>1</sub> (mp2rage)',
-                                    marker_color="rgb"+str(tableau20[0])))
+                                    marker_color="rgb"+str(Plot.colours[0])))
 
         # Add MEAN ------ mts ------ T1
         for trace in range(0, len(mean_MTS_t1_matrix)):
@@ -205,7 +205,7 @@ class Plot:
                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                     name= 'T<sub>1</sub> (mts)',
                                     marker_symbol=symbols[5],
-                                    marker_color="rgb"+str(tableau20[3])))
+                                    marker_color="rgb"+str(Plot.colours[3])))
 
         # Add MEAN ------ nAn ------ MTR
         for trace in range(0, len(mean_mtr_matrix)):
@@ -228,7 +228,7 @@ class Plot:
                                     "<b>%{text}</b>", 
                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                     name='MTR',
-                                    marker_color="rgb"+str(tableau20[0])))
+                                    marker_color="rgb"+str(Plot.colours[0])))
                     
 
         # Add MEAN ------ nAn ------ MTsat
@@ -252,123 +252,82 @@ class Plot:
                                     "<b>%{text}</b>", 
                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                     name='MTsat',
-                                    marker_color="rgb"+str(tableau20[0])))          
+                                    marker_color="rgb"+str(Plot.colours[0])))          
 
         # Calculate means 
-        line_1   = get_mean(mean_MP2RAGE_t1_matrix)    # MP2RAGE_t1 --- mean 
+        line = {
+            'T<sub>1</sub>(mp2rage)': None,
+            'T<sub>1</sub>(mts)': None,
+            'MTR': None,
+            'MTsat': None
+        }
 
-        line_2   = get_mean(mean_MTS_t1_matrix)        # MTS_t1     --- mean 
+        line['T<sub>1</sub>(mp2rage)'] =  get_mean(mean_MP2RAGE_t1_matrix)    # MP2RAGE_t1 --- mean 
+        line['T<sub>1</sub>(mts)'] =  get_mean(mean_MTS_t1_matrix)        # MTS_t1     --- mean 
+        line['MTR'] = get_mean(mean_mtr_matrix)           # MTR   --- mean
+        line['MTsat'] = get_mean(mean_mtsat_matrix)         # MTsat  --- mean
 
-        line_3   = get_mean(mean_mtr_matrix)           # MTR   --- mean
+        for key in line:
 
-        line_4   = get_mean(mean_mtsat_matrix)         # MTsat  --- mean
+            if key == 'T<sub>1</sub>(mts)':
+                line_color = "rgb"+str(Plot.colours[3])
+            else: 
+                line_color = "rgb"+str(Plot.colours[0])
 
-        # Add dotted lines for first button 
-        figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
-                                y=[line_1]*8,
-                                mode='lines',
-                                name='T<sub>1</sub>(mp2rage)',
-                                opacity=0.5, 
-                                line=dict(color="rgb"+str(tableau20[0]), 
-                                            width=2,
-                                            dash='dot')))
+            visible=True
+            if key == 'MTR' or key == 'MTsat':
+                visible=False
 
-        figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
-                                y=[line_2]*8,
-                                mode='lines',
-                                name='T<sub>1</sub>(mts)',
-                                opacity=0.5, 
-                                line=dict(color="rgb"+str(tableau20[3]), 
-                                            width=2,
-                                            dash='dot')))
-
-        # Add dotted lines for second button 
-        figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
-                                y=[line_3]*8,
-                                mode='lines',
-                                visible=False,
-                                name='MTR',
-                                opacity=0.5, 
-                                line=dict(color="rgb"+str(tableau20[0]), 
-                                            width=2,
-                                            dash='dot')))
-
-
-        # Add dotted lines for thrid button 
-        figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
-                                y=[line_4]*8,
-                                mode='lines',
-                                visible=False,
-                                name='MTsat',
-                                opacity=0.5, 
-                                line=dict(color="rgb"+str(tableau20[0]), 
-                                            width=2,
-                                            dash='dot')))
-
-
+            # Add dotted line
+            figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+                                    y=[line[key]]*8,
+                                    mode='lines',
+                                    visible=visible,
+                                    name=key,
+                                    opacity=0.5, 
+                                    line=dict(color=line_color, 
+                                                width=2,
+                                                dash='dot')))
 
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         x_rev = x[::-1]
 
-        std_1   = get_std(mean_MP2RAGE_t1_matrix)   # MP2RAGE_t1      --- std 
 
-        std_2   = get_std(mean_MTS_t1_matrix)       # MTS_t1          --- std 
+        # Calculate means 
+        std_area = {
+            'T<sub>1</sub>(mp2rage)': None,
+            'T<sub>1</sub>(mts)': None,
+            'MTR': None,
+            'MTsat': None
+        }
 
-        std_3   = get_std(mean_mtr_matrix)          # N/A_mtr         --- std
+        std_area['T<sub>1</sub>(mp2rage)'] =  get_std(mean_MP2RAGE_t1_matrix)   # MP2RAGE_t1      --- std 
+        std_area['T<sub>1</sub>(mts)'] =  get_std(mean_MTS_t1_matrix)       # MTS_t1          --- std 
+        std_area['MTR'] = get_std(mean_mtr_matrix)          # N/A_mtr         --- std
+        std_area['MTsat'] = get_std(mean_mtsat_matrix)        # MTS_mtsat       --- std
 
-        std_4   = get_std(mean_mtsat_matrix)        # MTS_mtsat       --- std
+        for key in std_area:
 
+            if key == 'T<sub>1</sub>(mts)':
+                fillcolor='rgba(255, 187, 120, 0.15)'
+            else: 
+                fillcolor='rgba(31, 119, 180, 0.15)'
 
+            visible=True
+            if key == 'MTR' or key == 'MTsat':
+                visible=False
 
-        # Add STD for 1 button
-        figb.add_trace(go.Scatter(
-            x=x+x_rev,
-            y=[line_1+std_1]*8+[line_1-std_1]*8,
-            fill='toself',
-            fillcolor='rgba(31, 119, 180,0.15)',
-            line_color='rgba(255,255,255,0)',
-            showlegend=False,
-            hoverinfo='skip',
-            name='MP2RAGE_t1 STD',
-        ))
-
-        figb.add_trace(go.Scatter(
-            x=x+x_rev,
-            y=[line_2+std_2]*8+[line_2-std_2]*8,
-            fill='toself',
-            fillcolor='rgba(255, 187, 120,0.15)',
-            line_color='rgba(255,255,255,0)',
-            showlegend=False,
-            hoverinfo='skip',
-            name='MTS_t1 STD',
-        ))
-
-        # Add STD for 2 button
-        figb.add_trace(go.Scatter(
-            x=x+x_rev,
-            y=[line_3+std_3]*8+[line_3-std_3]*8,
-            fill='toself',
-            visible=False,
-            fillcolor='rgba(31, 119, 180,0.15)',
-            line_color='rgba(255,255,255,0)',
-            showlegend=False,
-            hoverinfo='skip',
-            name='MTR STD',
-        ))
-
-        # Add STD for 3 button
-        figb.add_trace(go.Scatter(
-            x=x+x_rev,
-            y=[line_4+std_4]*8+[line_4-std_4]*8,
-            fill='toself',
-            visible=False,
-            fillcolor='rgba(31, 119, 180,0.15)',
-            line_color='rgba(255,255,255,0)',
-            showlegend=False,
-            hoverinfo='skip',
-            name='MTsat STD',
-        ))
-
+            # Add STD
+            figb.add_trace(go.Scatter(
+                x=x+x_rev,
+                y=[line[key]+std_area[key]]*8+[line[key]-std_area[key]]*8,
+                fill='toself',
+                visible=visible,
+                fillcolor=fillcolor,
+                line_color='rgba(255,255,255,0)',
+                showlegend=False,
+                hoverinfo=self.hoverinfo,
+            ))
 
         figb.update_layout(title = self.title,
                         updatemenus=[
