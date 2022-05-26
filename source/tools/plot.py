@@ -97,6 +97,7 @@ class Plot:
                 else:
                     showlegend = False
 
+                # Custom settings for just the T1 group/plot
                 if metric == 'MP2RAGE' or metric == 'MTS':
                     hover_mean = "Mean : <i> %{y: .2f} </i> sec"
                     visible=True
@@ -104,6 +105,7 @@ class Plot:
                     hover_mean = "Mean : <i> %{y: .2f} </i>" 
                     visible=False
 
+                # Custom settings for just MTS
                 if metric == 'MTS':
                     marker_color = "rgb"+str(Plot.colours[3])
                     legend_group = "group2"
@@ -162,7 +164,7 @@ class Plot:
                                                 width=2,
                                                 dash='dot')))
 
-        # Calculate means 
+        # Calculate stds 
         std_area = {
             'T<sub>1</sub>(mp2rage)': None,
             'T<sub>1</sub>(mts)': None,
@@ -276,8 +278,8 @@ class Plot:
                                                 r=50,
                                                 b=60,
                                                 t=35))
+        
         # Plot figure
-
         if env == 'jupyter-book':
             # For jupyter-book rendering --=-- jupyter-lab
             plot(figb, filename = self.plot_name + '.html', config = config)
