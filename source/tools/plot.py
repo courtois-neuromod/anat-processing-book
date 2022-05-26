@@ -79,100 +79,55 @@ class Plot:
                                         showlegend=False,
                                         marker_color='red'))
 
+        # Add mean datapoints to plot
+        trace_name = {
+            'MP2RAGE': 'T<sub>1</sub> (mp2rage)',
+            'MTS': 'T<sub>1</sub> (mts)',
+            'MTR': 'MTR',
+            'MTsat': 'MTsat'
+        }
 
-        # Add MEAN ------ mp2rage ------ T1
-        for trace in range(0, len(matrix['MP2RAGE'])):
-            t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+        for metric in matrix:
             
-            if trace == 0: 
-                showlegend = True
-            else:
-                showlegend = False
+            for trace in range(0, len(matrix[metric])):
+                t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+                
+                if trace == 0: 
+                    showlegend = True
+                else:
+                    showlegend = False
 
-            figb.add_trace(go.Scatter(x=t, 
-                                    y=matrix['MP2RAGE'][trace], 
-                                    mode='markers',
-                                    legendgroup="group1",
-                                    hovertemplate = 
-                                    "Mean : <i> %{y: .2f} </i> sec" + 
-                                    "<br>" + 
-                                    "<b>%{text}</b>", 
-                                    showlegend = showlegend, 
-                                    text = ['Session {}'.format(i + 1) for i in range(4)],
-                                    name= 'T<sub>1</sub> (mp2rage)',
-                                    marker_color="rgb"+str(Plot.colours[0])))
+                if metric == 'MP2RAGE' or metric == 'MTS':
+                    hover_mean = "Mean : <i> %{y: .2f} </i> sec"
+                    visible=True
+                else:
+                    hover_mean = "Mean : <i> %{y: .2f} </i>" 
+                    visible=False
 
-        # Add MEAN ------ mts ------ T1
-        for trace in range(0, len(matrix['MTS'])):
-            t = [trace - 0.2 + i*0.14 for i in range(0, 4)]
-            
-            if trace == 0: 
-                showlegend = True
-            else:
-                showlegend = False
-            
-            figb.add_trace(go.Scatter(x=t, 
-                                    y=matrix['MTS'][trace], 
-                                    mode='markers',
-                                    legendgroup="group2",
-                                    hovertemplate = 
-                                    "Mean : <i> %{y: .2f} </i> sec" + 
-                                    "<br>" + 
-                                    "<b>%{text}</b>", 
-                                    showlegend = showlegend, 
-                                    text = ['Session {}'.format(i + 1) for i in range(4)],
-                                    name= 'T<sub>1</sub> (mts)',
-                                    marker_symbol=symbols[5],
-                                    marker_color="rgb"+str(Plot.colours[3])))
+                if metric == 'MTS':
+                    marker_color = "rgb"+str(Plot.colours[3])
+                    legend_group = "group2"
+                else:
+                    marker_color = "rgb"+str(Plot.colours[0])
+                    legend_group = "group1"
 
-        # Add MEAN ------ nAn ------ MTR
-        for trace in range(0, len(matrix['MTR'])):
-            t = [trace -0.2 + i*0.14 for i in range(0, 4)]
-            
-            if trace == 0: 
-                showlegend = True
-            else:
-                showlegend = False
-
-            figb.add_trace(go.Scatter(x=t, 
-                                    y=matrix['MTR'][trace], 
-                                    mode='markers',
-                                    visible=False,
-                                    showlegend = showlegend, 
-                                    legendgroup="group1",
-                                    hovertemplate = 
-                                    "Mean : <i> %{y: .2f} </i>" + 
-                                    "<br>" + 
-                                    "<b>%{text}</b>", 
-                                    text = ['Session {}'.format(i + 1) for i in range(4)],
-                                    name='MTR',
-                                    marker_color="rgb"+str(Plot.colours[0])))
-                    
-
-        # Add MEAN ------ nAn ------ MTsat
-        for trace in range(0, len(matrix['MTsat'])):
-            t = [trace -0.2 + i*0.14 for i in range(0, 4)]
-            
-            if trace == 0: 
-                showlegend = True
-            else:
-                showlegend = False
-
-            figb.add_trace(go.Scatter(x=t, 
-                                    y=matrix['MTsat'][trace], 
-                                    mode='markers',
-                                    visible=False,
-                                    showlegend = showlegend, 
-                                    legendgroup="group1",
-                                    hovertemplate = 
-                                    "Mean : <i> %{y: .2f} </i>" + 
-                                    "<br>" + 
-                                    "<b>%{text}</b>", 
-                                    text = ['Session {}'.format(i + 1) for i in range(4)],
-                                    name='MTsat',
-                                    marker_color="rgb"+str(Plot.colours[0])))          
+                figb.add_trace(go.Scatter(x=t, 
+                                        y=matrix[metric][trace], 
+                                        mode='markers',
+                                        visible=visible,
+                                        legendgroup=legend_group,
+                                        hovertemplate = 
+                                        hover_mean + 
+                                        "<br>" + 
+                                        "<b>%{text}</b>", 
+                                        showlegend = showlegend, 
+                                        text = ['Session {}'.format(i + 1) for i in range(4)],
+                                        name= trace_name[metric],
+                                        marker_color=marker_color))
 
         # Calculate means 
+        x = [-1, 0, 1, 2, 3, 4, 5, 6]
+
         line = {
             'T<sub>1</sub>(mp2rage)': None,
             'T<sub>1</sub>(mts)': None,
@@ -197,7 +152,7 @@ class Plot:
                 visible=False
 
             # Add dotted line
-            figb.add_trace(go.Scatter(x=[-1, 0, 1, 2, 3, 4, 5, 6], 
+            figb.add_trace(go.Scatter(x=x, 
                                     y=[line[key]]*8,
                                     mode='lines',
                                     visible=visible,
@@ -206,8 +161,6 @@ class Plot:
                                     line=dict(color=line_color, 
                                                 width=2,
                                                 dash='dot')))
-
-        x = [-1, 0, 1, 2, 3, 4, 5, 6]
 
         # Calculate means 
         std_area = {
