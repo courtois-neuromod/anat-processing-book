@@ -25,7 +25,36 @@ class Plot:
 
         self.hoverinfo = 'skip'
 
+        # Text
+        self.x_label_tick_font_size = 13
+        self.y_label_tick_font_size = 13
+        self.general_font_size = 13
+
+    def get_val(self, matrix, key):
+        temp = matrix[::]
+        mean_list = []
+        for ele in temp: 
+            ele = [i for i in ele if i!=-100]
+            mean_list.extend(ele)
+            
+        if key=='mean':
+            val = float('{0:.2f}'.format(np.mean(mean_list)))
+        if key=='std':
+            val = float('{0:.3f}'.format(np.std(mean_list)))
+        if key=='max':
+            val = np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
+        if key=='min':
+            val = np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
+            
+        return val
+
     def display(self, env, tissue):
+
+        # Initialize Plotly 
+        init_notebook_mode(connected = True)
+        config={'showLink': False, 'displayModeBar': False}
+
+        # Get database
         df = self.dataset.data
 
         # Define lists for metrics
@@ -91,48 +120,6 @@ class Plot:
             
             mean_mtsat_matrix.append(mean_mtsat_ses)
 
-        # Add plotly 
-        init_notebook_mode(connected = True)
-        config={'showLink': False, 'displayModeBar': False}
-
-        def get_mean(mean_matrix):
-            temp = mean_matrix[::]
-            mean_list = []
-            for ele in temp: 
-                ele = [i for i in ele if i!=-100]
-                mean_list.extend(ele)
-            
-            mean = float('{0:.2f}'.format(np.mean(mean_list)))
-            return mean
-
-        def get_std(mean_matrix):
-            temp = mean_matrix[::]
-            mean_list = []
-            for ele in temp: 
-                ele = [i for i in ele if i!=-100]
-                mean_list.extend(ele)
-            
-            std = float('{0:.3f}'.format(np.std(mean_list)))
-            return std
-
-        def get_limit_max(matrix):
-            temp = matrix[::]
-            mean_list = []
-            for ele in temp: 
-                ele = [i for i in ele if i!=-100]
-                mean_list.extend(ele)
-            
-            return np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
-
-        def get_limit_min(matrix):
-            temp = matrix[::]
-            mean_list = []
-            for ele in temp: 
-                ele = [i for i in ele if i!=-100]
-                mean_list.extend(ele)
-            
-            return np.min(mean_list) - (np.max(mean_list)-np.min(mean_list))/4
-
         # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
         raw_symbols = SymbolValidator().values
         namestems = []
@@ -147,12 +134,6 @@ class Plot:
         # Define labels lists (just in case)
         labels_subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5', 'Subject 6']
         labels_int = [i for i in range(1, 7)]
-        x_rev = labels_int[::-1]
-
-        # Def global variables for fonts 
-        x_label_tick_font = 13
-        y_label_tick_font = 13
-        general_font = 13
 
         # Add first values for labels [Sub1...Sub6]
         figb = go.Figure(data=go.Scatter(x=labels_int,
@@ -186,7 +167,7 @@ class Plot:
 
         # Add MEAN ------ mts ------ T1
         for trace in range(0, len(mean_MTS_t1_matrix)):
-            t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+            t = [trace - 0.2 + i*0.14 for i in range(0, 4)]
             
             if trace == 0: 
                 showlegend = True
@@ -262,10 +243,10 @@ class Plot:
             'MTsat': None
         }
 
-        line['T<sub>1</sub>(mp2rage)'] =  get_mean(mean_MP2RAGE_t1_matrix)    # MP2RAGE_t1 --- mean 
-        line['T<sub>1</sub>(mts)'] =  get_mean(mean_MTS_t1_matrix)        # MTS_t1     --- mean 
-        line['MTR'] = get_mean(mean_mtr_matrix)           # MTR   --- mean
-        line['MTsat'] = get_mean(mean_mtsat_matrix)         # MTsat  --- mean
+        line['T<sub>1</sub>(mp2rage)'] =  self.get_val(mean_MP2RAGE_t1_matrix, 'mean')    # MP2RAGE_t1 --- mean 
+        line['T<sub>1</sub>(mts)'] =  self.get_val(mean_MTS_t1_matrix, 'mean')        # MTS_t1     --- mean 
+        line['MTR'] = self.get_val(mean_mtr_matrix, 'mean')           # MTR   --- mean
+        line['MTsat'] = self.get_val(mean_mtsat_matrix, 'mean')         # MTsat  --- mean
 
         for key in line:
 
@@ -292,7 +273,6 @@ class Plot:
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         x_rev = x[::-1]
 
-
         # Calculate means 
         std_area = {
             'T<sub>1</sub>(mp2rage)': None,
@@ -301,10 +281,10 @@ class Plot:
             'MTsat': None
         }
 
-        std_area['T<sub>1</sub>(mp2rage)'] =  get_std(mean_MP2RAGE_t1_matrix)   # MP2RAGE_t1      --- std 
-        std_area['T<sub>1</sub>(mts)'] =  get_std(mean_MTS_t1_matrix)       # MTS_t1          --- std 
-        std_area['MTR'] = get_std(mean_mtr_matrix)          # N/A_mtr         --- std
-        std_area['MTsat'] = get_std(mean_mtsat_matrix)        # MTS_mtsat       --- std
+        std_area['T<sub>1</sub>(mp2rage)'] =  self.get_val(mean_MP2RAGE_t1_matrix, 'std')   # MP2RAGE_t1      --- std 
+        std_area['T<sub>1</sub>(mts)'] =  self.get_val(mean_MTS_t1_matrix, 'std')       # MTS_t1          --- std 
+        std_area['MTR'] = self.get_val(mean_mtr_matrix, 'std')          # N/A_mtr         --- std
+        std_area['MTsat'] = self.get_val(mean_mtsat_matrix, 'std')        # MTS_mtsat       --- std
 
         for key in std_area:
 
@@ -342,37 +322,37 @@ class Plot:
                                                             method="update",
                                                             args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
                                                                 
-                                                                {"yaxis": dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))],
+                                                                {"yaxis": dict(range=[self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'min'), self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'max')],
                                                                                 title='T<sub>1</sub> [s]',
                                                                                 mirror=True,
                                                                                 ticks='outside', 
                                                                                 showline=True, 
                                                                                 linecolor='#000',
-                                                                                tickfont = dict(size=y_label_tick_font))}]),
+                                                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
                                                 
                                                 dict(label="MTR",
                                                             method="update",
                                                             args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                                 
-                                                                {"yaxis": dict(range=[get_limit_min(mean_mtr_matrix), get_limit_max(mean_mtr_matrix)],
+                                                                {"yaxis": dict(range=[self.get_val(mean_mtr_matrix, 'min'), self.get_val(mean_mtr_matrix, 'max')],
                                                                                 title='MTR [a.u.]',
                                                                                 mirror=True,
                                                                                 ticks='outside', 
                                                                                 showline=True, 
                                                                                 linecolor='#000',
-                                                                                tickfont = dict(size=y_label_tick_font))}]),
+                                                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
                                                 
                                                 dict(label="MTsat",
                                                             method="update",
                                                             args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                                 
-                                                                {"yaxis": dict(range=[get_limit_min(mean_mtsat_matrix),get_limit_max(mean_mtsat_matrix)],
+                                                                {"yaxis": dict(range=[self.get_val(mean_mtsat_matrix, 'min'), self.get_val(mean_mtsat_matrix, 'max')],
                                                                                 title='MTsat [a.u.]',
                                                                                 mirror=True,
                                                                                 ticks='outside', 
                                                                                 showline=True, 
                                                                                 linecolor='#000',
-                                                                                tickfont = dict(size=y_label_tick_font))}]) ]) )],
+                                                                                tickfont = dict(size=self.y_label_tick_font_size))}]) ]) )],
                         title_x = 0.445, 
                         legend=dict(orientation = 'v',
                                     bordercolor="Gray",
@@ -384,14 +364,14 @@ class Plot:
                                     linecolor='#000',
                                     tickvals = [0, 1, 2, 3, 4, 5],
                                     ticktext = labels_subjects,
-                                    tickfont = dict(size=x_label_tick_font)),
+                                    tickfont = dict(size=self.x_label_tick_font_size)),
                         yaxis_title='T<sub>1</sub> [s]',
-                        yaxis=dict(range=[get_limit_min(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0)), get_limit_max(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0))], 
+                        yaxis=dict(range=[self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'min'), self.get_val(np.append(mean_MP2RAGE_t1_matrix, mean_MTS_t1_matrix, axis=0), 'max')], 
                                     mirror=True,
                                     ticks='outside', 
                                     showline=True, 
                                     linecolor='#000',
-                                    tickfont = dict(size=y_label_tick_font)),
+                                    tickfont = dict(size=self.y_label_tick_font_size)),
                         annotations=[
                                     dict(text="Display metric: ", 
                                             showarrow=False,
@@ -402,7 +382,7 @@ class Plot:
                         plot_bgcolor='rgba(227,233,244, 0.5)',
                         width = 760, 
                         height = 520,
-                        font = dict(size = general_font),
+                        font = dict(size = self.general_font_size),
                         margin=go.layout.Margin(l=50,
                                                 r=50,
                                                 b=60,
