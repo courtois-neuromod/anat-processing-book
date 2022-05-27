@@ -87,7 +87,7 @@ class Plot:
             'MTsat': 'MTsat'
         }
 
-        for metric in matrix:
+        for metric in trace_name:
             
             for trace in range(0, len(matrix[metric])):
                 t = [trace -0.2 + i*0.14 for i in range(0, 4)]
@@ -129,69 +129,51 @@ class Plot:
 
         # Add mean line to plot
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
+        line = {}
+        
+        for metric in trace_name:
+            line[metric]= self.get_val(matrix[metric], 'mean')
 
-        line = {
-            'T<sub>1</sub>(mp2rage)': None,
-            'T<sub>1</sub>(mts)': None,
-            'MTR': None,
-            'MTsat': None
-        }
-
-        line['T<sub>1</sub>(mp2rage)'] =  self.get_val(matrix['MP2RAGE'], 'mean')    # MP2RAGE_t1 --- mean 
-        line['T<sub>1</sub>(mts)'] =  self.get_val(matrix['MTS'], 'mean')        # MTS_t1     --- mean 
-        line['MTR'] = self.get_val(matrix['MTR'], 'mean')           # MTR   --- mean
-        line['MTsat'] = self.get_val(matrix['MTsat'], 'mean')         # MTsat  --- mean
-
-        for key in line:
-
-            if key == 'T<sub>1</sub>(mts)':
+            if metric == 'MTS':
                 line_color = "rgb"+str(Plot.colours[3])
             else: 
                 line_color = "rgb"+str(Plot.colours[0])
 
             visible=True
-            if key == 'MTR' or key == 'MTsat':
+            if metric == 'MTR' or metric == 'MTsat':
                 visible=False
 
             # Add dotted line
             figb.add_trace(go.Scatter(x=x, 
-                                    y=[line[key]]*8,
+                                    y=[line[metric]]*8,
                                     mode='lines',
                                     visible=visible,
-                                    name=key,
+                                    name=trace_name[metric],
                                     opacity=0.5, 
                                     line=dict(color=line_color, 
                                                 width=2,
                                                 dash='dot')))
 
         # Add std shaded area to plot
-        std_area = {
-            'T<sub>1</sub>(mp2rage)': None,
-            'T<sub>1</sub>(mts)': None,
-            'MTR': None,
-            'MTsat': None
-        }
 
-        std_area['T<sub>1</sub>(mp2rage)'] =  self.get_val(matrix['MP2RAGE'], 'std')   # MP2RAGE_t1      --- std 
-        std_area['T<sub>1</sub>(mts)'] =  self.get_val(matrix['MTS'], 'std')       # MTS_t1          --- std 
-        std_area['MTR'] = self.get_val(matrix['MTR'], 'std')          # N/A_mtr         --- std
-        std_area['MTsat'] = self.get_val(matrix['MTsat'], 'std')        # MTS_mtsat       --- std
+        std_area = {}
+        
+        for metric in trace_name:
+            std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-        for key in std_area:
-
-            if key == 'T<sub>1</sub>(mts)':
+            if metric == 'MTS':
                 fillcolor='rgba(255, 187, 120, 0.15)'
             else: 
                 fillcolor='rgba(31, 119, 180, 0.15)'
 
             visible=True
-            if key == 'MTR' or key == 'MTsat':
+            if metric == 'MTR' or metric == 'MTsat':
                 visible=False
 
             # Add STD
             figb.add_trace(go.Scatter(
                 x=x+x[::-1],
-                y=[line[key]+std_area[key]]*8+[line[key]-std_area[key]]*8,
+                y=[line[metric]+std_area[metric]]*8+[line[metric]-std_area[metric]]*8,
                 fill='toself',
                 visible=visible,
                 fillcolor=fillcolor,
