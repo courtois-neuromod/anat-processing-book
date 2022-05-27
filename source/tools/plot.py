@@ -87,45 +87,8 @@ class Plot:
             'MTsat': 'MTsat'
         }
 
-        for metric in trace_name:
-            
-            for trace in range(0, len(matrix[metric])):
-                t = [trace -0.2 + i*0.14 for i in range(0, 4)]
-                
-                if trace == 0: 
-                    showlegend = True
-                else:
-                    showlegend = False
-
-                # Custom settings for just the T1 group/plot
-                if metric == 'MP2RAGE' or metric == 'MTS':
-                    hover_mean = "Mean : <i> %{y: .2f} </i> sec"
-                    visible=True
-                else:
-                    hover_mean = "Mean : <i> %{y: .2f} </i>" 
-                    visible=False
-
-                # Custom settings for just MTS
-                if metric == 'MTS':
-                    marker_color = "rgb"+str(Plot.colours[3])
-                    legend_group = "group2"
-                else:
-                    marker_color = "rgb"+str(Plot.colours[0])
-                    legend_group = "group1"
-
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=matrix[metric][trace], 
-                                        mode='markers',
-                                        visible=visible,
-                                        legendgroup=legend_group,
-                                        hovertemplate = 
-                                        hover_mean + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        showlegend = showlegend, 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name= trace_name[metric],
-                                        marker_color=marker_color))
+        # Add datapoints to plot
+        figb = self.add_points(figb, matrix, trace_name)
 
         # Add mean line to plot
         figb, line = self.add_lines(figb, matrix, trace_name)
@@ -216,7 +179,7 @@ class Plot:
                                                 b=60,
                                                 t=35))
         
-        # Plot figure
+        # Plot figuregit 
         if env == 'jupyter-book':
             # For jupyter-book rendering --=-- jupyter-lab
             plot(figb, filename = self.plot_name + '.html', config = config)
@@ -224,6 +187,47 @@ class Plot:
         elif env == 'notebook':
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
+
+    def add_points(self, figb, matrix, trace_name):
+        for metric in trace_name:
+            
+            for trace in range(0, len(matrix[metric])):
+                t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+                
+                if trace == 0: 
+                    showlegend = True
+                else:
+                    showlegend = False
+
+                # Custom settings for just the T1 group/plot
+                if metric == 'MP2RAGE' or metric == 'MTS':
+                    hover_mean = "Mean : <i> %{y: .2f} </i> sec"
+                    visible=True
+                else:
+                    hover_mean = "Mean : <i> %{y: .2f} </i>" 
+                    visible=False
+
+                # Custom settings for just MTS
+                if metric == 'MTS':
+                    marker_color = "rgb"+str(Plot.colours[3])
+                    legend_group = "group2"
+                else:
+                    marker_color = "rgb"+str(Plot.colours[0])
+                    legend_group = "group1"
+
+                figb.add_trace(go.Scatter(x=t, 
+                                        y=matrix[metric][trace], 
+                                        mode='markers',
+                                        visible=visible,
+                                        legendgroup=legend_group,
+                                        hovertemplate = 
+                                        hover_mean + 
+                                        "<br>" + 
+                                        "<b>%{text}</b>", 
+                                        showlegend = showlegend, 
+                                        text = ['Session {}'.format(i + 1) for i in range(4)],
+                                        name= trace_name[metric],
+                                        marker_color=marker_color))
 
     def add_lines(self, figb, matrix, trace_name):
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
