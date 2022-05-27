@@ -128,59 +128,10 @@ class Plot:
                                         marker_color=marker_color))
 
         # Add mean line to plot
-        x = [-1, 0, 1, 2, 3, 4, 5, 6]
-        line = {}
-        
-        for metric in trace_name:
-            line[metric]= self.get_val(matrix[metric], 'mean')
-
-            if metric == 'MTS':
-                line_color = "rgb"+str(Plot.colours[3])
-            else: 
-                line_color = "rgb"+str(Plot.colours[0])
-
-            visible=True
-            if metric == 'MTR' or metric == 'MTsat':
-                visible=False
-
-            # Add dotted line
-            figb.add_trace(go.Scatter(x=x, 
-                                    y=[line[metric]]*8,
-                                    mode='lines',
-                                    visible=visible,
-                                    name=trace_name[metric],
-                                    opacity=0.5, 
-                                    line=dict(color=line_color, 
-                                                width=2,
-                                                dash='dot')))
+        figb, line = self.add_lines(figb, matrix, trace_name)
 
         # Add std shaded area to plot
-
-        std_area = {}
-        
-        for metric in trace_name:
-            std_area[metric] = self.get_val(matrix[metric], 'std') 
-
-            if metric == 'MTS':
-                fillcolor='rgba(255, 187, 120, 0.15)'
-            else: 
-                fillcolor='rgba(31, 119, 180, 0.15)'
-
-            visible=True
-            if metric == 'MTR' or metric == 'MTsat':
-                visible=False
-
-            # Add STD
-            figb.add_trace(go.Scatter(
-                x=x+x[::-1],
-                y=[line[metric]+std_area[metric]]*8+[line[metric]-std_area[metric]]*8,
-                fill='toself',
-                visible=visible,
-                fillcolor=fillcolor,
-                line_color='rgba(255,255,255,0)',
-                showlegend=False,
-                hoverinfo=self.hoverinfo,
-            ))
+        figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
 
         # Set layout
 
@@ -273,3 +224,61 @@ class Plot:
         elif env == 'notebook':
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
+
+    def add_lines(self, figb, matrix, trace_name):
+        x = [-1, 0, 1, 2, 3, 4, 5, 6]
+        line = {}
+        
+        for metric in trace_name:
+            line[metric]= self.get_val(matrix[metric], 'mean')
+
+            if metric == 'MTS':
+                line_color = "rgb"+str(Plot.colours[3])
+            else: 
+                line_color = "rgb"+str(Plot.colours[0])
+
+            visible=True
+            if metric == 'MTR' or metric == 'MTsat':
+                visible=False
+
+            # Add dotted line
+            figb.add_trace(go.Scatter(x=x, 
+                                    y=[line[metric]]*8,
+                                    mode='lines',
+                                    visible=visible,
+                                    name=trace_name[metric],
+                                    opacity=0.5, 
+                                    line=dict(color=line_color, 
+                                                width=2,
+                                                dash='dot')))
+        return figb, line
+
+    def add_std_area(self, figb, matrix, trace_name, line):
+        x = [-1, 0, 1, 2, 3, 4, 5, 6]
+        std_area = {}
+        
+        for metric in trace_name:
+            std_area[metric] = self.get_val(matrix[metric], 'std') 
+
+            if metric == 'MTS':
+                fillcolor='rgba(255, 187, 120, 0.15)'
+            else: 
+                fillcolor='rgba(31, 119, 180, 0.15)'
+
+            visible=True
+            if metric == 'MTR' or metric == 'MTsat':
+                visible=False
+
+            # Add STD
+            figb.add_trace(go.Scatter(
+                x=x+x[::-1],
+                y=[line[metric]+std_area[metric]]*8+[line[metric]-std_area[metric]]*8,
+                fill='toself',
+                visible=visible,
+                fillcolor=fillcolor,
+                line_color='rgba(255,255,255,0)',
+                showlegend=False,
+                hoverinfo=self.hoverinfo,
+            ))
+
+        return figb, std_area
