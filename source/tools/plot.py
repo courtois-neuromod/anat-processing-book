@@ -63,8 +63,14 @@ class Plot:
         init_notebook_mode(connected = True)
         config={'showLink': False, 'displayModeBar': False}
 
+        if self.dataset.data_type == 'spine':
+            print(self.dataset.data['T2w'])
+
         # Get database
         matrix = self.dataset.extract_data(tissue)
+        
+        if self.dataset.data_type == 'spine':
+            print(matrix['T2w']['Area'])
 
         symbols = self.get_symbols()
 
@@ -80,61 +86,123 @@ class Plot:
                                         marker_color='red'))
 
         # Add datapoints to plot
-        trace_name = {
-            'MP2RAGE': 'T<sub>1</sub> (mp2rage)',
-            'MTS': 'T<sub>1</sub> (mts)',
-            'MTR': 'MTR',
-            'MTsat': 'MTsat'
-        }
+        if self.dataset.data_type == 'brain':
+            trace_name = {
+                'MP2RAGE': 'T<sub>1</sub> (mp2rage)',
+                'MTS': 'T<sub>1</sub> (mts)',
+                'MTR': 'MTR',
+                'MTsat': 'MTsat'
+            }
+        elif self.dataset.data_type == 'spine':
+            trace_name = {
+                'Area': 'T<sub>1</sub> (mp2rage)',
+                'AP': 'T<sub>1</sub> (mts)',
+                'RL': 'MTR',
+                'Angle': 'MTsat'
+            }
 
         # Add datapoints to plot
         figb = self.add_points(figb, matrix, trace_name)
 
-        # Add mean line to plot
-        figb, line = self.add_lines(figb, matrix, trace_name)
+        if self.dataset.data_type == 'brain':
+            # Add mean line to plot
+            figb, line = self.add_lines(figb, matrix, trace_name)
 
-        # Add std shaded area to plot
-        figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
+            # Add std shaded area to plot
+            figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
 
         # Set layout
+        if self.dataset.data_type == 'brain':
+            buttons = list([
+                            dict(label="T<sub>1</sub>",
+                                method="update",
+                                args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
+                                                title='T<sub>1</sub> [s]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                                    
+                            dict(label="MTR",
+                                method="update",
+                                args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
+                                                title='MTR [a.u.]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                                    
+                            dict(label="MTsat",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
+                                                title='MTsat [a.u.]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+        elif self.dataset.data_type == 'spine':
+            buttons = list([
+                            dict(label="Mean (area)",
+                                method="update",
+                                args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
+                                                           
+                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
+                                                    title='Mean (area) [mm<sup>2</sup>]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+                            dict(label="Mean (AP)",
+                                method="update",
+                                args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
+                                                           
+                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'max')],
+                                                    title='Mean (AP) [mm]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                    
+                            dict(label="Mean (RL)",
+                                method="update",
+                                args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
+                                                    
+                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'max')],
+                                                    title='Mean (RL) [mm]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                        
+                            dict(label="Mean (angle)",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
+                                                           
+                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'max')],
+                                                    title='Mean (angle) [°]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+                                        
+        if self.dataset.data_type == 'brain':
+            yaxis_range = [self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')]
+        elif self.dataset.data_type == 'spine':
+            yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
 
-        buttons = list([
-                        dict(label="T<sub>1</sub>",
-                             method="update",
-                             args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
-                                                                
-                             {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
-                                            title='T<sub>1</sub> [s]',
-                                            mirror=True,
-                                            ticks='outside', 
-                                            showline=True, 
-                                            linecolor='#000',
-                                            tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                
-                        dict(label="MTR",
-                             method="update",
-                             args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
-                                                                
-                             {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
-                                            title='MTR [a.u.]',
-                                            mirror=True,
-                                            ticks='outside', 
-                                            showline=True, 
-                                            linecolor='#000',
-                                            tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                
-                        dict(label="MTsat",
-                             method="update",
-                             args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
-                                                                
-                             {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
-                                            title='MTsat [a.u.]',
-                                            mirror=True,
-                                            ticks='outside', 
-                                            showline=True, 
-                                            linecolor='#000',
-                                            tickfont = dict(size=self.y_label_tick_font_size))}]) ])
-        
         figb.update_layout(title = self.title,
                         updatemenus=[
                                         dict(
@@ -157,7 +225,7 @@ class Plot:
                                     ticktext = labels_subjects,
                                     tickfont = dict(size=self.x_label_tick_font_size)),
                         yaxis_title='T<sub>1</sub> [s]',
-                        yaxis=dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')], 
+                        yaxis=dict(range=yaxis_range, 
                                     mirror=True,
                                     ticks='outside', 
                                     showline=True, 
@@ -189,45 +257,103 @@ class Plot:
             iplot(figb,config=config)
 
     def add_points(self, figb, matrix, trace_name):
+        symbols = self.get_symbols()
+
         for metric in trace_name:
-            
-            for trace in range(0, len(matrix[metric])):
-                t = [trace -0.2 + i*0.14 for i in range(0, 4)]
-                
-                if trace == 0: 
-                    showlegend = True
-                else:
-                    showlegend = False
+            if 'T1w' not in matrix:
 
-                # Custom settings for just the T1 group/plot
-                if metric == 'MP2RAGE' or metric == 'MTS':
-                    hover_mean = "Mean : <i> %{y: .2f} </i> sec"
-                    visible=True
-                else:
-                    hover_mean = "Mean : <i> %{y: .2f} </i>" 
-                    visible=False
+                for trace in range(0, len(matrix[metric])):
+                    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+                    
+                    if trace == 0: 
+                        showlegend = True
+                    else:
+                        showlegend = False
 
-                # Custom settings for just MTS
-                if metric == 'MTS':
-                    marker_color = "rgb"+str(Plot.colours[3])
-                    legend_group = "group2"
-                else:
-                    marker_color = "rgb"+str(Plot.colours[0])
-                    legend_group = "group1"
+                    # Custom settings for just the T1 group/plot
+                    if metric == 'MP2RAGE' or metric == 'MTS':
+                        hover_mean = "Mean : <i> %{y: .2f} </i> sec"
+                        visible=True
+                    elif metric == 'Area':
+                        hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
+                        visible=True
+                    elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
+                        hover_mean = "Mean : <i> %{y: .2f} </i> mm"
+                        visible=False
+                    else:
+                        hover_mean = "Mean : <i> %{y: .2f} </i>" 
+                        visible=False
 
-                figb.add_trace(go.Scatter(x=t, 
-                                        y=matrix[metric][trace], 
-                                        mode='markers',
-                                        visible=visible,
-                                        legendgroup=legend_group,
-                                        hovertemplate = 
-                                        hover_mean + 
-                                        "<br>" + 
-                                        "<b>%{text}</b>", 
-                                        showlegend = showlegend, 
-                                        text = ['Session {}'.format(i + 1) for i in range(4)],
-                                        name= trace_name[metric],
-                                        marker_color=marker_color))
+                    # Custom settings for just MTS
+                    if metric == 'MTS':
+                        marker_color = "rgb"+str(Plot.colours[3])
+                        legend_group = "group2"
+                    else:
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+
+                    figb.add_trace(go.Scatter(x=t, 
+                                                y=matrix[metric][trace], 
+                                                mode='markers',
+                                                visible=visible,
+                                                legendgroup=legend_group,
+                                                hovertemplate = 
+                                                hover_mean + 
+                                                "<br>" + 
+                                                "<b>%{text}</b>", 
+                                                showlegend = showlegend, 
+                                                text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                name= trace_name[metric],
+                                                marker_color=marker_color))
+            else:
+                for trace in range(0, len(matrix['T1w'][metric])):
+                    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+                        
+                    if trace == 0: 
+                        showlegend = True
+                    else:
+                        showlegend = False
+
+                    # Custom settings for just the T1 group/plot
+                    if metric == 'Area':
+                        hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
+                        visible=True
+                    elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
+                        hover_mean = "Mean : <i> %{y: .2f} </i> mm"
+                        visible=False
+
+                    figb.add_trace(go.Scatter(x=t, 
+                                                y=matrix['T1w'][metric][trace], 
+                                                mode='markers',
+                                                visible=visible,
+                                                legendgroup="group1",
+                                                hovertemplate = 
+                                                hover_mean + 
+                                                "<br>" + 
+                                                "<b>%{text}</b>", 
+                                                showlegend = showlegend, 
+                                                text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                name= 'T<sub>1</sub>w',
+                                                marker_color="rgb"+str(Plot.colours[0])))
+
+                    figb.add_trace(go.Scatter(x=t, 
+                                                y=matrix['T2w'][metric][trace], 
+                                                mode='markers',
+                                                visible=visible,
+                                                legendgroup="group2",
+                                                hovertemplate = 
+                                                hover_mean + 
+                                                "<br>" + 
+                                                "<b>%{text}</b>", 
+                                                showlegend = showlegend, 
+                                                text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                name= 'T<sub>2</sub>w',
+                                                marker_symbol=symbols[5],
+                                                marker_color="rgb"+str(Plot.colours[3])))
+
+
+                                       
+        return figb
 
     def add_lines(self, figb, matrix, trace_name):
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
