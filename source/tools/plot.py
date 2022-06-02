@@ -63,14 +63,8 @@ class Plot:
         init_notebook_mode(connected = True)
         config={'showLink': False, 'displayModeBar': False}
 
-        if self.dataset.data_type == 'spine':
-            print(self.dataset.data['T2w'])
-
         # Get database
         matrix = self.dataset.extract_data(tissue)
-        
-        if self.dataset.data_type == 'spine':
-            print(matrix['T2w']['Area'])
 
         symbols = self.get_symbols()
 
@@ -107,11 +101,8 @@ class Plot:
         # Add mean line to plot
         figb, line = self.add_lines(figb, matrix, trace_name)
 
-        if self.dataset.data_type == 'brain':
-
-
-            # Add std shaded area to plot
-            figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
+        # Add std shaded area to plot
+        figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
 
         # Set layout
         if self.dataset.data_type == 'brain':
@@ -385,16 +376,11 @@ class Plot:
                                                     width=2,
                                                     dash='dot')))
         else:
+            line = {
+                'T1w':{},
+                'T2w': {}
+                }
             for metric in trace_name:
-                line = {
-                    'T1w':{},
-                    'T2w': {}
-                    }
-                for key in line:
-                    print(key)
-
-                for key in matrix:
-                    print(key)
                     
                 line['T1w'][metric]= self.get_val(matrix['T1w'][metric], 'mean')
                 line['T2w'][metric]= self.get_val(matrix['T2w'][metric], 'mean')
@@ -431,28 +417,72 @@ class Plot:
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         std_area = {}
         
-        for metric in trace_name:
-            std_area[metric] = self.get_val(matrix[metric], 'std') 
+        if 'T1w' not in matrix:
+            for metric in trace_name:
+                std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-            if metric == 'MTS':
-                fillcolor='rgba(255, 187, 120, 0.15)'
-            else: 
-                fillcolor='rgba(31, 119, 180, 0.15)'
+                if metric == 'MTS':
+                    fillcolor='rgba(255, 187, 120, 0.15)'
+                else: 
+                    fillcolor='rgba(31, 119, 180, 0.15)'
 
-            visible=True
-            if metric == 'MTR' or metric == 'MTsat':
-                visible=False
+                visible=True
+                if metric == 'MTR' or metric == 'MTsat':
+                    visible=False
 
-            # Add STD
-            figb.add_trace(go.Scatter(
-                x=x+x[::-1],
-                y=[line[metric]+std_area[metric]]*8+[line[metric]-std_area[metric]]*8,
-                fill='toself',
-                visible=visible,
-                fillcolor=fillcolor,
-                line_color='rgba(255,255,255,0)',
-                showlegend=False,
-                hoverinfo=self.hoverinfo,
-            ))
+                # Add STD
+                figb.add_trace(go.Scatter(
+                    x=x+x[::-1],
+                    y=[line[metric]+std_area[metric]]*8+[line[metric]-std_area[metric]]*8,
+                    fill='toself',
+                    visible=visible,
+                    fillcolor=fillcolor,
+                    line_color='rgba(255,255,255,0)',
+                    showlegend=False,
+                    hoverinfo=self.hoverinfo,
+                ))
+        
+        else:
+            std_area = {
+                'T1w':{},
+                'T2w': {}
+                }
+            for metric in trace_name:
+                    
+                std_area['T1w'][metric] = self.get_val(matrix['T1w'][metric], 'std') 
+                std_area['T2w'][metric] = self.get_val(matrix['T2w'][metric], 'std') 
+
+                visible=True
+                if metric != 'Area':
+                    visible=False
+
+                 # Define name and color for STD region 
+                name = metric + " STD"
+                fillcolor = 'rgba(31, 119, 180,0.15)' 
+
+                # Add STD
+                figb.add_trace(go.Scatter(
+                    x=x+x[::-1],
+                    y=[line['T1w'][metric]+std_area['T1w'][metric]]*8+[line['T1w'][metric]-std_area['T1w'][metric]]*8,
+                    fill='toself',
+                    visible=visible,
+                    fillcolor='rgba(31, 119, 180,0.15)',
+                    line_color='rgba(255,255,255,0)',
+                    showlegend=False,
+                    hoverinfo=self.hoverinfo,
+                    name='T<sub>1</sub>w STD'
+                ))
+
+                figb.add_trace(go.Scatter(
+                    x=x+x[::-1],
+                    y=[line['T2w'][metric]+std_area['T2w'][metric]]*8+[line['T2w'][metric]-std_area['T2w'][metric]]*8,
+                    fill='toself',
+                    visible=visible,
+                    fillcolor='rgba(255, 187, 120,0.15)',
+                    line_color='rgba(255,255,255,0)',
+                    showlegend=False,
+                    hoverinfo=self.hoverinfo,
+                    name='T<sub>2</sub>w STD'
+                ))
 
         return figb, std_area
