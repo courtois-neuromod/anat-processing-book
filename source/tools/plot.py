@@ -104,9 +104,11 @@ class Plot:
         # Add datapoints to plot
         figb = self.add_points(figb, matrix, trace_name)
 
+        # Add mean line to plot
+        figb, line = self.add_lines(figb, matrix, trace_name)
+
         if self.dataset.data_type == 'brain':
-            # Add mean line to plot
-            figb, line = self.add_lines(figb, matrix, trace_name)
+
 
             # Add std shaded area to plot
             figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
@@ -359,28 +361,70 @@ class Plot:
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         line = {}
         
-        for metric in trace_name:
-            line[metric]= self.get_val(matrix[metric], 'mean')
+        if 'T1w' not in matrix:
+            for metric in trace_name:
+                line[metric]= self.get_val(matrix[metric], 'mean')
 
-            if metric == 'MTS':
-                line_color = "rgb"+str(Plot.colours[3])
-            else: 
-                line_color = "rgb"+str(Plot.colours[0])
+                if metric == 'MTS':
+                    line_color = "rgb"+str(Plot.colours[3])
+                else: 
+                    line_color = "rgb"+str(Plot.colours[0])
 
-            visible=True
-            if metric == 'MTR' or metric == 'MTsat':
-                visible=False
+                visible=True
+                if metric == 'MTR' or metric == 'MTsat':
+                    visible=False
 
-            # Add dotted line
-            figb.add_trace(go.Scatter(x=x, 
-                                    y=[line[metric]]*8,
-                                    mode='lines',
-                                    visible=visible,
-                                    name=trace_name[metric],
-                                    opacity=0.5, 
-                                    line=dict(color=line_color, 
-                                                width=2,
-                                                dash='dot')))
+                # Add dotted line
+                figb.add_trace(go.Scatter(x=x, 
+                                        y=[line[metric]]*8,
+                                        mode='lines',
+                                        visible=visible,
+                                        name=trace_name[metric],
+                                        opacity=0.5, 
+                                        line=dict(color=line_color, 
+                                                    width=2,
+                                                    dash='dot')))
+        else:
+            for metric in trace_name:
+                line = {
+                    'T1w':{},
+                    'T2w': {}
+                    }
+                for key in line:
+                    print(key)
+
+                for key in matrix:
+                    print(key)
+                    
+                line['T1w'][metric]= self.get_val(matrix['T1w'][metric], 'mean')
+                line['T2w'][metric]= self.get_val(matrix['T2w'][metric], 'mean')
+
+                visible=True
+                if metric != 'Area':
+                    visible=False
+
+                # Add dotted line
+                figb.add_trace(go.Scatter(x=x, 
+                                            y=[line['T1w'][metric]]*8,
+                                            mode='lines',
+                                            visible=visible,
+                                            name='T<sub>1</sub>w',
+                                            opacity=0.5, 
+                                            line=dict(color="rgb(31, 119, 180)", 
+                                                        width=2,
+                                                        dash='dot')))
+    
+                figb.add_trace(go.Scatter(x=x, 
+                                            y=[line['T2w'][metric]]*8,
+                                            mode='lines',
+                                            visible=visible,
+                                            name='T<sub>2</sub>w',
+                                            opacity=0.5, 
+                                            line=dict(color="rgb(255, 187, 120)", 
+                                                        width=2,
+                                                        dash='dot')))
+
+
         return figb, line
 
     def add_std_area(self, figb, matrix, trace_name, line):
