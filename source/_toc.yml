@@ -17,3 +17,4 @@ parts:
     chapters:
     - file: 1-brain-data-new
     - file: 2-spinal-data-new
+    - file: results-new
