@@ -16,6 +16,4 @@ parts:
   - caption: New Pages (Mathieu)
     chapters:
     - file: 1-brain-data-new
-  - caption: Testing area
-    chapters:
-    - file: notebooks
+    - file: 2-spinal-data-new
