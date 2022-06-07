@@ -56,5 +56,5 @@ pip install -r requirements.txt
 
 Build the notebook
 ~~~
-jupyter-book build source/ --path-output _build
+jupyter-book build source
 ~~~
