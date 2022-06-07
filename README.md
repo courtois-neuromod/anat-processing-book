@@ -27,6 +27,11 @@ execute:
 
 ## Build the Notebook locally
 
+Dependencies: Python 3.8 and higher
+
+
+### Option 1: Using miniconda
+
 Install miniconda
 
 Create and activate virtual environment:
@@ -34,6 +39,15 @@ Create and activate virtual environment:
 conda create -n notebook_docs pip
 conda activate notebook_docs
 ~~~
+
+### Option 2: Using virtualenv
+
+~~~
+virtualenv venv
+source venv/bin/activate
+~~~
+
+### Install package
 
 Install required packages
 ~~~
