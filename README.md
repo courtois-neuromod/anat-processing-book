@@ -8,6 +8,12 @@ Notebook that describes processing of anatomical data for the [Courtois-Neuromod
 
 To visualize the notebook click [here](https://courtois-neuromod.github.io/anat-processing-book/).
 
+## Data and processing pipeline
+
+The data are located here: https://github.com/courtois-neuromod/anat
+The processing code is located here: https://github.com/courtois-neuromod/anat-processing
+
+
 ## GitHub Action for automatic [Jupyter-Book GitHub page](https://courtois-neuromod.github.io/anat-processing-book/index.html) builds
 
 A [GitHub Action](https://github.com/courtois-neuromod/anat-processing-book/blob/main/.github/workflows/main.yml) is responsible for bulding jupyter-book from the `source` directory, then pushing built html files to the gh-pages branch. 
