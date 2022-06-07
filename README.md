@@ -11,6 +11,7 @@ To visualize the notebook click [here](https://courtois-neuromod.github.io/anat-
 ## Data and processing pipeline
 
 The data are located here: https://github.com/courtois-neuromod/anat
+
 The processing code is located here: https://github.com/courtois-neuromod/anat-processing
 
 
