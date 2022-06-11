@@ -88,21 +88,26 @@ class Plot:
                 'MTsat': 'MTsat'
             }
         elif self.dataset.data_type == 'spine':
-            trace_name = {
-                'Area': 'T<sub>1</sub> (mp2rage)',
-                'AP': 'T<sub>1</sub> (mts)',
-                'RL': 'MTR',
-                'Angle': 'MTsat'
-            }
+            if tissue == 'WM':
+                trace_name = {
+                    'Area': 'T<sub>1</sub> (mp2rage)',
+                    'AP': 'T<sub>1</sub> (mts)',
+                    'RL': 'MTR',
+                    'Angle': 'MTsat'
+                }
+            elif tissue == 'GM':
+                trace_name = {
+                    'Area': 'T<sub>1</sub> (mp2rage)',
+                }
 
         # Add datapoints to plot
-        figb = self.add_points(figb, matrix, trace_name)
+        figb = self.add_points(figb, matrix, trace_name, tissue)
 
         # Add mean line to plot
-        figb, line = self.add_lines(figb, matrix, trace_name)
+        figb, line = self.add_lines(figb, matrix, trace_name, tissue)
 
         # Add std shaded area to plot
-        figb, std_area = self.add_std_area(figb, matrix, trace_name, line)
+        figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
 
         # Set layout
         if self.dataset.data_type == 'brain':
@@ -142,59 +147,80 @@ class Plot:
                                                 showline=True, 
                                                 linecolor='#000',
                                                 tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
         elif self.dataset.data_type == 'spine':
-            buttons = list([
-                            dict(label="Mean (area)",
-                                method="update",
-                                args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
-                                                           
-                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
-                                                    title='Mean (area) [mm<sup>2</sup>]',
-                                                    mirror=True,
-                                                    ticks='outside', 
-                                                    showline=True, 
-                                                    linecolor='#000',
-                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
-                            dict(label="Mean (AP)",
-                                method="update",
-                                args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
-                                                           
-                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'max')],
-                                                    title='Mean (AP) [mm]',
-                                                    mirror=True,
-                                                    ticks='outside', 
-                                                    showline=True, 
-                                                    linecolor='#000',
-                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+            if tissue == 'WM':
+                buttons = list([
+                                dict(label="Mean (area)",
+                                    method="update",
+                                    args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
+                                                            
+                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
+                                                        title='Mean (area) [mm<sup>2</sup>]',
+                                                        mirror=True,
+                                                        ticks='outside', 
+                                                        showline=True, 
+                                                        linecolor='#000',
+                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                dict(label="Mean (AP)",
+                                    method="update",
+                                    args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
+                                                            
+                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'max')],
+                                                        title='Mean (AP) [mm]',
+                                                        mirror=True,
+                                                        ticks='outside', 
+                                                        showline=True, 
+                                                        linecolor='#000',
+                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                        
+                                dict(label="Mean (RL)",
+                                    method="update",
+                                    args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
+                                                        
+                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'max')],
+                                                        title='Mean (RL) [mm]',
+                                                        mirror=True,
+                                                        ticks='outside', 
+                                                        showline=True, 
+                                                        linecolor='#000',
+                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                            
+                                dict(label="Mean (angle)",
+                                    method="update",
+                                    args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
+                                                            
+                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'max')],
+                                                        title='Mean (angle) [°]',
+                                                        mirror=True,
+                                                        ticks='outside', 
+                                                        showline=True, 
+                                                        linecolor='#000',
+                                                        tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+                annotations=[dict(text="Display metric: ", 
+                                  showarrow=False,
+                                  x=1.25,
+                                  y=0.62,
+                                  xref = 'paper',
+                                  yref="paper")]
+            else:
+                buttons = None
+                annotations = None
                                     
-                            dict(label="Mean (RL)",
-                                method="update",
-                                args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
-                                                    
-                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'max')],
-                                                    title='Mean (RL) [mm]',
-                                                    mirror=True,
-                                                    ticks='outside', 
-                                                    showline=True, 
-                                                    linecolor='#000',
-                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                        
-                            dict(label="Mean (angle)",
-                                method="update",
-                                args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
-                                                           
-                                      {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'max')],
-                                                    title='Mean (angle) [°]',
-                                                    mirror=True,
-                                                    ticks='outside', 
-                                                    showline=True, 
-                                                    linecolor='#000',
-                                                    tickfont = dict(size=self.y_label_tick_font_size))}]) ])
-                                        
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')]
+            yaxis_title = 'T<sub>1</sub> [s]'
         elif self.dataset.data_type == 'spine':
-            yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
+            if tissue=='WM':
+                yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
+            elif tissue=='GM':
+                yaxis_range = [self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')]
+            yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
 
         figb.update_layout(title = self.title,
                         updatemenus=[
@@ -217,20 +243,14 @@ class Plot:
                                     tickvals = [0, 1, 2, 3, 4, 5],
                                     ticktext = labels_subjects,
                                     tickfont = dict(size=self.x_label_tick_font_size)),
-                        yaxis_title='T<sub>1</sub> [s]',
+                        yaxis_title=yaxis_title,
                         yaxis=dict(range=yaxis_range, 
                                     mirror=True,
                                     ticks='outside', 
                                     showline=True, 
                                     linecolor='#000',
                                     tickfont = dict(size=self.y_label_tick_font_size)),
-                        annotations=[
-                                    dict(text="Display metric: ", 
-                                            showarrow=False,
-                                            x=1.25,
-                                            y=0.62,
-                                            xref = 'paper',
-                                            yref="paper")],
+                        annotations=annotations,
                         plot_bgcolor='rgba(227,233,244, 0.5)',
                         width = 760, 
                         height = 520,
@@ -249,7 +269,7 @@ class Plot:
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
 
-    def add_points(self, figb, matrix, trace_name):
+    def add_points(self, figb, matrix, trace_name, tissue=None):
         symbols = self.get_symbols()
 
         for metric in trace_name:
@@ -299,7 +319,12 @@ class Plot:
                                                 name= trace_name[metric],
                                                 marker_color=marker_color))
             else:
-                for trace in range(0, len(matrix['T1w'][metric])):
+                if tissue=='WM':
+                    prop = 'T1w'
+                elif tissue=='GM':
+                    prop = 'GMT2w'
+
+                for trace in range(0, len(matrix[prop][metric])):
                     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
                         
                     if trace == 0: 
@@ -315,40 +340,53 @@ class Plot:
                         hover_mean = "Mean : <i> %{y: .2f} </i> mm"
                         visible=False
 
-                    figb.add_trace(go.Scatter(x=t, 
-                                                y=matrix['T1w'][metric][trace], 
-                                                mode='markers',
-                                                visible=visible,
-                                                legendgroup="group1",
-                                                hovertemplate = 
-                                                hover_mean + 
-                                                "<br>" + 
-                                                "<b>%{text}</b>", 
-                                                showlegend = showlegend, 
-                                                text = ['Session {}'.format(i + 1) for i in range(4)],
-                                                name= 'T<sub>1</sub>w',
-                                                marker_color="rgb"+str(Plot.colours[0])))
+                    if tissue=='WM':
+                        figb.add_trace(go.Scatter(x=t, 
+                                                    y=matrix['T1w'][metric][trace], 
+                                                    mode='markers',
+                                                    visible=visible,
+                                                    legendgroup="group1",
+                                                    hovertemplate = 
+                                                    hover_mean + 
+                                                    "<br>" + 
+                                                    "<b>%{text}</b>", 
+                                                    showlegend = showlegend, 
+                                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                    name= 'T<sub>1</sub>w',
+                                                    marker_color="rgb"+str(Plot.colours[0])))
 
-                    figb.add_trace(go.Scatter(x=t, 
-                                                y=matrix['T2w'][metric][trace], 
-                                                mode='markers',
-                                                visible=visible,
-                                                legendgroup="group2",
-                                                hovertemplate = 
-                                                hover_mean + 
-                                                "<br>" + 
-                                                "<b>%{text}</b>", 
-                                                showlegend = showlegend, 
-                                                text = ['Session {}'.format(i + 1) for i in range(4)],
-                                                name= 'T<sub>2</sub>w',
-                                                marker_symbol=symbols[5],
-                                                marker_color="rgb"+str(Plot.colours[3])))
-
-
+                        figb.add_trace(go.Scatter(x=t, 
+                                                    y=matrix['T2w'][metric][trace], 
+                                                    mode='markers',
+                                                    visible=visible,
+                                                    legendgroup="group2",
+                                                    hovertemplate = 
+                                                    hover_mean + 
+                                                    "<br>" + 
+                                                    "<b>%{text}</b>", 
+                                                    showlegend = showlegend, 
+                                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                    name= 'T<sub>2</sub>w',
+                                                    marker_symbol=symbols[5],
+                                                    marker_color="rgb"+str(Plot.colours[3])))
+                    if tissue=='GM':
+                        figb.add_trace(go.Scatter(x=t, 
+                                                    y=matrix['GMT2w'][metric][trace], 
+                                                    mode='markers',
+                                                    visible=visible,
+                                                    legendgroup="group1",
+                                                    hovertemplate = 
+                                                    hover_mean + 
+                                                    "<br>" + 
+                                                    "<b>%{text}</b>", 
+                                                    showlegend = showlegend, 
+                                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                    name= 'T<sub>2</sub>s',
+                                                    marker_color="rgb"+str(Plot.colours[0])))
                                        
         return figb
 
-    def add_lines(self, figb, matrix, trace_name):
+    def add_lines(self, figb, matrix, trace_name, tissue=None):
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         line = {}
         
@@ -376,44 +414,64 @@ class Plot:
                                                     width=2,
                                                     dash='dot')))
         else:
-            line = {
-                'T1w':{},
-                'T2w': {}
+            if tissue=='WM':
+                line = {
+                    'T1w':{},
+                    'T2w': {}
+                    }
+            elif tissue=='GM':
+                line = {
+                    'GMT2w':{}
                 }
+
             for metric in trace_name:
                     
-                line['T1w'][metric]= self.get_val(matrix['T1w'][metric], 'mean')
-                line['T2w'][metric]= self.get_val(matrix['T2w'][metric], 'mean')
+                if tissue=='WM':
+                    line['T1w'][metric]= self.get_val(matrix['T1w'][metric], 'mean')
+                    line['T2w'][metric]= self.get_val(matrix['T2w'][metric], 'mean')
+                elif tissue=='GM':
+                    line['GMT2w'][metric]= self.get_val(matrix['GMT2w'][metric], 'mean')
 
                 visible=True
                 if metric != 'Area':
                     visible=False
 
                 # Add dotted line
-                figb.add_trace(go.Scatter(x=x, 
-                                            y=[line['T1w'][metric]]*8,
-                                            mode='lines',
-                                            visible=visible,
-                                            name='T<sub>1</sub>w',
-                                            opacity=0.5, 
-                                            line=dict(color="rgb(31, 119, 180)", 
-                                                        width=2,
-                                                        dash='dot')))
+                if tissue=='WM':
+                    figb.add_trace(go.Scatter(x=x, 
+                                                y=[line['T1w'][metric]]*8,
+                                                mode='lines',
+                                                visible=visible,
+                                                name='T<sub>1</sub>w',
+                                                opacity=0.5, 
+                                                line=dict(color="rgb(31, 119, 180)", 
+                                                            width=2,
+                                                            dash='dot')))
     
-                figb.add_trace(go.Scatter(x=x, 
-                                            y=[line['T2w'][metric]]*8,
-                                            mode='lines',
-                                            visible=visible,
-                                            name='T<sub>2</sub>w',
-                                            opacity=0.5, 
-                                            line=dict(color="rgb(255, 187, 120)", 
-                                                        width=2,
-                                                        dash='dot')))
+                    figb.add_trace(go.Scatter(x=x, 
+                                                y=[line['T2w'][metric]]*8,
+                                                mode='lines',
+                                                visible=visible,
+                                                name='T<sub>2</sub>w',
+                                                opacity=0.5, 
+                                                line=dict(color="rgb(255, 187, 120)", 
+                                                            width=2,
+                                                            dash='dot')))
+                if tissue=='GM':
+                    figb.add_trace(go.Scatter(x=x, 
+                                                y=[line['GMT2w'][metric]]*8,
+                                                mode='lines',
+                                                visible=visible,
+                                                name='T<sub>2</sub>s',
+                                                opacity=0.5, 
+                                                line=dict(color="rgb(31, 119, 180)", 
+                                                            width=2,
+                                                            dash='dot')))
 
 
         return figb, line
 
-    def add_std_area(self, figb, matrix, trace_name, line):
+    def add_std_area(self, figb, matrix, trace_name, line, tissue=None):
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         std_area = {}
         
@@ -443,14 +501,24 @@ class Plot:
                 ))
         
         else:
-            std_area = {
-                'T1w':{},
-                'T2w': {}
-                }
+            if tissue=='WM':
+                std_area = {
+                    'T1w':{},
+                    'T2w': {}
+                    }
+            elif tissue=='GM':
+                std_area = {
+                    'GMT2w':{}
+                    }
+
             for metric in trace_name:
-                    
-                std_area['T1w'][metric] = self.get_val(matrix['T1w'][metric], 'std') 
-                std_area['T2w'][metric] = self.get_val(matrix['T2w'][metric], 'std') 
+
+                if tissue=='WM':
+                    std_area['T1w'][metric] = self.get_val(matrix['T1w'][metric], 'std') 
+                    std_area['T2w'][metric] = self.get_val(matrix['T2w'][metric], 'std') 
+                if tissue=='GM':
+                    std_area['GMT2w'][metric] = self.get_val(matrix['GMT2w'][metric], 'std') 
+
 
                 visible=True
                 if metric != 'Area':
@@ -461,28 +529,41 @@ class Plot:
                 fillcolor = 'rgba(31, 119, 180,0.15)' 
 
                 # Add STD
-                figb.add_trace(go.Scatter(
-                    x=x+x[::-1],
-                    y=[line['T1w'][metric]+std_area['T1w'][metric]]*8+[line['T1w'][metric]-std_area['T1w'][metric]]*8,
-                    fill='toself',
-                    visible=visible,
-                    fillcolor='rgba(31, 119, 180,0.15)',
-                    line_color='rgba(255,255,255,0)',
-                    showlegend=False,
-                    hoverinfo=self.hoverinfo,
-                    name='T<sub>1</sub>w STD'
-                ))
+                if tissue=='WM':
+                    figb.add_trace(go.Scatter(
+                        x=x+x[::-1],
+                        y=[line['T1w'][metric]+std_area['T1w'][metric]]*8+[line['T1w'][metric]-std_area['T1w'][metric]]*8,
+                        fill='toself',
+                        visible=visible,
+                        fillcolor='rgba(31, 119, 180,0.15)',
+                        line_color='rgba(255,255,255,0)',
+                        showlegend=False,
+                        hoverinfo=self.hoverinfo,
+                        name='T<sub>1</sub>w STD'
+                    ))
 
-                figb.add_trace(go.Scatter(
-                    x=x+x[::-1],
-                    y=[line['T2w'][metric]+std_area['T2w'][metric]]*8+[line['T2w'][metric]-std_area['T2w'][metric]]*8,
-                    fill='toself',
-                    visible=visible,
-                    fillcolor='rgba(255, 187, 120,0.15)',
-                    line_color='rgba(255,255,255,0)',
-                    showlegend=False,
-                    hoverinfo=self.hoverinfo,
-                    name='T<sub>2</sub>w STD'
-                ))
+                    figb.add_trace(go.Scatter(
+                        x=x+x[::-1],
+                        y=[line['T2w'][metric]+std_area['T2w'][metric]]*8+[line['T2w'][metric]-std_area['T2w'][metric]]*8,
+                        fill='toself',
+                        visible=visible,
+                        fillcolor='rgba(255, 187, 120,0.15)',
+                        line_color='rgba(255,255,255,0)',
+                        showlegend=False,
+                        hoverinfo=self.hoverinfo,
+                        name='T<sub>2</sub>w STD'
+                    ))
+                if tissue=='GM':
+                    figb.add_trace(go.Scatter(
+                        x=x+x[::-1],
+                        y=[line['GMT2w'][metric]+std_area['GMT2w'][metric]]*8+[line['GMT2w'][metric]-std_area['GMT2w'][metric]]*8,
+                        fill='toself',
+                        visible=visible,
+                        fillcolor='rgba(31, 119, 180,0.15)',
+                        line_color='rgba(255,255,255,0)',
+                        showlegend=False,
+                        hoverinfo=self.hoverinfo,
+                        name='T<sub>2</sub>s STD'
+                    ))
 
         return figb, std_area

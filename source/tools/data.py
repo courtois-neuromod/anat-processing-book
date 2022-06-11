@@ -15,7 +15,8 @@ class Data:
             'filename': 'spinalcord_results.zip',
             'data_files': {
                 'T1w': 'csa-SC_T1w.csv',
-                'T2w': 'csa-SC_T2w.csv'
+                'T2w': 'csa-SC_T2w.csv',
+                'GMT2w': 'csa-GM_T2s.csv',
             }
         },
         'url': 'https://github.com/courtois-neuromod/anat-processing/releases/download/'
@@ -84,7 +85,8 @@ class Data:
             # Prep data property
             self.data = {
                 'T1w': None,
-                'T2w': None
+                'T2w': None,
+                'GMT2w': None
             }
 
             for acq in self.data:
@@ -137,6 +139,9 @@ class Data:
                     'RL': [],
                     'Angle': []
                 },
+                'GMT2w': {
+                    'Area': []
+                }
             }
 
         default_val = -100
