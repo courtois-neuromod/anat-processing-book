@@ -222,7 +222,7 @@ class Plot:
             else:
                 buttons = None
                 annotations = None
-        if self.dataset.data_type == 'qmri':
+        elif self.dataset.data_type == 'qmri':
             buttons = list([
                             dict(label="DWI_FA",
                                 method="update",
