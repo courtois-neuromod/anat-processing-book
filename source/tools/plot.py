@@ -58,7 +58,7 @@ class Plot:
         
         return symbols
 
-    def display(self, env, tissue):
+    def display(self, env, tissue=None):
 
         # Initialize Plotly 
         init_notebook_mode(connected = True)
