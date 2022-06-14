@@ -430,9 +430,15 @@ class Plot:
                     if tissue == 'WM':
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
-                    else:
+                        name = 'White matter'
+                    elif tissue == 'GM':
                         marker_color = "rgb"+str(Plot.colours[3])
                         legend_group = "group2"
+                        name = 'Grey matter'
+                    else:
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+                        name = trace_name[metric]
 
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
@@ -445,7 +451,7 @@ class Plot:
                                                 "<b>%{text}</b>", 
                                                 showlegend = showlegend, 
                                                 text = ['Session {}'.format(i + 1) for i in range(4)],
-                                                name= trace_name[metric],
+                                                name= name,
                                                 marker_color=marker_color))
             else:
                 if tissue=='WM':
@@ -526,8 +532,13 @@ class Plot:
                 
                 if tissue == 'WM':
                     line_color = "rgb"+str(Plot.colours[0])
-                else: 
+                    name = 'White matter'
+                elif tissue == 'GM': 
                     line_color = "rgb"+str(Plot.colours[3])
+                    name = 'Grey matter'
+                else: 
+                    line_color = "rgb"+str(Plot.colours[0])
+                    name = trace_name[metric]
 
                 if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
@@ -539,7 +550,7 @@ class Plot:
                                         y=[line[metric]]*8,
                                         mode='lines',
                                         visible=visible,
-                                        name=trace_name[metric],
+                                        name=name,
                                         opacity=0.5, 
                                         line=dict(color=line_color, 
                                                     width=2,
