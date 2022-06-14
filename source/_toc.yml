@@ -8,13 +8,6 @@ parts:
   - chapters:
     - file: intro
     - file: methods
-  - caption: Legacy Pages (Kiril)
-    chapters:
     - file: 1-brain-data
     - file: 2-spinal-data
-    - file: results
-  - caption: New Pages (Mathieu)
-    chapters:
-    - file: 1-brain-data-new
-    - file: 2-spinal-data-new
-    - file: results-new
+
