@@ -111,18 +111,18 @@ class Data:
                 self.data[acq] = pd.read_csv(file_path, converters={'project_id': lambda x: str(x)})
 
                 # Insert new columns for Subject and Session and start inserting values
-                self.data[acq].insert(0, "Subject", "Any")
-                self.data[acq].insert(1, "Session", "Any")
+                self.data[acq].insert(0, "subject", "Any")
+                self.data[acq].insert(1, "session", "Any")
 
                 # Get Subject and Session from csv
                 for index, row in self.data[acq].iterrows():
                     subject = int(row['Filename'].split("/")[6].split('-')[1])
                     session = int(row['Filename'].split("/")[7].split("-")[1])
-                    self.data[acq].at[index, 'Subject'] =  subject
-                    self.data[acq].at[index, 'Session'] =  session
+                    self.data[acq].at[index, 'subject'] =  subject
+                    self.data[acq].at[index, 'session'] =  session
 
                 # Sort values based on Subject -- Session
-                self.data[acq]=self.data[acq].sort_values(['Subject', 'Session'], ascending=[True, True])
+                self.data[acq]=self.data[acq].sort_values(['subject', 'session'], ascending=[True, True])
 
         elif data_type == 'qmri':
             self.data = {
@@ -145,18 +145,18 @@ class Data:
                 self.data[acq] = pd.read_csv(file_path, converters={'project_id': lambda x: str(x)})
 
                 # Insert new columns for Subject and Session and start inserting values
-                self.data[acq].insert(0, "Subject", "Any")
-                self.data[acq].insert(1, "Session", "Any")
+                self.data[acq].insert(0, "subject", "Any")
+                self.data[acq].insert(1, "session", "Any")
 
                 # Get Subject and Session from csv
                 for index, row in self.data[acq].iterrows():
                     subject = int(row['Filename'].split("/")[6].split('-')[1])
                     session = int(row['Filename'].split("/")[7].split("-")[1])
-                    self.data[acq].at[index, 'Subject'] =  subject
-                    self.data[acq].at[index, 'Session'] =  session
+                    self.data[acq].at[index, 'subject'] =  subject
+                    self.data[acq].at[index, 'session'] =  session
 
                 # Sort values based on Subject -- Session
-                self.data[acq]=self.data[acq].sort_values(['Subject', 'Session'], ascending=[True, True])
+                self.data[acq]=self.data[acq].sort_values(['subject', 'session'], ascending=[True, True])
 
 
     def extract_data(self, tissue):
@@ -193,15 +193,12 @@ class Data:
                 if self.data_type == 'brain':
                     sub_values = self.data.loc[self.data['subject'] == i]
                 else:
-                    sub_values = self.data[metric].loc[self.data[metric]['Subject'] == i]
+                    sub_values = self.data[metric].loc[self.data[metric]['subject'] == i]
 
                 metric_ses = []
 
                 for j in range(1, num_session+1, 1):
-                    if self.data_type == 'brain':
-                        ses_values = sub_values.loc[sub_values['session'] == j]
-                    else:
-                        ses_values = sub_values.loc[sub_values['Session'] == j]
+                    ses_values = sub_values.loc[sub_values['session'] == j]
                     
                     mean_val = default_val
 
