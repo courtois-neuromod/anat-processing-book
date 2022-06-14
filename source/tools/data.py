@@ -176,15 +176,9 @@ class Data:
             matrix = {
                 'T1w': {
                     'Area': [],
-                    'AP': [],
-                    'RL': [],
-                    'Angle': []
                 },
                 'T2w': {
                     'Area': [],
-                    'AP': [],
-                    'RL': [],
-                    'Angle': []
                 },
                 'GMT2w': {
                     'Area': []
@@ -252,12 +246,6 @@ class Data:
                             for index, row in ses_values.iterrows():
                                 if metric == 'Area':
                                     mean_val = row['MEAN(area)']
-                                if metric == 'AP':
-                                    mean_val = row['MEAN(diameter_AP)']
-                                if metric == 'RL':
-                                    mean_val = row['MEAN(diameter_RL)']
-                                if metric == 'Angle':
-                                    mean_val = row['MEAN(angle_AP)']
 
                             # Append values to lists for sessions
                             metric_ses.append(mean_val)

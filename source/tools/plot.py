@@ -99,14 +99,11 @@ class Plot:
         elif self.dataset.data_type == 'spine':
             if tissue == 'WM':
                 trace_name = {
-                    'Area': 'T<sub>1</sub> (mp2rage)',
-                    'AP': 'T<sub>1</sub> (mts)',
-                    'RL': 'MTR',
-                    'Angle': 'MTsat'
+                    'Area': 'Area (mm<sup>2</sup>)',
                 }
             elif tissue == 'GM':
                 trace_name = {
-                    'Area': 'T<sub>1</sub> (mp2rage)',
+                    'Area': 'Area (mm<sup>2</sup>)',
                 }
         elif self.dataset.data_type == 'qmri':
             tissue = 'WM'
@@ -198,7 +195,7 @@ class Plot:
                 buttons = list([
                                 dict(label="Mean (area)",
                                     method="update",
-                                    args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
+                                    args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2},
                                                             
                                         {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
                                                         title='Mean (area) [mm<sup>2</sup>]',
@@ -206,42 +203,8 @@ class Plot:
                                                         ticks='outside', 
                                                         showline=True, 
                                                         linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                dict(label="Mean (AP)",
-                                    method="update",
-                                    args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
-                                                            
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'max')],
-                                                        title='Mean (AP) [mm]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                        
-                                dict(label="Mean (RL)",
-                                    method="update",
-                                    args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
-                                                        
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'max')],
-                                                        title='Mean (RL) [mm]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                            
-                                dict(label="Mean (angle)",
-                                    method="update",
-                                    args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
-                                                            
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'max')],
-                                                        title='Mean (angle) [°]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
                                                         tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+                                        
                 annotations=[dict(text="Display metric: ", 
                                   showarrow=False,
                                   x=1.25,
@@ -348,9 +311,6 @@ class Plot:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
 
-
-
-
         figb.update_layout(title = self.title,
                         updatemenus=[
                                         dict(
@@ -421,9 +381,6 @@ class Plot:
                     elif metric == 'DWI_FA':
                         hover_mean = "<i> %{y: .2f} </i>"
                         visible=True
-                    elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
-                        hover_mean = "Mean : <i> %{y: .2f} </i> mm"
-                        visible=False
                     else:
                         hover_mean = "Mean : <i> %{y: .2f} </i>" 
                         visible=False
@@ -477,9 +434,6 @@ class Plot:
                     if metric == 'Area':
                         hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
                         visible=True
-                    elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
-                        hover_mean = "Mean : <i> %{y: .2f} </i> mm"
-                        visible=False
 
                     if tissue=='WM':
                         figb.add_trace(go.Scatter(x=t, 
