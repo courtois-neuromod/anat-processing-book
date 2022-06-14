@@ -123,7 +123,7 @@ class Plot:
 
                 # Add std shaded area to plot
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
-        if self.dataset.data_type == 'spine':
+        elif self.dataset.data_type == 'spine':
             tissues = ['WM', 'GM']
             for tissue in tissues:
                 # Add datapoints to plot
