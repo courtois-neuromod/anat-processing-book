@@ -145,7 +145,7 @@ class Plot:
         # Set layout
         if self.dataset.data_type == 'brain':
             buttons = list([
-                            dict(label="MP2RAGE",
+                            dict(label="T<sub>1</sub> (MP2RAGE)",
                                 method="update",
                                 args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3 + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
                                                                     
@@ -156,7 +156,7 @@ class Plot:
                                                 showline=True, 
                                                 linecolor='#000',
                                                 tickfont = dict(size=self.y_label_tick_font_size))}]),
-                            dict(label="MTS",
+                            dict(label="T<sub>1</sub> (MTsat)",
                                 method="update",
                                 args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
                                                                     
@@ -331,10 +331,13 @@ class Plot:
         else:
             buttons = None
             annotations = None
-                                    
+
+        x_button=1.23
+        y_button=0.58
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
+            x_button=1.3
         elif self.dataset.data_type == 'spine':
             if tissue=='WM':
                 yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
@@ -345,12 +348,15 @@ class Plot:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
 
+
+
+
         figb.update_layout(title = self.title,
                         updatemenus=[
                                         dict(
                                             active = 0, 
-                                            x=1.23,
-                                            y=0.58,
+                                            x=x_button,
+                                            y=y_button,
                                             direction="down",
                                             yanchor="top",
                                             buttons=buttons)],
