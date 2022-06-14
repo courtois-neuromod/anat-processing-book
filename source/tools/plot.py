@@ -205,7 +205,7 @@ class Plot:
                                 args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
                                                             
                                     {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
-                                                    title='Mean (area) [mm<sup>2</sup>]',
+                                                    title='Area [mm<sup>2</sup>]',
                                                     mirror=True,
                                                     ticks='outside', 
                                                     showline=True, 
@@ -216,7 +216,7 @@ class Plot:
                                 args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
                                                             
                                     {"yaxis": dict(range=[self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')],
-                                                    title='Mean (area) [mm<sup>2</sup>]',
+                                                    title='Area [mm<sup>2</sup>]',
                                                     mirror=True,
                                                     ticks='outside', 
                                                     showline=True, 
@@ -318,7 +318,7 @@ class Plot:
             x_button=1.3
         elif self.dataset.data_type == 'spine':
             yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
-            yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
+            yaxis_title = 'Area [mm<sup>2</sup>]'
             x_button=1.28
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
@@ -493,7 +493,7 @@ class Plot:
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(4)],
-                                                    name= 'T<sub>2</sub>s',
+                                                    name= 'T<sub>2</sub><sup>*</sup>',
                                                     marker_color="rgb"+str(Plot.colours[0])))
                                        
         return figb
@@ -584,7 +584,7 @@ class Plot:
                                                 y=[line['GMT2w'][metric]]*8,
                                                 mode='lines',
                                                 visible=visible,
-                                                name='T<sub>2</sub>s',
+                                                name='T<sub>2</sub><sup>*</sup>',
                                                 showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(31, 119, 180)", 
@@ -687,7 +687,7 @@ class Plot:
                         line_color='rgba(255,255,255,0)',
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
-                        name='T<sub>2</sub>s STD'
+                        name='T<sub>2</sub><sup>*</sup> STD'
                     ))
 
         return figb, std_area
