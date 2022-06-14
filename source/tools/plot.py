@@ -162,8 +162,9 @@ class Plot:
                                 method="update",
                                 args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],                                                title='T<sub>1</sub> [s]''',
-                                                mirror=True,
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],
+                                                title='T<sub>1</sub> [s]',
+                                                mirror=True,        
                                                 ticks='outside', 
                                                 showline=True, 
                                                 linecolor='#000',
@@ -172,7 +173,8 @@ class Plot:
                                 method="update",
                                 args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],                                                title='MTR [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],
+                                                title='MTR [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -183,7 +185,8 @@ class Plot:
                                 method="update",
                                 args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],                                                title='MTsat [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],
+                                                title='MTsat [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -316,6 +319,7 @@ class Plot:
         elif self.dataset.data_type == 'spine':
             yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
             yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
+            x_button=1.28
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
@@ -378,7 +382,10 @@ class Plot:
                     if trace == 0: 
                         showlegend = True
                     else:
-                        showlegend = False
+                        if metric == 'GMT2w':
+                            showlegend = True
+                        else:
+                            showlegend = False
 
                     # Custom settings for just the T1 group/plot
                     if metric == 'MP2RAGE':
@@ -474,6 +481,7 @@ class Plot:
                                                     marker_symbol=symbols[5],
                                                     marker_color="rgb"+str(Plot.colours[3])))
                     if tissue=='GM':
+                        visible = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['GMT2w'][metric][trace], 
                                                     mode='markers',
@@ -555,6 +563,7 @@ class Plot:
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>1</sub>w',
+                                                showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(31, 119, 180)", 
                                                             width=2,
@@ -565,6 +574,7 @@ class Plot:
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub>w',
+                                                showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(255, 187, 120)", 
                                                             width=2,
@@ -575,6 +585,7 @@ class Plot:
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub>s',
+                                                showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(31, 119, 180)", 
                                                             width=2,
