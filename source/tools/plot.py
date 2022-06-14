@@ -65,7 +65,15 @@ class Plot:
         config={'showLink': False, 'displayModeBar': False}
 
         # Get database
-        matrix = self.dataset.extract_data(tissue)
+        if self.dataset.data_type == 'brain':
+            matrix = {
+                'WM': [],
+                'GM': []
+            }
+            matrix['WM'] = self.dataset.extract_data('WM')
+            matrix['GM'] = self.dataset.extract_data('GM')
+        else:
+            matrix = self.dataset.extract_data(tissue)
 
         symbols = self.get_symbols()
 
@@ -111,23 +119,36 @@ class Plot:
                     'T1': 'T<sub>1</sub>'
                 }
 
-        # Add datapoints to plot
-        figb = self.add_points(figb, matrix, trace_name, tissue)
+        if self.dataset.data_type == 'brain':
+            tissues = ['WM', 'GM']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix[tissue], trace_name, tissue)
 
-        # Add mean line to plot
-        figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix[tissue], trace_name, tissue)
 
-        # Add std shaded area to plot
-        figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+
+        else:
+            # Add datapoints to plot
+            figb = self.add_points(figb, matrix, trace_name, tissue)
+
+            # Add mean line to plot
+            figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+
+            # Add std shaded area to plot
+            figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)   
 
         # Set layout
         if self.dataset.data_type == 'brain':
             buttons = list([
                             dict(label="MP2RAGE",
                                 method="update",
-                                args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
+                                args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3 + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(matrix['MP2RAGE'], 'min'), self.get_val(matrix['MP2RAGE'], 'max')],
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')],
                                                 title='T<sub>1</sub> [s]',
                                                 mirror=True,
                                                 ticks='outside', 
@@ -136,10 +157,9 @@ class Plot:
                                                 tickfont = dict(size=self.y_label_tick_font_size))}]),
                             dict(label="MTS",
                                 method="update",
-                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
+                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(matrix['MTS'], 'min'), self.get_val(matrix['MTS'], 'max')],
-                                                title='T<sub>1</sub> [s]''',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],                                                title='T<sub>1</sub> [s]''',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -147,10 +167,9 @@ class Plot:
                                                 tickfont = dict(size=self.y_label_tick_font_size))}]),                                                    
                             dict(label="MTR",
                                 method="update",
-                                args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
+                                args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
-                                                title='MTR [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],                                                title='MTR [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -159,10 +178,9 @@ class Plot:
                                                     
                             dict(label="MTsat",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
+                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
-                                                title='MTsat [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],                                                title='MTsat [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -314,7 +332,7 @@ class Plot:
             annotations = None
                                     
         if self.dataset.data_type == 'brain':
-            yaxis_range = [self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')]
+            yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
         elif self.dataset.data_type == 'spine':
             if tissue=='WM':
