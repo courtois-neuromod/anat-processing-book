@@ -109,15 +109,16 @@ class Plot:
                     'Area': 'T<sub>1</sub> (mp2rage)',
                 }
         elif self.dataset.data_type == 'qmri':
-            if tissue == 'WM':
-                trace_name = {
+            tissue = 'WM'
+            trace_name = {
                     'DWI_FA': 'DWI_FA',
                     'DWI_MD': 'DWI_MD',
                     'DWI_RD': 'DWI_RD',
                     'MTR': 'MTR',
                     'MTSat': 'MTsat',
                     'T1': 'T<sub>1</sub>'
-                }
+            }
+
 
         if self.dataset.data_type == 'brain':
             tissues = ['WM', 'GM']
@@ -425,6 +426,14 @@ class Plot:
                     marker_color = "rgb"+str(Plot.colours[0])
                     legend_group = "group1"
 
+                    # Custom settings for just MTS
+                    if tissue == 'WM':
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+                    else:
+                        marker_color = "rgb"+str(Plot.colours[3])
+                        legend_group = "group2"
+
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
                                                 mode='markers',
@@ -514,9 +523,11 @@ class Plot:
             for metric in trace_name:
 
                 line[metric]= self.get_val(matrix[metric], 'mean')
-
-
-                line_color = "rgb"+str(Plot.colours[0])
+                
+                if tissue == 'WM':
+                    line_color = "rgb"+str(Plot.colours[0])
+                else: 
+                    line_color = "rgb"+str(Plot.colours[3])
 
                 if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
@@ -599,7 +610,10 @@ class Plot:
             for metric in trace_name:
                 std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-                fillcolor='rgba(31, 119, 180, 0.15)'
+                if tissue == 'WM':
+                    fillcolor='rgba(31, 119, 180, 0.15)'
+                else: 
+                    fillcolor='rgba(255, 187, 120, 0.15)'
 
                 if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
