@@ -58,14 +58,22 @@ class Plot:
         
         return symbols
 
-    def display(self, env, tissue):
+    def display(self, env, tissue=None):
 
         # Initialize Plotly 
         init_notebook_mode(connected = True)
         config={'showLink': False, 'displayModeBar': False}
 
         # Get database
-        matrix = self.dataset.extract_data(tissue)
+        if self.dataset.data_type == 'brain':
+            matrix = {
+                'WM': [],
+                'GM': []
+            }
+            matrix['WM'] = self.dataset.extract_data('WM')
+            matrix['GM'] = self.dataset.extract_data('GM')
+        else:
+            matrix = self.dataset.extract_data(tissue)
 
         symbols = self.get_symbols()
 
@@ -101,46 +109,68 @@ class Plot:
                     'Area': 'T<sub>1</sub> (mp2rage)',
                 }
         elif self.dataset.data_type == 'qmri':
-            if tissue == 'WM':
-                trace_name = {
+            tissue = 'WM'
+            trace_name = {
                     'DWI_FA': 'DWI_FA',
                     'DWI_MD': 'DWI_MD',
                     'DWI_RD': 'DWI_RD',
                     'MTR': 'MTR',
                     'MTSat': 'MTsat',
                     'T1': 'T<sub>1</sub>'
-                }
+            }
 
-        # Add datapoints to plot
-        figb = self.add_points(figb, matrix, trace_name, tissue)
 
-        # Add mean line to plot
-        figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+        if self.dataset.data_type == 'brain':
+            tissues = ['WM', 'GM']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix[tissue], trace_name, tissue)
 
-        # Add std shaded area to plot
-        figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix[tissue], trace_name, tissue)
+
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+
+        else:
+            # Add datapoints to plot
+            figb = self.add_points(figb, matrix, trace_name, tissue)
+
+            # Add mean line to plot
+            figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+
+            # Add std shaded area to plot
+            figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)   
 
         # Set layout
         if self.dataset.data_type == 'brain':
             buttons = list([
-                            dict(label="T<sub>1</sub>",
+                            dict(label="T<sub>1</sub> (MP2RAGE)",
                                 method="update",
-                                args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
+                                args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3 + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')],
                                                 title='T<sub>1</sub> [s]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
                                                 linecolor='#000',
                                                 tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                    
+                            dict(label="T<sub>1</sub> (MTsat)",
+                                method="update",
+                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],                                                title='T<sub>1</sub> [s]''',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),                                                    
                             dict(label="MTR",
                                 method="update",
-                                args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
+                                args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
-                                                title='MTR [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],                                                title='MTR [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -149,10 +179,9 @@ class Plot:
                                                     
                             dict(label="MTsat",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
+                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(matrix['MTsat'], 'min'), self.get_val(matrix['MTsat'], 'max')],
-                                                title='MTsat [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],                                                title='MTsat [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -302,10 +331,13 @@ class Plot:
         else:
             buttons = None
             annotations = None
-                                    
+
+        x_button=1.23
+        y_button=0.58
         if self.dataset.data_type == 'brain':
-            yaxis_range = [self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')]
+            yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
+            x_button=1.3
         elif self.dataset.data_type == 'spine':
             if tissue=='WM':
                 yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
@@ -316,12 +348,15 @@ class Plot:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
 
+
+
+
         figb.update_layout(title = self.title,
                         updatemenus=[
                                         dict(
                                             active = 0, 
-                                            x=1.23,
-                                            y=0.58,
+                                            x=x_button,
+                                            y=y_button,
                                             direction="down",
                                             yanchor="top",
                                             buttons=buttons)],
@@ -377,7 +412,7 @@ class Plot:
                         showlegend = False
 
                     # Custom settings for just the T1 group/plot
-                    if metric == 'MP2RAGE' or metric == 'MTS':
+                    if metric == 'MP2RAGE':
                         hover_mean = "Mean : <i> %{y: .2f} </i> sec"
                         visible=True
                     elif metric == 'Area':
@@ -393,13 +428,23 @@ class Plot:
                         hover_mean = "Mean : <i> %{y: .2f} </i>" 
                         visible=False
 
+
+                    marker_color = "rgb"+str(Plot.colours[0])
+                    legend_group = "group1"
+
                     # Custom settings for just MTS
-                    if metric == 'MTS':
+                    if tissue == 'WM':
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+                        name = 'White matter'
+                    elif tissue == 'GM':
                         marker_color = "rgb"+str(Plot.colours[3])
                         legend_group = "group2"
+                        name = 'Grey matter'
                     else:
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
+                        name = trace_name[metric]
 
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
@@ -412,7 +457,7 @@ class Plot:
                                                 "<b>%{text}</b>", 
                                                 showlegend = showlegend, 
                                                 text = ['Session {}'.format(i + 1) for i in range(4)],
-                                                name= trace_name[metric],
+                                                name= name,
                                                 marker_color=marker_color))
             else:
                 if tissue=='WM':
@@ -490,13 +535,18 @@ class Plot:
             for metric in trace_name:
 
                 line[metric]= self.get_val(matrix[metric], 'mean')
-
-                if metric == 'MTS':
+                
+                if tissue == 'WM':
+                    line_color = "rgb"+str(Plot.colours[0])
+                    name = 'White matter'
+                elif tissue == 'GM': 
                     line_color = "rgb"+str(Plot.colours[3])
+                    name = 'Grey matter'
                 else: 
                     line_color = "rgb"+str(Plot.colours[0])
+                    name = trace_name[metric]
 
-                if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
+                if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
                 else:
                     visible=False
@@ -506,7 +556,8 @@ class Plot:
                                         y=[line[metric]]*8,
                                         mode='lines',
                                         visible=visible,
-                                        name=trace_name[metric],
+                                        name=name,
+                                        showlegend = False,
                                         opacity=0.5, 
                                         line=dict(color=line_color, 
                                                     width=2,
@@ -577,12 +628,12 @@ class Plot:
             for metric in trace_name:
                 std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-                if metric == 'MTS':
-                    fillcolor='rgba(255, 187, 120, 0.15)'
-                else: 
+                if tissue == 'WM':
                     fillcolor='rgba(31, 119, 180, 0.15)'
+                else: 
+                    fillcolor='rgba(255, 187, 120, 0.15)'
 
-                if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
+                if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
                 else:
                     visible=False
