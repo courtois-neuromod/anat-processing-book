@@ -97,14 +97,9 @@ class Plot:
                 'MTsat': 'MTsat'
             }
         elif self.dataset.data_type == 'spine':
-            if tissue == 'WM':
-                trace_name = {
-                    'Area': 'Area (mm<sup>2</sup>)',
-                }
-            elif tissue == 'GM':
-                trace_name = {
-                    'Area': 'Area (mm<sup>2</sup>)',
-                }
+            trace_name = {
+                'Area': 'Area (mm<sup>2</sup>)',
+            }
         elif self.dataset.data_type == 'qmri':
             tissue = 'WM'
             trace_name = {
@@ -128,7 +123,17 @@ class Plot:
 
                 # Add std shaded area to plot
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+        if self.dataset.data_type == 'spine':
+            tissues = ['WM', 'GM']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix, trace_name, tissue)
 
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
         else:
             # Add datapoints to plot
             figb = self.add_points(figb, matrix, trace_name, tissue)
@@ -191,29 +196,36 @@ class Plot:
                               xref = 'paper',
                               yref="paper")]
         elif self.dataset.data_type == 'spine':
-            if tissue == 'WM':
-                buttons = list([
-                                dict(label="Mean (area)",
-                                    method="update",
-                                    args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2},
+            buttons = list([
+                            dict(label="White matter",
+                                method="update",
+                                args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
                                                             
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
-                                                        title='Mean (area) [mm<sup>2</sup>]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+                                    {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
+                                                    title='Mean (area) [mm<sup>2</sup>]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+                            dict(label="Grey matter",
+                                method="update",
+                                args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
+                                                            
+                                    {"yaxis": dict(range=[self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')],
+                                                    title='Mean (area) [mm<sup>2</sup>]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]) ])
                                         
-                annotations=[dict(text="Display metric: ", 
-                                  showarrow=False,
-                                  x=1.25,
-                                  y=0.62,
-                                  xref = 'paper',
-                                  yref="paper")]
-            else:
-                buttons = None
-                annotations = None
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
         elif self.dataset.data_type == 'qmri':
             buttons = list([
                             dict(label="DWI_FA",
@@ -302,10 +314,7 @@ class Plot:
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
-            if tissue=='WM':
-                yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
-            elif tissue=='GM':
-                yaxis_range = [self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')]
+            yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
             yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
