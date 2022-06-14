@@ -551,6 +551,7 @@ class Plot:
                                         mode='lines',
                                         visible=visible,
                                         name=name,
+                                        showlegend = False,
                                         opacity=0.5, 
                                         line=dict(color=line_color, 
                                                     width=2,
