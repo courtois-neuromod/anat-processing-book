@@ -41,7 +41,7 @@ class Plot:
         if key=='mean':
             val = float('{0:.7f}'.format(np.mean(mean_list)))
         if key=='std':
-            val = float('{0:.3f}'.format(np.std(mean_list)))
+            val = float('{0:.7f}'.format(np.std(mean_list)))
         if key=='max':
             val = np.max(mean_list) + (np.max(mean_list)-np.min(mean_list))/4
         if key=='min':
@@ -496,7 +496,6 @@ class Plot:
                 else: 
                     line_color = "rgb"+str(Plot.colours[0])
 
-                print(metric)
                 if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
                     visible=True
                 else:
@@ -583,8 +582,9 @@ class Plot:
                 else: 
                     fillcolor='rgba(31, 119, 180, 0.15)'
 
-                visible=True
-                if metric == 'MTR' or metric == 'MTsat':
+                if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
+                    visible=True
+                else:
                     visible=False
 
                 # Add STD
