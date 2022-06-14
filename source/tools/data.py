@@ -209,6 +209,8 @@ class Data:
                         
                         if self.data_type == 'qmri':
                             mean_val = row['WA()']
+                        elif self.data_type == 'spine':
+                            mean_val = row['MEAN(area)']
                         elif metric == 'MP2RAGE' or metric == 'MTS':
                             if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
                                 mean_val = row['mean']
@@ -218,8 +220,6 @@ class Data:
                         elif metric == 'MTsat':
                             if row['metric'] == 'MTsat' and row['label'] == tissue:
                                 mean_val = row['mean']
-                        elif metric == 'T1w' or metric == 'T2w' or metric == 'GMT2w':
-                            mean_val = row['MEAN(area)']
                             
                     # Append values to lists for sessions
                     metric_ses.append(mean_val)
