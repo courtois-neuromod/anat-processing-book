@@ -32,7 +32,7 @@ class Plot:
 
     def get_val(self, matrix, key):
         temp = matrix[::]
-        print(temp)
+
         mean_list = []
         for ele in temp: 
             ele = [i for i in ele if i!=-100]
