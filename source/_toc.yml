@@ -1,4 +1,20 @@
-- file: index
-- file: introduction/introduction
-- file: methods/methods
-- file: results/results
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: index
+
+parts:
+  - chapters:
+    - file: intro
+    - file: methods
+  - caption: Legacy Pages (Kiril)
+    chapters:
+    - file: 1-brain-data
+    - file: 2-spinal-data
+    - file: results
+  - caption: New Pages (Mathieu)
+    chapters:
+    - file: 1-brain-data-new
+    - file: 2-spinal-data-new
+    - file: results-new
