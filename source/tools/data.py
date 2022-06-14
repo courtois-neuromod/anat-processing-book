@@ -187,78 +187,43 @@ class Data:
 
         default_val = -100
 
-        if self.data_type == 'brain':
-            for metric in matrix:
-                for i in range(1, num_sub+1, 1):
+
+        for metric in matrix:
+            for i in range(1, num_sub+1, 1):
+                if self.data_type == 'brain':
                     sub_values = self.data.loc[self.data['subject'] == i]
-
-                    metric_ses = []
-
-                    for j in range(1, num_session+1, 1):
-                        ses_values = sub_values.loc[sub_values['session'] == j]
-                        
-                        mean_val = default_val
-
-                        for index, row in ses_values.iterrows():
-
-                            if metric == 'MP2RAGE' or metric == 'MTS':
-                                if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
-                                    mean_val = row['mean']
-                            elif metric == 'MTR':
-                                if row['metric'] == 'MTRmap' and row['label'] == tissue: 
-                                    mean_val = row['mean']
-                            elif metric == 'MTsat':
-                                if row['metric'] == 'MTsat' and row['label'] == tissue:
-                                    mean_val = row['mean']
-
-                        # Append values to lists for sessions
-                        metric_ses.append(mean_val)
-                    
-                    matrix[metric].append(metric_ses)
-        elif self.data_type == 'spine':
-            
-            for type in matrix:
-
-                db = self.data[type]
-                
-                for i in range(1, num_sub+1, 1):
-                    sub_values = db.loc[db['Subject'] == i]
-
-                    metric_ses = []
-
-                    for j in range(1, num_session+1, 1):
-                        ses_values = sub_values.loc[sub_values['Session'] == j]
-                        
-                        mean_val = default_val
-                            
-                        for index, row in ses_values.iterrows():
-                            mean_val = row['MEAN(area)']
-
-                        # Append values to lists for sessions
-                        metric_ses.append(mean_val)
-                        
-                    matrix[type].append(metric_ses)
-
-        elif self.data_type == 'qmri':
-
-            for metric in matrix:
-                for i in range(1, num_sub+1, 1):
+                else:
                     sub_values = self.data[metric].loc[self.data[metric]['Subject'] == i]
 
-                    metric_ses = []
+                metric_ses = []
 
-                    for j in range(1, num_session+1, 1):
+                for j in range(1, num_session+1, 1):
+                    if self.data_type == 'brain':
+                        ses_values = sub_values.loc[sub_values['session'] == j]
+                    else:
                         ses_values = sub_values.loc[sub_values['Session'] == j]
-                        
-                        mean_val = default_val
-
-                        for index, row in ses_values.iterrows():
-
-                            val = row['WA()']
-
-                        # Append values to lists for sessions
-                        metric_ses.append(val)
                     
-                    matrix[metric].append(metric_ses)
+                    mean_val = default_val
+
+                    for index, row in ses_values.iterrows():
+                        
+                        if self.data_type == 'qmri':
+                            mean_val = row['WA()']
+                        elif metric == 'MP2RAGE' or metric == 'MTS':
+                            if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'MTR':
+                            if row['metric'] == 'MTRmap' and row['label'] == tissue: 
+                                mean_val = row['mean']
+                        elif metric == 'MTsat':
+                            if row['metric'] == 'MTsat' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'T1w' or metric == 'T2w' or metric == 'GMT2w':
+                            mean_val = row['MEAN(area)']
+                            
+                    # Append values to lists for sessions
+                    metric_ses.append(mean_val)
+                    
+                matrix[metric].append(metric_ses)
 
         return matrix
