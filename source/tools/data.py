@@ -92,14 +92,23 @@ class Data:
             # Sort data acording to subject and session columns 
             self.data.sort_values(['subject', 'session'], ascending=[True, True]) 
 
-        elif data_type == 'spine':
-            
-            # Prep data property
-            self.data = {
-                'T1w': None,
-                'T2w': None,
-                'GMT2w': None
-            }
+        else:
+            if data_type == 'spine':
+                # Prep data property
+                self.data = {
+                    'T1w': None,
+                    'T2w': None,
+                    'GMT2w': None
+                }
+            elif data_type == 'qmri':
+                self.data = {
+                    'DWI_FA': None,
+                    'DWI_MD': None,
+                    'DWI_RD': None,
+                    'MTR': None,
+                    'MTSat': None,
+                    'T1': None
+                }
 
             for acq in self.data:
 
@@ -123,41 +132,6 @@ class Data:
 
                 # Sort values based on Subject -- Session
                 self.data[acq]=self.data[acq].sort_values(['subject', 'session'], ascending=[True, True])
-
-        elif data_type == 'qmri':
-            self.data = {
-                'DWI_FA': None,
-                'DWI_MD': None,
-                'DWI_RD': None,
-                'MTR': None,
-                'MTSat': None,
-                'T1': None
-            }
-
-
-            for acq in self.data:
-
-                data_file = Data.datasets[data_type]['data_files'][acq]
-
-                file_path = self.data_dir / data_file
-
-                # Load  the data
-                self.data[acq] = pd.read_csv(file_path, converters={'project_id': lambda x: str(x)})
-
-                # Insert new columns for Subject and Session and start inserting values
-                self.data[acq].insert(0, "subject", "Any")
-                self.data[acq].insert(1, "session", "Any")
-
-                # Get Subject and Session from csv
-                for index, row in self.data[acq].iterrows():
-                    subject = int(row['Filename'].split("/")[6].split('-')[1])
-                    session = int(row['Filename'].split("/")[7].split("-")[1])
-                    self.data[acq].at[index, 'subject'] =  subject
-                    self.data[acq].at[index, 'session'] =  session
-
-                # Sort values based on Subject -- Session
-                self.data[acq]=self.data[acq].sort_values(['subject', 'session'], ascending=[True, True])
-
 
     def extract_data(self, tissue):
         num_sub = 6
@@ -186,7 +160,6 @@ class Data:
                 }
 
         default_val = -100
-
 
         for metric in matrix:
             for i in range(1, num_sub+1, 1):
