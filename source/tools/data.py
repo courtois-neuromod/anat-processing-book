@@ -56,7 +56,7 @@ class Data:
             self.version = release_version
         else:
             Exception('Release version not listed in available versions. Please update requested version and restart.')
-        
+
         # Get release file name
         release_file = Data.datasets[self.data_type]['filename']
 
@@ -174,15 +174,9 @@ class Data:
             num_sub = 5
             num_session = 3
             matrix = {
-                'T1w': {
-                    'Area': [],
-                },
-                'T2w': {
-                    'Area': [],
-                },
-                'GMT2w': {
-                    'Area': []
-                }
+                'T1w':  [],
+                'T2w': [],
+                'GMT2w': []
             }
         elif self.data_type == 'qmri':
             num_sub = 5
@@ -227,30 +221,28 @@ class Data:
                     
                     matrix[metric].append(metric_ses)
         elif self.data_type == 'spine':
-
+            
             for type in matrix:
 
                 db = self.data[type]
+                
+                for i in range(0, num_sub+1, 1):
+                    sub_values = db.loc[db['Subject'] == i+1]
 
-                for metric in matrix[type]:
-                    for i in range(0, num_sub+1, 1):
-                        sub_values = db.loc[db['Subject'] == i+1]
+                    metric_ses = []
 
-                        metric_ses = []
-
-                        for j in range(0, num_session+1, 1):
-                            ses_values = sub_values.loc[sub_values['Session'] == j+1]
+                    for j in range(0, num_session+1, 1):
+                        ses_values = sub_values.loc[sub_values['Session'] == j+1]
                         
-                            mean_val = default_val
+                        mean_val = default_val
+                            
+                        for index, row in ses_values.iterrows():
+                            mean_val = row['MEAN(area)']
 
-                            for index, row in ses_values.iterrows():
-                                if metric == 'Area':
-                                    mean_val = row['MEAN(area)']
-
-                            # Append values to lists for sessions
-                            metric_ses.append(mean_val)
+                        # Append values to lists for sessions
+                        metric_ses.append(mean_val)
                         
-                        matrix[type][metric].append(metric_ses)
+                    matrix[type].append(metric_ses)
 
         elif self.data_type == 'qmri':
 

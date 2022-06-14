@@ -204,7 +204,7 @@ class Plot:
                                 method="update",
                                 args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
                                                             
-                                    {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
+                                    {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')],
                                                     title='Area [mm<sup>2</sup>]',
                                                     mirror=True,
                                                     ticks='outside', 
@@ -215,7 +215,7 @@ class Plot:
                                 method="update",
                                 args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
                                                             
-                                    {"yaxis": dict(range=[self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')],
+                                    {"yaxis": dict(range=[self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')],
                                                     title='Area [mm<sup>2</sup>]',
                                                     mirror=True,
                                                     ticks='outside', 
@@ -317,7 +317,7 @@ class Plot:
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
-            yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
+            yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
             yaxis_title = 'Area [mm<sup>2</sup>]'
             x_button=1.28
         else:
@@ -438,7 +438,7 @@ class Plot:
                 elif tissue=='GM':
                     prop = 'GMT2w'
 
-                for trace in range(0, len(matrix[prop][metric])):
+                for trace in range(0, len(matrix[prop])):
                     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
                         
                     if trace == 0: 
@@ -447,13 +447,12 @@ class Plot:
                         showlegend = False
 
                     # Custom settings for just the T1 group/plot
-                    if metric == 'Area':
-                        hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
-                        visible=True
+                    hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
+                    visible=True
 
                     if tissue=='WM':
                         figb.add_trace(go.Scatter(x=t, 
-                                                    y=matrix['T1w'][metric][trace], 
+                                                    y=matrix['T1w'][trace], 
                                                     mode='markers',
                                                     visible=visible,
                                                     legendgroup="group1",
@@ -467,7 +466,7 @@ class Plot:
                                                     marker_color="rgb"+str(Plot.colours[0])))
 
                         figb.add_trace(go.Scatter(x=t, 
-                                                    y=matrix['T2w'][metric][trace], 
+                                                    y=matrix['T2w'][trace], 
                                                     mode='markers',
                                                     visible=visible,
                                                     legendgroup="group2",
@@ -483,7 +482,7 @@ class Plot:
                     if tissue=='GM':
                         visible = False
                         figb.add_trace(go.Scatter(x=t, 
-                                                    y=matrix['GMT2w'][metric][trace], 
+                                                    y=matrix['GMT2w'][trace], 
                                                     mode='markers',
                                                     visible=visible,
                                                     legendgroup="group1",
@@ -547,19 +546,17 @@ class Plot:
             for metric in trace_name:
                     
                 if tissue=='WM':
-                    line['T1w'][metric]= self.get_val(matrix['T1w'][metric], 'mean')
-                    line['T2w'][metric]= self.get_val(matrix['T2w'][metric], 'mean')
+                    line['T1w']= self.get_val(matrix['T1w'], 'mean')
+                    line['T2w']= self.get_val(matrix['T2w'], 'mean')
                 elif tissue=='GM':
-                    line['GMT2w'][metric]= self.get_val(matrix['GMT2w'][metric], 'mean')
+                    line['GMT2w']= self.get_val(matrix['GMT2w'], 'mean')
 
                 visible=True
-                if metric != 'Area':
-                    visible=False
 
                 # Add dotted line
                 if tissue=='WM':
                     figb.add_trace(go.Scatter(x=x, 
-                                                y=[line['T1w'][metric]]*8,
+                                                y=[line['T1w']]*8,
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>1</sub>w',
@@ -570,7 +567,7 @@ class Plot:
                                                             dash='dot')))
     
                     figb.add_trace(go.Scatter(x=x, 
-                                                y=[line['T2w'][metric]]*8,
+                                                y=[line['T2w']]*8,
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub>w',
@@ -581,7 +578,7 @@ class Plot:
                                                             dash='dot')))
                 if tissue=='GM':
                     figb.add_trace(go.Scatter(x=x, 
-                                                y=[line['GMT2w'][metric]]*8,
+                                                y=[line['GMT2w']]*8,
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub><sup>*</sup>',
@@ -638,10 +635,10 @@ class Plot:
             for metric in trace_name:
 
                 if tissue=='WM':
-                    std_area['T1w'][metric] = self.get_val(matrix['T1w'][metric], 'std') 
-                    std_area['T2w'][metric] = self.get_val(matrix['T2w'][metric], 'std') 
+                    std_area['T1w'] = self.get_val(matrix['T1w'], 'std') 
+                    std_area['T2w'] = self.get_val(matrix['T2w'], 'std') 
                 if tissue=='GM':
-                    std_area['GMT2w'][metric] = self.get_val(matrix['GMT2w'][metric], 'std') 
+                    std_area['GMT2w'] = self.get_val(matrix['GMT2w'], 'std') 
 
 
                 visible=True
@@ -656,7 +653,7 @@ class Plot:
                 if tissue=='WM':
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
-                        y=[line['T1w'][metric]+std_area['T1w'][metric]]*8+[line['T1w'][metric]-std_area['T1w'][metric]]*8,
+                        y=[line['T1w']+std_area['T1w']]*8+[line['T1w']-std_area['T1w']]*8,
                         fill='toself',
                         visible=visible,
                         fillcolor='rgba(31, 119, 180,0.15)',
@@ -668,7 +665,7 @@ class Plot:
 
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
-                        y=[line['T2w'][metric]+std_area['T2w'][metric]]*8+[line['T2w'][metric]-std_area['T2w'][metric]]*8,
+                        y=[line['T2w']+std_area['T2w']]*8+[line['T2w']-std_area['T2w']]*8,
                         fill='toself',
                         visible=visible,
                         fillcolor='rgba(255, 187, 120,0.15)',
@@ -680,7 +677,7 @@ class Plot:
                 if tissue=='GM':
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
-                        y=[line['GMT2w'][metric]+std_area['GMT2w'][metric]]*8+[line['GMT2w'][metric]-std_area['GMT2w'][metric]]*8,
+                        y=[line['GMT2w']+std_area['GMT2w']]*8+[line['GMT2w']-std_area['GMT2w']]*8,
                         fill='toself',
                         visible=visible,
                         fillcolor='rgba(31, 119, 180,0.15)',
