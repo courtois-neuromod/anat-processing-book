@@ -123,18 +123,28 @@ class Plot:
         # Set layout
         if self.dataset.data_type == 'brain':
             buttons = list([
-                            dict(label="T<sub>1</sub>",
+                            dict(label="MP2RAGE",
                                 method="update",
-                                args=[{"visible": [True] + [True]*12 + [False]*12 + [True]*2 + [False]*2 + [True]*2 + [False]*2},
+                                args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')],
+                                {"yaxis": dict(range=[self.get_val(matrix['MP2RAGE'], 'min'), self.get_val(matrix['MP2RAGE'], 'max')],
                                                 title='T<sub>1</sub> [s]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
                                                 linecolor='#000',
                                                 tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                    
+                            dict(label="MTS",
+                                method="update",
+                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['MTS'], 'min'), self.get_val(matrix['MTS'], 'max')],
+                                                title='T<sub>1</sub> [s]''',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),                                                    
                             dict(label="MTR",
                                 method="update",
                                 args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
@@ -377,7 +387,7 @@ class Plot:
                         showlegend = False
 
                     # Custom settings for just the T1 group/plot
-                    if metric == 'MP2RAGE' or metric == 'MTS':
+                    if metric == 'MP2RAGE':
                         hover_mean = "Mean : <i> %{y: .2f} </i> sec"
                         visible=True
                     elif metric == 'Area':
@@ -393,13 +403,9 @@ class Plot:
                         hover_mean = "Mean : <i> %{y: .2f} </i>" 
                         visible=False
 
-                    # Custom settings for just MTS
-                    if metric == 'MTS':
-                        marker_color = "rgb"+str(Plot.colours[3])
-                        legend_group = "group2"
-                    else:
-                        marker_color = "rgb"+str(Plot.colours[0])
-                        legend_group = "group1"
+
+                    marker_color = "rgb"+str(Plot.colours[0])
+                    legend_group = "group1"
 
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
@@ -491,12 +497,10 @@ class Plot:
 
                 line[metric]= self.get_val(matrix[metric], 'mean')
 
-                if metric == 'MTS':
-                    line_color = "rgb"+str(Plot.colours[3])
-                else: 
-                    line_color = "rgb"+str(Plot.colours[0])
 
-                if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
+                line_color = "rgb"+str(Plot.colours[0])
+
+                if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
                 else:
                     visible=False
@@ -577,12 +581,9 @@ class Plot:
             for metric in trace_name:
                 std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-                if metric == 'MTS':
-                    fillcolor='rgba(255, 187, 120, 0.15)'
-                else: 
-                    fillcolor='rgba(31, 119, 180, 0.15)'
+                fillcolor='rgba(31, 119, 180, 0.15)'
 
-                if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
+                if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
                 else:
                     visible=False
