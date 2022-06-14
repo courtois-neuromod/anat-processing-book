@@ -97,17 +97,9 @@ class Plot:
                 'MTsat': 'MTsat'
             }
         elif self.dataset.data_type == 'spine':
-            if tissue == 'WM':
-                trace_name = {
-                    'Area': 'T<sub>1</sub> (mp2rage)',
-                    'AP': 'T<sub>1</sub> (mts)',
-                    'RL': 'MTR',
-                    'Angle': 'MTsat'
-                }
-            elif tissue == 'GM':
-                trace_name = {
-                    'Area': 'T<sub>1</sub> (mp2rage)',
-                }
+            trace_name = {
+                'Area': 'Area (mm<sup>2</sup>)',
+            }
         elif self.dataset.data_type == 'qmri':
             tissue = 'WM'
             trace_name = {
@@ -131,7 +123,17 @@ class Plot:
 
                 # Add std shaded area to plot
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+        elif self.dataset.data_type == 'spine':
+            tissues = ['WM', 'GM']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix, trace_name, tissue)
 
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
         else:
             # Add datapoints to plot
             figb = self.add_points(figb, matrix, trace_name, tissue)
@@ -160,8 +162,9 @@ class Plot:
                                 method="update",
                                 args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],                                                title='T<sub>1</sub> [s]''',
-                                                mirror=True,
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],
+                                                title='T<sub>1</sub> [s]',
+                                                mirror=True,        
                                                 ticks='outside', 
                                                 showline=True, 
                                                 linecolor='#000',
@@ -170,7 +173,8 @@ class Plot:
                                 method="update",
                                 args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],                                                title='MTR [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],
+                                                title='MTR [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -181,7 +185,8 @@ class Plot:
                                 method="update",
                                 args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                                                     
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],                                                title='MTsat [a.u.]',
+                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],
+                                                title='MTsat [a.u.]',
                                                 mirror=True,
                                                 ticks='outside', 
                                                 showline=True, 
@@ -194,63 +199,36 @@ class Plot:
                               xref = 'paper',
                               yref="paper")]
         elif self.dataset.data_type == 'spine':
-            if tissue == 'WM':
-                buttons = list([
-                                dict(label="Mean (area)",
-                                    method="update",
-                                    args=[{"visible": [True] + [True]*12 + [False]*36 + [True]*2 + [False]*6 + [True]*2 + [False]*6},
+            buttons = list([
+                            dict(label="White matter",
+                                method="update",
+                                args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
                                                             
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
-                                                        title='Mean (area) [mm<sup>2</sup>]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                dict(label="Mean (AP)",
-                                    method="update",
-                                    args=[{"visible": [True] + [False]*12 + [True]*12 + [False]*24 + [False]*2 + [True]*2 +[False]*4 + [False]*2 + [True]*2 +[False]*4},
+                                    {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
+                                                    title='Area [mm<sup>2</sup>]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+                            dict(label="Grey matter",
+                                method="update",
+                                args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
                                                             
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['AP'], matrix['T2w']['AP'], axis=0), 'max')],
-                                                        title='Mean (AP) [mm]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                    {"yaxis": dict(range=[self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')],
+                                                    title='Area [mm<sup>2</sup>]',
+                                                    mirror=True,
+                                                    ticks='outside', 
+                                                    showline=True, 
+                                                    linecolor='#000',
+                                                    tickfont = dict(size=self.y_label_tick_font_size))}]) ])
                                         
-                                dict(label="Mean (RL)",
-                                    method="update",
-                                    args=[{"visible": [True] + [False]*24 + [True]*12 + [False]*12 + [False]*4 + [True]*2 +[False]*2 + [False]*4 + [True]*2 +[False]*2},
-                                                        
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['RL'], matrix['T2w']['RL'], axis=0), 'max')],
-                                                        title='Mean (RL) [mm]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                            
-                                dict(label="Mean (angle)",
-                                    method="update",
-                                    args=[{"visible":  [True] + [False]*36 + [True]*12 + [False]*6 + [True]*2 + [False]*6 + [True]*2 },
-                                                            
-                                        {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Angle'], matrix['T2w']['Angle'], axis=0), 'max')],
-                                                        title='Mean (angle) [°]',
-                                                        mirror=True,
-                                                        ticks='outside', 
-                                                        showline=True, 
-                                                        linecolor='#000',
-                                                        tickfont = dict(size=self.y_label_tick_font_size))}]) ])
-                annotations=[dict(text="Display metric: ", 
-                                  showarrow=False,
-                                  x=1.25,
-                                  y=0.62,
-                                  xref = 'paper',
-                                  yref="paper")]
-            else:
-                buttons = None
-                annotations = None
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
         elif self.dataset.data_type == 'qmri':
             buttons = list([
                             dict(label="DWI_FA",
@@ -339,17 +317,12 @@ class Plot:
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
-            if tissue=='WM':
-                yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
-            elif tissue=='GM':
-                yaxis_range = [self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')]
-            yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
+            yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
+            yaxis_title = 'Area [mm<sup>2</sup>]'
+            x_button=1.28
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
-
-
-
 
         figb.update_layout(title = self.title,
                         updatemenus=[
@@ -409,7 +382,10 @@ class Plot:
                     if trace == 0: 
                         showlegend = True
                     else:
-                        showlegend = False
+                        if metric == 'GMT2w':
+                            showlegend = True
+                        else:
+                            showlegend = False
 
                     # Custom settings for just the T1 group/plot
                     if metric == 'MP2RAGE':
@@ -421,9 +397,6 @@ class Plot:
                     elif metric == 'DWI_FA':
                         hover_mean = "<i> %{y: .2f} </i>"
                         visible=True
-                    elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
-                        hover_mean = "Mean : <i> %{y: .2f} </i> mm"
-                        visible=False
                     else:
                         hover_mean = "Mean : <i> %{y: .2f} </i>" 
                         visible=False
@@ -477,9 +450,6 @@ class Plot:
                     if metric == 'Area':
                         hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
                         visible=True
-                    elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
-                        hover_mean = "Mean : <i> %{y: .2f} </i> mm"
-                        visible=False
 
                     if tissue=='WM':
                         figb.add_trace(go.Scatter(x=t, 
@@ -511,6 +481,7 @@ class Plot:
                                                     marker_symbol=symbols[5],
                                                     marker_color="rgb"+str(Plot.colours[3])))
                     if tissue=='GM':
+                        visible = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['GMT2w'][metric][trace], 
                                                     mode='markers',
@@ -522,7 +493,7 @@ class Plot:
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(4)],
-                                                    name= 'T<sub>2</sub>s',
+                                                    name= 'T<sub>2</sub><sup>*</sup>',
                                                     marker_color="rgb"+str(Plot.colours[0])))
                                        
         return figb
@@ -592,6 +563,7 @@ class Plot:
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>1</sub>w',
+                                                showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(31, 119, 180)", 
                                                             width=2,
@@ -602,6 +574,7 @@ class Plot:
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub>w',
+                                                showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(255, 187, 120)", 
                                                             width=2,
@@ -611,7 +584,8 @@ class Plot:
                                                 y=[line['GMT2w'][metric]]*8,
                                                 mode='lines',
                                                 visible=visible,
-                                                name='T<sub>2</sub>s',
+                                                name='T<sub>2</sub><sup>*</sup>',
+                                                showlegend = False,
                                                 opacity=0.5, 
                                                 line=dict(color="rgb(31, 119, 180)", 
                                                             width=2,
@@ -713,7 +687,7 @@ class Plot:
                         line_color='rgba(255,255,255,0)',
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
-                        name='T<sub>2</sub>s STD'
+                        name='T<sub>2</sub><sup>*</sup> STD'
                     ))
 
         return figb, std_area
