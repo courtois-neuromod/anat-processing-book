@@ -99,6 +99,16 @@ class Plot:
                 trace_name = {
                     'Area': 'T<sub>1</sub> (mp2rage)',
                 }
+        elif self.dataset.data_type == 'qmri':
+            if tissue == 'WM':
+                trace_name = {
+                    'DWI_FA': 'DWI_FA',
+                    'DWI_MD': 'DWI_MD',
+                    'DWI_RD': 'DWI_RD',
+                    'MTR': 'MTR',
+                    'MTSat': 'MTsat',
+                    'T1': 'T<sub>1</sub>'
+                }
 
         # Add datapoints to plot
         figb = self.add_points(figb, matrix, trace_name, tissue)
@@ -211,6 +221,86 @@ class Plot:
             else:
                 buttons = None
                 annotations = None
+        if self.dataset.data_type == 'qmri':
+            buttons = list([
+                            dict(label="DWI_FA",
+                                method="update",
+                                args=[{"visible": [True] + [True]*6 + [False]*30 + [True]*1 + [False]*5 + [True]*1 + [False]*5},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')],
+                                                title='DWI_FA [a.u.]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                                    
+                            dict(label="DWI_MD",
+                                method="update",
+                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*24 + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['DWI_MD'], 'min'), self.get_val(matrix['DWI_MD'], 'max')],
+                                                title='DWI_MD [mm<sup>2</sup>/s]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                                    
+                            dict(label="DWI_RD",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*12 + [True]*6 + [False]*18 + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['DWI_RD'], 'min'), self.get_val(matrix['DWI_RD'], 'max')],
+                                                title=' DWI_RD [mm<sup>2</sup>/s]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                            dict(label="MTR",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*12 + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
+                                                title='MTR [a.u.]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                            dict(label="MTsat",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*24 + [True]*6 + [False]*6 + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['MTSat'], 'min'), self.get_val(matrix['MTSat'], 'max')],
+                                                title='MTsat [a.u.]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                            dict(label="T<sub>1</sub>",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*30 + [True]*6 + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
+                                                                    
+                                {"yaxis": dict(range=[self.get_val(matrix['T1'], 'min'), self.get_val(matrix['T1'], 'max')],
+                                                title='T<sub>1</sub> [s]',
+                                                mirror=True,
+                                                ticks='outside', 
+                                                showline=True, 
+                                                linecolor='#000',
+                                                tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
+        else:
+            buttons = None
+            annotations = None
                                     
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['MP2RAGE'], matrix['MTS'], axis=0), 'max')]
@@ -221,6 +311,9 @@ class Plot:
             elif tissue=='GM':
                 yaxis_range = [self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')]
             yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
+        else:
+            yaxis_range = [0.5, 1]
+            yaxis_title = ''
 
         figb.update_layout(title = self.title,
                         updatemenus=[
@@ -274,10 +367,9 @@ class Plot:
 
         for metric in trace_name:
             if 'T1w' not in matrix:
-
                 for trace in range(0, len(matrix[metric])):
                     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
-                    
+
                     if trace == 0: 
                         showlegend = True
                     else:
@@ -289,6 +381,9 @@ class Plot:
                         visible=True
                     elif metric == 'Area':
                         hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
+                        visible=True
+                    elif metric == 'DWI_FA':
+                        hover_mean = "<i> %{y: .2f} </i>"
                         visible=True
                     elif metric == 'AP' or metric == 'RL' or metric == 'Angle':
                         hover_mean = "Mean : <i> %{y: .2f} </i> mm"

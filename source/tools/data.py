@@ -202,8 +202,6 @@ class Data:
                 'T1': []
                 }
 
-        print(self.data)
-
         default_val = -100
 
         if self.data_type == 'brain':
