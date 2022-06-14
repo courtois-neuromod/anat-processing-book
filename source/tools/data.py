@@ -160,10 +160,9 @@ class Data:
 
 
     def extract_data(self, tissue):
-
+        num_sub = 6
+        num_session = 4
         if self.data_type == 'brain':
-            num_sub = 6
-            num_session = 4
             matrix = {
                 'MP2RAGE': [],
                 'MTS': [],
@@ -171,16 +170,12 @@ class Data:
                 'MTsat': []
             }
         elif self.data_type == 'spine':
-            num_sub = 5
-            num_session = 3
             matrix = {
                 'T1w':  [],
                 'T2w': [],
                 'GMT2w': []
             }
         elif self.data_type == 'qmri':
-            num_sub = 5
-            num_session = 3
             matrix = {
                 'DWI_FA': [],
                 'DWI_MD': [],
@@ -226,13 +221,13 @@ class Data:
 
                 db = self.data[type]
                 
-                for i in range(0, num_sub+1, 1):
-                    sub_values = db.loc[db['Subject'] == i+1]
+                for i in range(1, num_sub+1, 1):
+                    sub_values = db.loc[db['Subject'] == i]
 
                     metric_ses = []
 
-                    for j in range(0, num_session+1, 1):
-                        ses_values = sub_values.loc[sub_values['Session'] == j+1]
+                    for j in range(1, num_session+1, 1):
+                        ses_values = sub_values.loc[sub_values['Session'] == j]
                         
                         mean_val = default_val
                             
@@ -247,13 +242,13 @@ class Data:
         elif self.data_type == 'qmri':
 
             for metric in matrix:
-                for i in range(0, num_sub+1, 1):
-                    sub_values = self.data[metric].loc[self.data[metric]['Subject'] == i+1]
+                for i in range(1, num_sub+1, 1):
+                    sub_values = self.data[metric].loc[self.data[metric]['Subject'] == i]
 
                     metric_ses = []
 
-                    for j in range(0, num_session+1, 1):
-                        ses_values = sub_values.loc[sub_values['Session'] == j+1]
+                    for j in range(1, num_session+1, 1):
+                        ses_values = sub_values.loc[sub_values['Session'] == j]
                         
                         mean_val = default_val
 
