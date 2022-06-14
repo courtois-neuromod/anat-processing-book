@@ -32,13 +32,14 @@ class Plot:
 
     def get_val(self, matrix, key):
         temp = matrix[::]
+        print(temp)
         mean_list = []
         for ele in temp: 
             ele = [i for i in ele if i!=-100]
             mean_list.extend(ele)
             
         if key=='mean':
-            val = float('{0:.2f}'.format(np.mean(mean_list)))
+            val = float('{0:.7f}'.format(np.mean(mean_list)))
         if key=='std':
             val = float('{0:.3f}'.format(np.std(mean_list)))
         if key=='max':
@@ -312,8 +313,8 @@ class Plot:
                 yaxis_range = [self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')]
             yaxis_title = 'Mean (area) [mm<sup>2</sup>]'
         else:
-            yaxis_range = [0.5, 1]
-            yaxis_title = ''
+            yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
+            yaxis_title = 'DWI_FA [a.u.]'
 
         figb.update_layout(title = self.title,
                         updatemenus=[
@@ -487,6 +488,7 @@ class Plot:
         
         if 'T1w' not in matrix:
             for metric in trace_name:
+
                 line[metric]= self.get_val(matrix[metric], 'mean')
 
                 if metric == 'MTS':
@@ -494,8 +496,10 @@ class Plot:
                 else: 
                     line_color = "rgb"+str(Plot.colours[0])
 
-                visible=True
-                if metric == 'MTR' or metric == 'MTsat':
+                print(metric)
+                if metric == 'MP2RAGE' or metric == 'MTS' or metric == 'DWI_FA':
+                    visible=True
+                else:
                     visible=False
 
                 # Add dotted line
