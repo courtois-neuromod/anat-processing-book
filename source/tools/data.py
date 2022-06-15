@@ -46,6 +46,7 @@ class Data:
         Input: data_type (brain, spine, qmri)
 
         """
+
         self.data_type = data_type
         self.available_versions = self.get_available_versions()
         self.version = None
@@ -108,6 +109,7 @@ class Data:
         Sorts it by subject and session number.
 
         """
+
         data_type = self.data_type
 
         if data_type == 'brain':
@@ -168,6 +170,7 @@ class Data:
         subjects and sessions. For the brain dataset, tissue must be selected.
 
         """
+        
         num_sub = 6
         num_session = 4
         if self.data_type == 'brain':
