@@ -150,48 +150,20 @@ class Plot:
                             dict(label="T<sub>1</sub> (MP2RAGE)",
                                 method="update",
                                 args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3 + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')],
-                                                title='T<sub>1</sub> [s]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                self.set_trace_layout(matrix=matrix, metric='MP2RAGE', title='T<sub>1</sub> [s]', tissues=['WM', 'GM'])]),
                             dict(label="T<sub>1</sub> (MTsat)",
                                 method="update",
                                 args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],
-                                                title='T<sub>1</sub> [s]',
-                                                mirror=True,        
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),                                                    
+                                self.set_trace_layout(matrix=matrix, metric='MTS', title='T<sub>1</sub> [s]', tissues=['WM', 'GM'])]),                                                    
                             dict(label="MTR",
                                 method="update",
                                 args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],
-                                                title='MTR [a.u.]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                    
+                                self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [a.u.]', tissues=['WM', 'GM'])        ]),
                             dict(label="MTsat",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],
-                                                title='MTsat [a.u.]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]) ])
+                                self.set_trace_layout(matrix=matrix, metric='MTsat', title='MTsat [a.u.]', tissues=['WM', 'GM'])])
+                            ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
                               x=1.25,
@@ -203,112 +175,52 @@ class Plot:
                             dict(label="White matter",
                                 method="update",
                                 args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
-                                                            
-                                    {"yaxis": dict(range=[self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')],
-                                                    title='Area [mm<sup>2</sup>]',
-                                                    mirror=True,
-                                                    ticks='outside', 
-                                                    showline=True, 
-                                                    linecolor='#000',
-                                                    tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                    self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
                             dict(label="Grey matter",
                                 method="update",
                                 args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
-                                                            
-                                    {"yaxis": dict(range=[self.get_val(matrix['GMT2w']['Area'], 'min'), self.get_val(matrix['GMT2w']['Area'], 'max')],
-                                                    title='Area [mm<sup>2</sup>]',
-                                                    mirror=True,
-                                                    ticks='outside', 
-                                                    showline=True, 
-                                                    linecolor='#000',
-                                                    tickfont = dict(size=self.y_label_tick_font_size))}]) ])
-                                        
+                                    self.set_trace_layout(matrix=matrix, metric='GMT2w', title='Area [mm<sup>2</sup>]')]) 
+                            ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
                               x=1.25,
                               y=0.62,
                               xref = 'paper',
                               yref="paper")]
+
         elif self.dataset.data_type == 'qmri':
             buttons = list([
                             dict(label="DWI_FA",
                                 method="update",
                                 args=[{"visible": [True] + [True]*6 + [False]*30 + [True]*1 + [False]*5 + [True]*1 + [False]*5},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')],
-                                                title='DWI_FA [a.u.]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                    
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]')]),
                             dict(label="DWI_MD",
                                 method="update",
                                 args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*24 + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(matrix['DWI_MD'], 'min'), self.get_val(matrix['DWI_MD'], 'max')],
-                                                title='DWI_MD [mm<sup>2</sup>/s]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
-                                                    
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]')]),            
                             dict(label="DWI_RD",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*12 + [True]*6 + [False]*18 + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(matrix['DWI_RD'], 'min'), self.get_val(matrix['DWI_RD'], 'max')],
-                                                title=' DWI_RD [mm<sup>2</sup>/s]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]')]),
                             dict(label="MTR",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*12 + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
-                                                title='MTR [a.u.]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [a.u.]')]),
                             dict(label="MTsat",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*24 + [True]*6 + [False]*6 + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(matrix['MTSat'], 'min'), self.get_val(matrix['MTSat'], 'max')],
-                                                title='MTsat [a.u.]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]),
+                                self.set_trace_layout(matrix=matrix, metric='MTSat', title='MTsat [a.u.]')]),
                             dict(label="T<sub>1</sub>",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*30 + [True]*6 + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
-                                                                    
-                                {"yaxis": dict(range=[self.get_val(matrix['T1'], 'min'), self.get_val(matrix['T1'], 'max')],
-                                                title='T<sub>1</sub> [s]',
-                                                mirror=True,
-                                                ticks='outside', 
-                                                showline=True, 
-                                                linecolor='#000',
-                                                tickfont = dict(size=self.y_label_tick_font_size))}]) ])
-
+                                self.set_trace_layout(matrix=matrix, metric='T1', title='T<sub>1</sub> [s]')]) 
+                            ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
                               x=1.25,
                               y=0.62,
                               xref = 'paper',
                               yref="paper")]
-        else:
-            buttons = None
-            annotations = None
 
         x_button=1.23
         y_button=0.58
@@ -317,7 +229,7 @@ class Plot:
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
-            yaxis_range = [self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'min'), self.get_val(np.append(matrix['T1w']['Area'], matrix['T2w']['Area'], axis=0), 'max')]
+            yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
             yaxis_title = 'Area [mm<sup>2</sup>]'
             x_button=1.28
         else:
@@ -438,7 +350,7 @@ class Plot:
                 elif tissue=='GM':
                     prop = 'GMT2w'
 
-                for trace in range(0, len(matrix[prop][metric])):
+                for trace in range(0, len(matrix[prop])):
                     t = [trace -0.2 + i*0.14 for i in range(0, 4)]
                         
                     if trace == 0: 
@@ -447,13 +359,12 @@ class Plot:
                         showlegend = False
 
                     # Custom settings for just the T1 group/plot
-                    if metric == 'Area':
-                        hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
-                        visible=True
+                    hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
+                    visible=True
 
                     if tissue=='WM':
                         figb.add_trace(go.Scatter(x=t, 
-                                                    y=matrix['T1w'][metric][trace], 
+                                                    y=matrix['T1w'][trace], 
                                                     mode='markers',
                                                     visible=visible,
                                                     legendgroup="group1",
@@ -467,7 +378,7 @@ class Plot:
                                                     marker_color="rgb"+str(Plot.colours[0])))
 
                         figb.add_trace(go.Scatter(x=t, 
-                                                    y=matrix['T2w'][metric][trace], 
+                                                    y=matrix['T2w'][trace], 
                                                     mode='markers',
                                                     visible=visible,
                                                     legendgroup="group2",
@@ -483,7 +394,7 @@ class Plot:
                     if tissue=='GM':
                         visible = False
                         figb.add_trace(go.Scatter(x=t, 
-                                                    y=matrix['GMT2w'][metric][trace], 
+                                                    y=matrix['GMT2w'][trace], 
                                                     mode='markers',
                                                     visible=visible,
                                                     legendgroup="group1",
@@ -547,19 +458,17 @@ class Plot:
             for metric in trace_name:
                     
                 if tissue=='WM':
-                    line['T1w'][metric]= self.get_val(matrix['T1w'][metric], 'mean')
-                    line['T2w'][metric]= self.get_val(matrix['T2w'][metric], 'mean')
+                    line['T1w']= self.get_val(matrix['T1w'], 'mean')
+                    line['T2w']= self.get_val(matrix['T2w'], 'mean')
                 elif tissue=='GM':
-                    line['GMT2w'][metric]= self.get_val(matrix['GMT2w'][metric], 'mean')
+                    line['GMT2w']= self.get_val(matrix['GMT2w'], 'mean')
 
                 visible=True
-                if metric != 'Area':
-                    visible=False
 
                 # Add dotted line
                 if tissue=='WM':
                     figb.add_trace(go.Scatter(x=x, 
-                                                y=[line['T1w'][metric]]*8,
+                                                y=[line['T1w']]*8,
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>1</sub>w',
@@ -570,7 +479,7 @@ class Plot:
                                                             dash='dot')))
     
                     figb.add_trace(go.Scatter(x=x, 
-                                                y=[line['T2w'][metric]]*8,
+                                                y=[line['T2w']]*8,
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub>w',
@@ -581,7 +490,7 @@ class Plot:
                                                             dash='dot')))
                 if tissue=='GM':
                     figb.add_trace(go.Scatter(x=x, 
-                                                y=[line['GMT2w'][metric]]*8,
+                                                y=[line['GMT2w']]*8,
                                                 mode='lines',
                                                 visible=visible,
                                                 name='T<sub>2</sub><sup>*</sup>',
@@ -638,11 +547,10 @@ class Plot:
             for metric in trace_name:
 
                 if tissue=='WM':
-                    std_area['T1w'][metric] = self.get_val(matrix['T1w'][metric], 'std') 
-                    std_area['T2w'][metric] = self.get_val(matrix['T2w'][metric], 'std') 
+                    std_area['T1w'] = self.get_val(matrix['T1w'], 'std') 
+                    std_area['T2w'] = self.get_val(matrix['T2w'], 'std') 
                 if tissue=='GM':
-                    std_area['GMT2w'][metric] = self.get_val(matrix['GMT2w'][metric], 'std') 
-
+                    std_area['GMT2w'] = self.get_val(matrix['GMT2w'], 'std') 
 
                 visible=True
                 if metric != 'Area':
@@ -656,7 +564,7 @@ class Plot:
                 if tissue=='WM':
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
-                        y=[line['T1w'][metric]+std_area['T1w'][metric]]*8+[line['T1w'][metric]-std_area['T1w'][metric]]*8,
+                        y=[line['T1w']+std_area['T1w']]*8+[line['T1w']-std_area['T1w']]*8,
                         fill='toself',
                         visible=visible,
                         fillcolor='rgba(31, 119, 180,0.15)',
@@ -668,7 +576,7 @@ class Plot:
 
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
-                        y=[line['T2w'][metric]+std_area['T2w'][metric]]*8+[line['T2w'][metric]-std_area['T2w'][metric]]*8,
+                        y=[line['T2w']+std_area['T2w']]*8+[line['T2w']-std_area['T2w']]*8,
                         fill='toself',
                         visible=visible,
                         fillcolor='rgba(255, 187, 120,0.15)',
@@ -680,7 +588,7 @@ class Plot:
                 if tissue=='GM':
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
-                        y=[line['GMT2w'][metric]+std_area['GMT2w'][metric]]*8+[line['GMT2w'][metric]-std_area['GMT2w'][metric]]*8,
+                        y=[line['GMT2w']+std_area['GMT2w']]*8+[line['GMT2w']-std_area['GMT2w']]*8,
                         fill='toself',
                         visible=visible,
                         fillcolor='rgba(31, 119, 180,0.15)',
@@ -691,3 +599,19 @@ class Plot:
                     ))
 
         return figb, std_area
+
+    def set_trace_layout(self,matrix,metric, title, tissues=None):
+        if tissues is not None:
+            yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
+        else:
+            yaxis_range = [self.get_val(matrix[metric], 'min'), self.get_val(matrix[metric], 'max')]
+        return {"yaxis": dict(
+                range = yaxis_range,
+                title=title,
+                mirror=True,
+                ticks='outside', 
+                showline=True, 
+                linecolor='#000',
+                tickfont = dict(size=self.y_label_tick_font_size)
+                )
+            }
