@@ -3,7 +3,13 @@ from pathlib import Path
 import pandas as pd
 
 class Data:
-    
+    """Data handling class
+
+    Class objects can download data, loads it, and can be passed
+    onto a Plot object to display the data using Plotly.
+
+    """
+
     datasets = {
         'brain': {
             'version_list': ['r20210726'],
@@ -35,6 +41,12 @@ class Data:
     }
     
     def __init__(self, data_type):
+        """Initialize object
+        
+        Input: data_type (brain, spine, qmri)
+
+        """
+
         self.data_type = data_type
         self.available_versions = self.get_available_versions()
         self.version = None
@@ -43,11 +55,23 @@ class Data:
         self.data = None
 
     def get_available_versions(self):
+        """Get available data versions
+
+        Returns list of available dataset versions for the data_type 
+        that the object was initalized with.
+
+        """
+
         version_list = Data.datasets[self.data_type]['version_list']
         version_list.sort()
         return version_list
     
     def download(self, release_version):
+        """Download dataset
+
+        Downloads the dataset specified by the selected release version.
+
+        """
 
         # Set release version
         if release_version == 'latest':
@@ -79,6 +103,12 @@ class Data:
             subprocess.run(["unzip", "-j", release_file,  "-d", self.data_dir])
     
     def load(self):
+        """Load dataset into the object
+
+        Loads the dataset into the object as a pandas dataframe.
+        Sorts it by subject and session number.
+
+        """
 
         data_type = self.data_type
 
@@ -133,7 +163,14 @@ class Data:
                 # Sort values based on Subject -- Session
                 self.data[acq]=self.data[acq].sort_values(['subject', 'session'], ascending=[True, True])
 
-    def extract_data(self, tissue):
+    def extract_data(self, tissue=None):
+        """Extract data
+
+        Extract the metrics from the pandas datafram into a matrix format fo all
+        subjects and sessions. For the brain dataset, tissue must be selected.
+
+        """
+        
         num_sub = 6
         num_session = 4
         if self.data_type == 'brain':

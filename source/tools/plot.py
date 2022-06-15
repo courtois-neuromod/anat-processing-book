@@ -10,6 +10,11 @@ import pandas as pd
 from tools.data import Data
 
 class Plot:
+    """Plot handling class
+
+    Class objects load Data object and display Plotly figure with it.
+
+    """
 
     colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
                (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
@@ -18,6 +23,14 @@ class Plot:
                (188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
 
     def __init__(self, dataset, plot_name):
+        """Initialize object
+        
+        Input: 
+            - dataset (Data class object)
+            - plot_name (ID for plot, HTML filename)
+
+        """
+
         self.dataset = dataset
         self.plot_name = plot_name
         self.title = None
@@ -31,6 +44,19 @@ class Plot:
         self.general_font_size = 13
 
     def get_val(self, matrix, key):
+        """Get values
+        
+        Get desired value (min, max, mean, std) from a 
+        dataset matrix (metric valuesfor all subjects
+        and sessions).
+
+        Input: 
+            - matrix (data extracted using Data object)
+            - key (desired value in string: min, max, 
+                   mean, or std)
+
+        """
+
         temp = matrix[::]
 
         mean_list = []
@@ -50,6 +76,12 @@ class Plot:
         return val
     
     def get_symbols(self):
+        """Get symbols
+        
+        Get specific plot markers.
+
+        """
+
         # Get different symbols (See for reference: https://plotly.com/python/marker-style/)
         raw_symbols = SymbolValidator().values
         symbols = []
@@ -58,8 +90,15 @@ class Plot:
         
         return symbols
 
-    def display(self, env, tissue=None):
+    def display(self, env):
+        """Display figure
+        
+        Display Plotly figure using Data object.
 
+        Input: 
+            - env (display environment: jupyter-book or notebook)
+
+        """
         # Initialize Plotly 
         init_notebook_mode(connected = True)
         config={'showLink': False, 'displayModeBar': False}
@@ -73,7 +112,7 @@ class Plot:
             matrix['WM'] = self.dataset.extract_data('WM')
             matrix['GM'] = self.dataset.extract_data('GM')
         else:
-            matrix = self.dataset.extract_data(tissue)
+            matrix = self.dataset.extract_data()
 
         symbols = self.get_symbols()
 
@@ -284,6 +323,18 @@ class Plot:
             iplot(figb,config=config)
 
     def add_points(self, figb, matrix, trace_name, tissue=None):
+        """Add points to trace
+        
+        Internal function, adds datapoints to Plotly trace.
+
+        Input: 
+            - figb: Plotly figure
+            - matrix: Data extracted using Data object
+            - trace_name: Dictionary
+            - tissue: 'WM' or 'GM', used for brain dataset
+
+        """
+
         symbols = self.get_symbols()
 
         for metric in trace_name:
@@ -410,6 +461,18 @@ class Plot:
         return figb
 
     def add_lines(self, figb, matrix, trace_name, tissue=None):
+        """Add lines (mean) to trace
+        
+        Internal function, adds lines to Plotly trace.
+
+        Input: 
+            - figb: Plotly figure
+            - matrix: Data extracted using Data object
+            - trace_name: Dictionary
+            - tissue: 'WM' or 'GM', used for brain dataset
+
+        """
+
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         line = {}
         
@@ -504,6 +567,19 @@ class Plot:
         return figb, line
 
     def add_std_area(self, figb, matrix, trace_name, line, tissue=None):
+        """Add STD shaded area to trace
+        
+        Internal function, adds STD shaded area to Plotly trace.
+
+        Input: 
+            - figb: Plotly figure
+            - matrix: Data extracted using Data object
+            - trace_name: Dictionary
+            - line: output from add_line, mean of dataset.
+            - tissue: 'WM' or 'GM', used for brain dataset
+
+        """
+
         x = [-1, 0, 1, 2, 3, 4, 5, 6]
         std_area = {}
         
@@ -600,7 +676,20 @@ class Plot:
 
         return figb, std_area
 
-    def set_trace_layout(self,matrix,metric, title, tissues=None):
+    def set_trace_layout(self, matrix, metric, title, tissues=None):
+        """Set trace layour
+        
+        Internal function, sets up y_axis layout details
+
+        Input: 
+            - figb: Plotly figure
+            - matrix: Data extracted using Data object
+            - metric: metric being ploted
+            - title: y axis title
+            - tissue: 'WM' or 'GM', used for brain dataset
+
+        """
+
         if tissues is not None:
             yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
         else:
