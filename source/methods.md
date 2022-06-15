@@ -62,5 +62,5 @@ Spinal cord analysis consisted in:
   - Register the PAM50 template to the mean DWI image (using the template->T1w warping field as initial transformation)
   - Warp the PAM50 template objects
   - Create a mask around the spinal cord (for faster computing)
-  - Compute DTI (powered by Dipy [REF])
+  - Compute DTI (powered by Dipy {cite}`Garyfallidis2014`)
   - Compute FA, MD and RD in WM between C2 and C5 vertebral levels
