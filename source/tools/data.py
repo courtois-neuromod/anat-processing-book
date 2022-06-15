@@ -193,7 +193,7 @@ class Data:
                             
                     # Append values to lists for sessions
                     metric_ses.append(mean_val)
-                    
+         
                 matrix[metric].append(metric_ses)
 
         return matrix
