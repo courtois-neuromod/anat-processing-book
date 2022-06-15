@@ -10,4 +10,5 @@ parts:
     - file: methods
     - file: 1-brain-data
     - file: 2-spinal-data
+    - file: references
 
