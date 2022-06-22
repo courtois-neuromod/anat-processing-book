@@ -90,7 +90,7 @@ class Plot:
         
         return symbols
 
-    def display(self, env):
+    def display(self, env, fig_id = None):
         """Display figure
         
         Display Plotly figure using Data object.
@@ -163,7 +163,13 @@ class Plot:
                 # Add std shaded area to plot
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
         elif self.dataset.data_type == 'spine':
-            tissues = ['WM', 'GM']
+            if fig_id == 'spine-csa-wm':
+                tissues = ['WM']
+            elif fig_id == 'spine-csa-gm':
+                tissues = ['GM']
+            else:
+                tissues = ['WM', 'GM']
+
             for tissue in tissues:
                 # Add datapoints to plot
                 figb = self.add_points(figb, matrix, trace_name, tissue)
