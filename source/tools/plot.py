@@ -172,13 +172,13 @@ class Plot:
 
             for tissue in tissues:
                 # Add datapoints to plot
-                figb = self.add_points(figb, matrix, trace_name, tissue)
+                figb = self.add_points(figb, matrix, trace_name, tissue, fig_id)
 
                 # Add mean line to plot
-                figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+                figb, line = self.add_lines(figb, matrix, trace_name, tissue, fig_id)
 
                 # Add std shaded area to plot
-                figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
+                figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue, fig_id)
         else:
             # Add datapoints to plot
             figb = self.add_points(figb, matrix, trace_name, tissue)
@@ -341,7 +341,7 @@ class Plot:
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
 
-    def add_points(self, figb, matrix, trace_name, tissue=None):
+    def add_points(self, figb, matrix, trace_name, tissue=None, fig_id=None):
         """Add points to trace
         
         Internal function, adds datapoints to Plotly trace.
@@ -462,7 +462,10 @@ class Plot:
                                                     marker_symbol=symbols[5],
                                                     marker_color="rgb"+str(Plot.colours[3])))
                     elif tissue=='GM':
-                        visible = False
+                        if fig_id == 'spine-csa-gm':
+                            visible = True
+                        else:
+                            visible = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['GMT2w'][trace], 
                                                     mode='markers',
@@ -479,7 +482,7 @@ class Plot:
                                        
         return figb
 
-    def add_lines(self, figb, matrix, trace_name, tissue=None):
+    def add_lines(self, figb, matrix, trace_name, tissue=None, fig_id=None):
         """Add lines (mean) to trace
         
         Internal function, adds lines to Plotly trace.
@@ -585,7 +588,7 @@ class Plot:
 
         return figb, line
 
-    def add_std_area(self, figb, matrix, trace_name, line, tissue=None):
+    def add_std_area(self, figb, matrix, trace_name, line, tissue=None, fig_id=None):
         """Add STD shaded area to trace
         
         Internal function, adds STD shaded area to Plotly trace.
