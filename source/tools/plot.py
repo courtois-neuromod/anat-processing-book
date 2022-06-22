@@ -448,7 +448,7 @@ class Plot:
                                                     name= 'T<sub>2</sub>w',
                                                     marker_symbol=symbols[5],
                                                     marker_color="rgb"+str(Plot.colours[3])))
-                    if tissue=='GM':
+                    elif tissue=='GM':
                         visible = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['GMT2w'][trace], 
