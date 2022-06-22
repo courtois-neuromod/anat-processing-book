@@ -216,22 +216,29 @@ class Plot:
                               xref = 'paper',
                               yref="paper")]
         elif self.dataset.data_type == 'spine':
-            buttons = list([
-                            dict(label="White matter",
-                                method="update",
-                                args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
-                                    self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
-                            dict(label="Grey matter",
-                                method="update",
-                                args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
-                                    self.set_trace_layout(matrix=matrix, metric='GMT2w', title='Area [mm<sup>2</sup>]')]) 
-                            ])
-            annotations=[dict(text="Display metric: ", 
-                              showarrow=False,
-                              x=1.25,
-                              y=0.62,
-                              xref = 'paper',
-                              yref="paper")]
+            if fig_id == 'spine-csa-wm':
+                buttons = None
+                annotations= None
+            elif fig_id == 'spine-csa-gm':
+                buttons = None
+                annotations= None
+            else:
+                buttons = list([
+                                dict(label="White matter",
+                                    method="update",
+                                    args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
+                                        self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
+                                dict(label="Grey matter",
+                                    method="update",
+                                    args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
+                                        self.set_trace_layout(matrix=matrix, metric='GMT2w', title='Area [mm<sup>2</sup>]')]) 
+                                ])
+                annotations=[dict(text="Display metric: ", 
+                                showarrow=False,
+                                x=1.25,
+                                y=0.62,
+                                xref = 'paper',
+                                yref="paper")]
 
         elif self.dataset.data_type == 'qmri':
             buttons = list([
