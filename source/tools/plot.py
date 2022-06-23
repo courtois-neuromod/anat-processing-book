@@ -90,7 +90,9 @@ class Plot:
         
         return symbols
 
-    def display(self, env):
+
+    def display(self, env, fig_id = None):
+
         """Display figure
         
         Display Plotly figure using Data object.
@@ -163,25 +165,31 @@ class Plot:
                 # Add std shaded area to plot
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
         elif self.dataset.data_type == 'spine':
-            tissues = ['WM', 'GM']
+            if fig_id == 'spine-csa-wm':
+                tissues = ['WM']
+            elif fig_id == 'spine-csa-gm':
+                tissues = ['GM']
+            else:
+                tissues = ['WM', 'GM']
+
             for tissue in tissues:
                 # Add datapoints to plot
-                figb = self.add_points(figb, matrix, trace_name, tissue)
+                figb = self.add_points(figb, matrix, trace_name, tissue, fig_id)
 
                 # Add mean line to plot
-                figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+                figb, line = self.add_lines(figb, matrix, trace_name, tissue, fig_id)
 
                 # Add std shaded area to plot
-                figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)
+                figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue, fig_id)
         else:
             # Add datapoints to plot
-            figb = self.add_points(figb, matrix, trace_name, tissue)
+            figb = self.add_points(figb, matrix, trace_name, tissue, fig_id)
 
             # Add mean line to plot
-            figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+            figb, line = self.add_lines(figb, matrix, trace_name, tissue, fig_id)
 
             # Add std shaded area to plot
-            figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)   
+            figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue, fig_id)   
 
         # Set layout
         if self.dataset.data_type == 'brain':
@@ -210,22 +218,43 @@ class Plot:
                               xref = 'paper',
                               yref="paper")]
         elif self.dataset.data_type == 'spine':
-            buttons = list([
-                            dict(label="White matter",
-                                method="update",
-                                args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
-                                    self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
-                            dict(label="Grey matter",
-                                method="update",
-                                args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
-                                    self.set_trace_layout(matrix=matrix, metric='GMT2w', title='Area [mm<sup>2</sup>]')]) 
-                            ])
-            annotations=[dict(text="Display metric: ", 
-                              showarrow=False,
-                              x=1.25,
-                              y=0.62,
-                              xref = 'paper',
-                              yref="paper")]
+            if fig_id == 'spine-csa-wm':
+                buttons = list([
+                                dict(label="T1w",
+                                    method="update",
+                                    args=[{"visible": [True] + ([True] + [False])*8},
+                                        self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
+                                dict(label="T2w",
+                                    method="update",
+                                    args=[{"visible": [True] + ([False] + [True])*8},
+                                        self.set_trace_layout(matrix=matrix, metric='T2w', title='Area [mm<sup>2</sup>]')]) 
+                                ])
+                annotations=[dict(text="Display metric: ", 
+                                showarrow=False,
+                                x=1.20,
+                                y=0.62,
+                                xref = 'paper',
+                                yref="paper")]
+            elif fig_id == 'spine-csa-gm':
+                buttons = None
+                annotations= None
+            else:
+                buttons = list([
+                                dict(label="White matter",
+                                    method="update",
+                                    args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
+                                        self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
+                                dict(label="Grey matter",
+                                    method="update",
+                                    args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
+                                        self.set_trace_layout(matrix=matrix, metric='GMT2w', title='Area [mm<sup>2</sup>]')]) 
+                                ])
+                annotations=[dict(text="Display metric: ", 
+                                showarrow=False,
+                                x=1.25,
+                                y=0.62,
+                                xref = 'paper',
+                                yref="paper")]
 
         elif self.dataset.data_type == 'qmri':
             buttons = list([
@@ -263,14 +292,25 @@ class Plot:
 
         x_button=1.23
         y_button=0.58
+        width = 760
+        height = 520
+    
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
-            yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
-            yaxis_title = 'Area [mm<sup>2</sup>]'
             x_button=1.28
+            if fig_id == 'spine-csa-wm':
+                yaxis_range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')]
+                x_button = 1.18
+            elif fig_id == 'spine-csa-gm':
+                yaxis_range = [self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')]
+                width = 680
+            else:
+                yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
+            
+            yaxis_title = 'Area [mm<sup>2</sup>]'
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
@@ -305,8 +345,8 @@ class Plot:
                                     tickfont = dict(size=self.y_label_tick_font_size)),
                         annotations=annotations,
                         plot_bgcolor='rgba(227,233,244, 0.5)',
-                        width = 760, 
-                        height = 520,
+                        width = width, 
+                        height = height,
                         font = dict(size = self.general_font_size),
                         margin=go.layout.Margin(l=50,
                                                 r=50,
@@ -322,7 +362,7 @@ class Plot:
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
 
-    def add_points(self, figb, matrix, trace_name, tissue=None):
+    def add_points(self, figb, matrix, trace_name, tissue=None, fig_id=None):
         """Add points to trace
         
         Internal function, adds datapoints to Plotly trace.
@@ -349,6 +389,9 @@ class Plot:
                             showlegend = True
                         else:
                             showlegend = False
+
+                    if fig_id == 'spine-qmri-wm':
+                        showlegend = False
 
                     # Custom settings for just the T1 group/plot
                     if metric == 'MP2RAGE':
@@ -414,6 +457,8 @@ class Plot:
                     visible=True
 
                     if tissue=='WM':
+                        if fig_id == 'spine-csa-wm':
+                            showlegend = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['T1w'][trace], 
                                                     mode='markers',
@@ -428,6 +473,13 @@ class Plot:
                                                     name= 'T<sub>1</sub>w',
                                                     marker_color="rgb"+str(Plot.colours[0])))
 
+                        marker_color="rgb"+str(Plot.colours[3])
+                        marker_symbol=symbols[5]
+                        if fig_id == 'spine-csa-wm':
+                            visible = False
+                            marker_color="rgb"+str(Plot.colours[0])
+                            marker_symbol = 'circle'
+
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['T2w'][trace], 
                                                     mode='markers',
@@ -440,10 +492,14 @@ class Plot:
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                                     name= 'T<sub>2</sub>w',
-                                                    marker_symbol=symbols[5],
-                                                    marker_color="rgb"+str(Plot.colours[3])))
-                    if tissue=='GM':
-                        visible = False
+                                                    marker_symbol=marker_symbol,
+                                                    marker_color=marker_color))
+                    elif tissue=='GM':
+                        if fig_id == 'spine-csa-gm':
+                            visible = True
+                            showlegend = False
+                        else:
+                            visible = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['GMT2w'][trace], 
                                                     mode='markers',
@@ -460,7 +516,7 @@ class Plot:
                                        
         return figb
 
-    def add_lines(self, figb, matrix, trace_name, tissue=None):
+    def add_lines(self, figb, matrix, trace_name, tissue=None, fig_id=None):
         """Add lines (mean) to trace
         
         Internal function, adds lines to Plotly trace.
@@ -540,7 +596,12 @@ class Plot:
                                                 line=dict(color="rgb(31, 119, 180)", 
                                                             width=2,
                                                             dash='dot')))
-    
+                    
+                    line_dict=dict(color="rgb(255, 187, 120)", width=2, dash='dot')
+                    if fig_id == 'spine-csa-wm':
+                        visible = False
+                        line_dict=dict(color="rgb(31, 119, 180)", width=2,dash='dot')
+                    
                     figb.add_trace(go.Scatter(x=x, 
                                                 y=[line['T2w']]*8,
                                                 mode='lines',
@@ -548,9 +609,7 @@ class Plot:
                                                 name='T<sub>2</sub>w',
                                                 showlegend = False,
                                                 opacity=0.5, 
-                                                line=dict(color="rgb(255, 187, 120)", 
-                                                            width=2,
-                                                            dash='dot')))
+                                                line=line_dict))
                 if tissue=='GM':
                     figb.add_trace(go.Scatter(x=x, 
                                                 y=[line['GMT2w']]*8,
@@ -566,7 +625,7 @@ class Plot:
 
         return figb, line
 
-    def add_std_area(self, figb, matrix, trace_name, line, tissue=None):
+    def add_std_area(self, figb, matrix, trace_name, line, tissue=None, fig_id=None):
         """Add STD shaded area to trace
         
         Internal function, adds STD shaded area to Plotly trace.
@@ -650,12 +709,17 @@ class Plot:
                         name='T<sub>1</sub>w STD'
                     ))
 
+                    fillcolor='rgba(255, 187, 120,0.15)'
+                    if fig_id == 'spine-csa-wm':
+                        visible = False
+                        fillcolor='rgba(31, 119, 180,0.15)'
+
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
                         y=[line['T2w']+std_area['T2w']]*8+[line['T2w']-std_area['T2w']]*8,
                         fill='toself',
                         visible=visible,
-                        fillcolor='rgba(255, 187, 120,0.15)',
+                        fillcolor=fillcolor,
                         line_color='rgba(255,255,255,0)',
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
