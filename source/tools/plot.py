@@ -282,7 +282,7 @@ class Plot:
             x_button=1.3
         elif self.dataset.data_type == 'spine':
             if fig_id == 'spine-csa-wm':
-                yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
+                yaxis_range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')]
             elif fig_id == 'spine-csa-gm':
                 yaxis_range = [self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')]
             else:
@@ -449,6 +449,11 @@ class Plot:
                                                     name= 'T<sub>1</sub>w',
                                                     marker_color="rgb"+str(Plot.colours[0])))
 
+                        marker_color="rgb"+str(Plot.colours[3])
+                        if fig_id == 'spine-csa-wm':
+                            visible = False
+                            marker_color="rgb"+str(Plot.colours[0])
+
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['T2w'][trace], 
                                                     mode='markers',
@@ -462,7 +467,7 @@ class Plot:
                                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                                     name= 'T<sub>2</sub>w',
                                                     marker_symbol=symbols[5],
-                                                    marker_color="rgb"+str(Plot.colours[3])))
+                                                    marker_color=marker_color))
                     elif tissue=='GM':
                         if fig_id == 'spine-csa-gm':
                             visible = True
@@ -565,7 +570,12 @@ class Plot:
                                                 line=dict(color="rgb(31, 119, 180)", 
                                                             width=2,
                                                             dash='dot')))
-    
+                    
+                    line_dict=dict(color="rgb(255, 187, 120)", width=2, dash='dot')
+                    if fig_id == 'spine-csa-wm':
+                        visible = False
+                        line_dict=dict(color="rgb(31, 119, 180)", width=2,dash='dot')
+                    
                     figb.add_trace(go.Scatter(x=x, 
                                                 y=[line['T2w']]*8,
                                                 mode='lines',
@@ -573,9 +583,7 @@ class Plot:
                                                 name='T<sub>2</sub>w',
                                                 showlegend = False,
                                                 opacity=0.5, 
-                                                line=dict(color="rgb(255, 187, 120)", 
-                                                            width=2,
-                                                            dash='dot')))
+                                                line=line_dict))
                 if tissue=='GM':
                     figb.add_trace(go.Scatter(x=x, 
                                                 y=[line['GMT2w']]*8,
@@ -675,12 +683,17 @@ class Plot:
                         name='T<sub>1</sub>w STD'
                     ))
 
+                    fillcolor='rgba(255, 187, 120,0.15)'
+                    if fig_id == 'spine-csa-wm':
+                        visible = False
+                        fillcolor='rgba(31, 119, 180,0.15)'
+
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
                         y=[line['T2w']+std_area['T2w']]*8+[line['T2w']-std_area['T2w']]*8,
                         fill='toself',
                         visible=visible,
-                        fillcolor='rgba(255, 187, 120,0.15)',
+                        fillcolor=fillcolor,
                         line_color='rgba(255,255,255,0)',
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
