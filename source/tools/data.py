@@ -53,6 +53,8 @@ class Data:
         self.release_file = None
         self.data_dir = None
         self.data = None
+        self.num_subjects = None
+        self.num_sessions = None
 
     def get_available_versions(self):
         """Get available data versions
@@ -162,6 +164,36 @@ class Data:
 
                 # Sort values based on Subject -- Session
                 self.data[acq]=self.data[acq].sort_values(['subject', 'session'], ascending=[True, True])
+    
+        num_subjects, num_sessions = self.set_num_subjects_sessions()
+
+        self.num_subjects = num_subjects
+        self.num_sessions = num_sessions
+
+    def set_num_subjects_sessions(self):
+        """Set the number of subjects and number of sessions in the loaded dataset
+
+        Goes through each metric and finds the maximum number of subjects and sessions acquired, and
+        sets it to the object.
+
+        """
+
+        subject_array = []
+        session_array = []
+    
+        if self.data_type == 'brain':
+            subject_array.append(max(self.data['subject']))
+            session_array.append(max(self.data['session']))
+        else:
+            for key in self.data:
+                subject_array.append(max(self.data[key]['subject']))
+                session_array.append(max(self.data[key]['session']))
+        
+        num_subjects = max(subject_array)
+        num_sessions = max(session_array)
+
+        return num_subjects, num_sessions
+
 
     def extract_data(self, tissue=None):
         """Extract data
@@ -171,8 +203,9 @@ class Data:
 
         """
         
-        num_sub = 6
-        num_session = 4
+        num_sub = self.num_subjects
+        num_session = self.num_sessions
+
         if self.data_type == 'brain':
             matrix = {
                 'MP2RAGE': [],

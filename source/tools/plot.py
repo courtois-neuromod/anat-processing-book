@@ -105,6 +105,10 @@ class Plot:
         init_notebook_mode(connected = True)
         config={'showLink': False, 'displayModeBar': False}
 
+        # Get number of subjects and sessions
+        num_subjects = self.dataset.num_subjects
+        num_sessions = self.dataset.num_sessions
+
         # Get database
         if self.dataset.data_type == 'brain':
             matrix = {
@@ -196,19 +200,19 @@ class Plot:
             buttons = list([
                             dict(label="T<sub>1</sub> (MP2RAGE)",
                                 method="update",
-                                args=[{"visible": [True] + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3 + [True]*6 + [False]*18 + [True] + [False]*3 + [True] + [False]*3},
+                                args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*3) + [True] + [False]*3 + [True] + [False]*3 + [True]*num_subjects + [False]*(num_subjects*3) + [True] + [False]*3 + [True] + [False]*3},
                                 self.set_trace_layout(matrix=matrix, metric='MP2RAGE', title='T<sub>1</sub> [s]', tissues=['WM', 'GM'])]),
                             dict(label="T<sub>1</sub> (MTsat)",
                                 method="update",
-                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*6 + [True]*6 + [False]*12 + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
+                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects*2) + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects*2) + [False] + [True]*1 +[False]*2 + [False] + [True]*1 +[False]*2},
                                 self.set_trace_layout(matrix=matrix, metric='MTS', title='T<sub>1</sub> [s]', tissues=['WM', 'GM'])]),                                                    
                             dict(label="MTR",
                                 method="update",
-                                args=[{"visible": [True] + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*12 + [True]*6 + [False]*6 + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
+                                args=[{"visible": [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*num_subjects + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*num_subjects + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
                                 self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [a.u.]', tissues=['WM', 'GM'])        ]),
                             dict(label="MTsat",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*18 + [True]*6 + [False]*3 + [True]*1 + [False]*3 + [True]*1},
+                                args=[{"visible":  [True] + [False]*(num_subjects*3) + [True]*num_subjects + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*(num_subjects*3) + [True]*num_subjects + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                 self.set_trace_layout(matrix=matrix, metric='MTsat', title='MTsat [a.u.]', tissues=['WM', 'GM'])])
                             ])
             annotations=[dict(text="Display metric: ", 
@@ -222,11 +226,11 @@ class Plot:
                 buttons = list([
                                 dict(label="T1w",
                                     method="update",
-                                    args=[{"visible": [True] + ([True] + [False])*8},
+                                    args=[{"visible": [True] + ([True] + [False])*num_subjects + ([True] + [False])*2},
                                         self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
                                 dict(label="T2w",
                                     method="update",
-                                    args=[{"visible": [True] + ([False] + [True])*8},
+                                    args=[{"visible": [True] + ([False] + [True])*num_subjects + ([False] + [True])*2},
                                         self.set_trace_layout(matrix=matrix, metric='T2w', title='Area [mm<sup>2</sup>]')]) 
                                 ])
                 annotations=[dict(text="Display metric: ", 
@@ -242,11 +246,11 @@ class Plot:
                 buttons = list([
                                 dict(label="White matter",
                                     method="update",
-                                    args=[{"visible": [True] + [True]*12 + [True]*2 + [True]*2 + [False]*6 + [False]*1 + [False]*1},
+                                    args=[{"visible": [True] + [True]*(num_subjects*2) + [True]*2 + [True]*2 + [False]*num_subjects + [False]*1 + [False]*1},
                                         self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
                                 dict(label="Grey matter",
                                     method="update",
-                                    args=[{"visible": [True] + [False]*12 + [False]*2 + [False]*2 + [True]*6 + [True]*1 + [True]*1},
+                                    args=[{"visible": [True] + [False]*(num_subjects*2) + [False]*2 + [False]*2 + [True]*num_subjects + [True]*1 + [True]*1},
                                         self.set_trace_layout(matrix=matrix, metric='GMT2w', title='Area [mm<sup>2</sup>]')]) 
                                 ])
                 annotations=[dict(text="Display metric: ", 
@@ -260,27 +264,27 @@ class Plot:
             buttons = list([
                             dict(label="DWI_FA",
                                 method="update",
-                                args=[{"visible": [True] + [True]*6 + [False]*30 + [True]*1 + [False]*5 + [True]*1 + [False]*5},
+                                args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*5) + [True]*1 + [False]*5 + [True]*1 + [False]*5},
                                 self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]')]),
                             dict(label="DWI_MD",
                                 method="update",
-                                args=[{"visible": [True] + [False]*6 + [True]*6 + [False]*24 + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
+                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects*4) + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
                                 self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]')]),            
                             dict(label="DWI_RD",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*12 + [True]*6 + [False]*18 + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
+                                args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*(num_subjects*3) + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
                                 self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]')]),
                             dict(label="MTR",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*18 + [True]*6 + [False]*12 + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
+                                args=[{"visible":  [True] + [False]*(num_subjects*3) + [True]*num_subjects + [False]*(num_subjects*2) + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
                                 self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [a.u.]')]),
                             dict(label="MTsat",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*24 + [True]*6 + [False]*6 + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
+                                args=[{"visible":  [True] + [False]*(num_subjects*4) + [True]*num_subjects + [False]*num_subjects + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
                                 self.set_trace_layout(matrix=matrix, metric='MTSat', title='MTsat [a.u.]')]),
                             dict(label="T<sub>1</sub>",
                                 method="update",
-                                args=[{"visible":  [True] + [False]*30 + [True]*6 + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
+                                args=[{"visible":  [True] + [False]*(num_subjects*5) + [True]*num_subjects + [False]*5 + [True]*1 + [False]*5 + [True]*1 },
                                 self.set_trace_layout(matrix=matrix, metric='T1', title='T<sub>1</sub> [s]')]) 
                             ])
             annotations=[dict(text="Display metric: ", 
@@ -529,7 +533,10 @@ class Plot:
 
         """
 
-        x = [-1, 0, 1, 2, 3, 4, 5, 6]
+        num_subjects = self.dataset.num_subjects
+
+        x = list(np.linspace(-1, num_subjects, num=num_subjects+2, dtype=int))
+
         line = {}
         
         if 'T1w' not in matrix:
@@ -638,8 +645,10 @@ class Plot:
             - tissue: 'WM' or 'GM', used for brain dataset
 
         """
+        
+        num_subjects = self.dataset.num_subjects
+        x = list(np.linspace(-1, num_subjects, num=num_subjects+2, dtype=int))
 
-        x = [-1, 0, 1, 2, 3, 4, 5, 6]
         std_area = {}
         
         if 'T1w' not in matrix:
