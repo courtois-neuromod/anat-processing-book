@@ -535,7 +535,7 @@ class Plot:
 
         num_subjects = self.dataset.num_subjects
 
-        x = np.linspace(-1, num_subjects, num=num_subjects+2)
+        x = list(np.linspace(-1, num_subjects, num=num_subjects+2, dtype=int))
 
         line = {}
         
@@ -647,8 +647,8 @@ class Plot:
         """
         
         num_subjects = self.dataset.num_subjects
-        x = np.linspace(-1, num_subjects, num=num_subjects+2)
-        print(x)
+        x = list(np.linspace(-1, num_subjects, num=num_subjects+2, dtype=int))
+
         std_area = {}
         
         if 'T1w' not in matrix:
