@@ -433,6 +433,8 @@ class Plot:
                     visible=True
 
                     if tissue=='WM':
+                        if fig_id == 'spine-csa-wm':
+                            showlegend = False
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['T1w'][trace], 
                                                     mode='markers',
@@ -464,6 +466,7 @@ class Plot:
                     elif tissue=='GM':
                         if fig_id == 'spine-csa-gm':
                             visible = True
+                            showlegend = False
                         else:
                             visible = False
                         figb.add_trace(go.Scatter(x=t, 
