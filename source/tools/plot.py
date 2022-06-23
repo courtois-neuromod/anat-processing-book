@@ -181,13 +181,13 @@ class Plot:
                 figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue, fig_id)
         else:
             # Add datapoints to plot
-            figb = self.add_points(figb, matrix, trace_name, tissue)
+            figb = self.add_points(figb, matrix, trace_name, tissue, fig_id)
 
             # Add mean line to plot
-            figb, line = self.add_lines(figb, matrix, trace_name, tissue)
+            figb, line = self.add_lines(figb, matrix, trace_name, tissue, fig_id)
 
             # Add std shaded area to plot
-            figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue)   
+            figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue, fig_id)   
 
         # Set layout
         if self.dataset.data_type == 'brain':
@@ -387,6 +387,9 @@ class Plot:
                             showlegend = True
                         else:
                             showlegend = False
+
+                    if fig_id == 'spine-qmri-wm':
+                        showlegend = False
 
                     # Custom settings for just the T1 group/plot
                     if metric == 'MP2RAGE':
