@@ -217,8 +217,22 @@ class Plot:
                               yref="paper")]
         elif self.dataset.data_type == 'spine':
             if fig_id == 'spine-csa-wm':
-                buttons = None
-                annotations= None
+                buttons = list([
+                                dict(label="T1w",
+                                    method="update",
+                                    args=[{"visible": [True] + ([True] + [False])*8},
+                                        self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
+                                dict(label="T2w",
+                                    method="update",
+                                    args=[{"visible": [True] + ([False] + [True])*8},
+                                        self.set_trace_layout(matrix=matrix, metric='T2w', title='Area [mm<sup>2</sup>]')]) 
+                                ])
+                annotations=[dict(text="Display metric: ", 
+                                showarrow=False,
+                                x=1.20,
+                                y=0.62,
+                                xref = 'paper',
+                                yref="paper")]
             elif fig_id == 'spine-csa-gm':
                 buttons = None
                 annotations= None
@@ -276,20 +290,25 @@ class Plot:
 
         x_button=1.23
         y_button=0.58
+        width = 760
+        height = 520
+    
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
+            x_button=1.28
             if fig_id == 'spine-csa-wm':
                 yaxis_range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')]
+                x_button = 1.18
             elif fig_id == 'spine-csa-gm':
                 yaxis_range = [self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')]
+                width = 680
             else:
                 yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
             
             yaxis_title = 'Area [mm<sup>2</sup>]'
-            x_button=1.28
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
@@ -324,8 +343,8 @@ class Plot:
                                     tickfont = dict(size=self.y_label_tick_font_size)),
                         annotations=annotations,
                         plot_bgcolor='rgba(227,233,244, 0.5)',
-                        width = 760, 
-                        height = 520,
+                        width = width, 
+                        height = height,
                         font = dict(size = self.general_font_size),
                         margin=go.layout.Margin(l=50,
                                                 r=50,
