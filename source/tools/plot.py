@@ -469,9 +469,11 @@ class Plot:
                                                     marker_color="rgb"+str(Plot.colours[0])))
 
                         marker_color="rgb"+str(Plot.colours[3])
+                        marker_symbol=symbols[5]
                         if fig_id == 'spine-csa-wm':
                             visible = False
                             marker_color="rgb"+str(Plot.colours[0])
+                            marker_symbol = 'circle'
 
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['T2w'][trace], 
@@ -485,7 +487,7 @@ class Plot:
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(4)],
                                                     name= 'T<sub>2</sub>w',
-                                                    marker_symbol=symbols[5],
+                                                    marker_symbol=marker_symbol,
                                                     marker_color=marker_color))
                     elif tissue=='GM':
                         if fig_id == 'spine-csa-gm':
