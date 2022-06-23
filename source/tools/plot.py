@@ -90,7 +90,9 @@ class Plot:
         
         return symbols
 
+
     def display(self, env, fig_id = None):
+
         """Display figure
         
         Display Plotly figure using Data object.
