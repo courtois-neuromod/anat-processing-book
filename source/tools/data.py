@@ -171,7 +171,13 @@ class Data:
         self.num_sessions = num_sessions
 
     def set_num_subjects_sessions(self):
-        
+        """Set the number of subjects and number of sessions in the loaded dataset
+
+        Goes through each metric and finds the maximum number of subjects and sessions acquired, and
+        sets it to the object.
+
+        """
+
         subject_array = []
         session_array = []
     
