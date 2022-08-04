@@ -157,8 +157,8 @@ class Data:
 
                 # Get Subject and Session from csv
                 for index, row in self.data[acq].iterrows():
-                    subject = int(row['Filename'].split("/")[6].split('-')[1])
-                    session = int(row['Filename'].split("/")[7].split("-")[1])
+                    subject = int(next((x for x in row['Filename'].split("/") if 'sub' in x), None).split('-')[1])
+                    session = int(next((x for x in row['Filename'].split("/") if 'ses' in x), None).split('-')[1])
                     self.data[acq].at[index, 'subject'] =  subject
                     self.data[acq].at[index, 'session'] =  session
 
