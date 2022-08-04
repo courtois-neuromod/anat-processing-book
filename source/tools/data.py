@@ -1,6 +1,7 @@
 import subprocess
 from pathlib import Path
 import pandas as pd
+import numpy as np
 
 class Data:
     """Data handling class
@@ -260,7 +261,10 @@ class Data:
                         elif metric == 'MTsat':
                             if row['metric'] == 'MTsat' and row['label'] == tissue:
                                 mean_val = row['mean']
-                            
+
+                        if np.isnan(mean_val):
+                            mean_val = default_val
+
                     # Append values to lists for sessions
                     metric_ses.append(mean_val)
          
