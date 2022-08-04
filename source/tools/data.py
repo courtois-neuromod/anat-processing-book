@@ -17,7 +17,7 @@ class Data:
             'data_files': "results-neuromod-anat-brain-qmri.csv"
         },
         'spine': {
-            'version_list': ['r20210610'],
+            'version_list': ['r20220804'],
             'filename': 'spinalcord_results.zip',
             'data_files': {
                 'T1w': 'csa-SC_T1w.csv',
@@ -26,7 +26,7 @@ class Data:
             },
         },
         'qmri':{
-            'version_list': ['r20210610'],
+            'version_list': ['r20220804'],
             'filename': 'spinalcord_results.zip',
             'data_files': {
                 'DWI_FA': 'DWI_FA.csv',
