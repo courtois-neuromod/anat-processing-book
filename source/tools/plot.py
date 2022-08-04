@@ -161,7 +161,7 @@ class Plot:
             tissues = ['WM', 'GM']
             for tissue in tissues:
                 # Add datapoints to plot
-                figb = self.add_points(figb, matrix[tissue], trace_name, tissue)
+                figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
 
                 # Add mean line to plot
                 figb, line = self.add_lines(figb, matrix[tissue], trace_name, tissue)
@@ -178,7 +178,7 @@ class Plot:
 
             for tissue in tissues:
                 # Add datapoints to plot
-                figb = self.add_points(figb, matrix, trace_name, tissue, fig_id)
+                figb = self.add_points(figb, matrix, trace_name, num_sessions, tissue, fig_id)
 
                 # Add mean line to plot
                 figb, line = self.add_lines(figb, matrix, trace_name, tissue, fig_id)
@@ -187,7 +187,7 @@ class Plot:
                 figb, std_area = self.add_std_area(figb, matrix, trace_name, line, tissue, fig_id)
         else:
             # Add datapoints to plot
-            figb = self.add_points(figb, matrix, trace_name, tissue, fig_id)
+            figb = self.add_points(figb, matrix, trace_name, num_sessions, tissue, fig_id)
 
             # Add mean line to plot
             figb, line = self.add_lines(figb, matrix, trace_name, tissue, fig_id)
@@ -366,7 +366,7 @@ class Plot:
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
 
-    def add_points(self, figb, matrix, trace_name, tissue=None, fig_id=None):
+    def add_points(self, figb, matrix, trace_name, num_sessions, tissue=None, fig_id=None):
         """Add points to trace
         
         Internal function, adds datapoints to Plotly trace.
@@ -384,7 +384,7 @@ class Plot:
         for metric in trace_name:
             if 'T1w' not in matrix:
                 for trace in range(0, len(matrix[metric])):
-                    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+                    t = [trace -0.3 + i*((0.3*2)/(num_sessions-1)) for i in range(0, num_sessions)]
 
                     if trace == 0: 
                         showlegend = True
@@ -439,7 +439,7 @@ class Plot:
                                                 "<br>" + 
                                                 "<b>%{text}</b>", 
                                                 showlegend = showlegend, 
-                                                text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                 name= name,
                                                 marker_color=marker_color))
             else:
@@ -449,7 +449,7 @@ class Plot:
                     prop = 'GMT2w'
 
                 for trace in range(0, len(matrix[prop])):
-                    t = [trace -0.2 + i*0.14 for i in range(0, 4)]
+                    t = [trace -0.2 + i*((0.3*2)/(num_sessions-1)) for i in range(0, num_sessions)]
                         
                     if trace == 0: 
                         showlegend = True
@@ -473,7 +473,7 @@ class Plot:
                                                     "<br>" + 
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
-                                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                    text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                     name= 'T<sub>1</sub>w',
                                                     marker_color="rgb"+str(Plot.colours[0])))
 
@@ -494,7 +494,7 @@ class Plot:
                                                     "<br>" + 
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
-                                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                    text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                     name= 'T<sub>2</sub>w',
                                                     marker_symbol=marker_symbol,
                                                     marker_color=marker_color))
@@ -514,7 +514,7 @@ class Plot:
                                                     "<br>" + 
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
-                                                    text = ['Session {}'.format(i + 1) for i in range(4)],
+                                                    text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                     name= 'T<sub>2</sub><sup>*</sup>',
                                                     marker_color="rgb"+str(Plot.colours[0])))
                                        
