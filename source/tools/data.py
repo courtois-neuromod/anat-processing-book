@@ -13,12 +13,12 @@ class Data:
 
     datasets = {
         'brain': {
-            'version_list': ['r20210726, b20220804, r20220813'],
+            'version_list': ['r20210726', 'b20220804', 'r20220813'],
             'filename': 'neuromod-anat-brain-qmri.zip',
             'data_files': "results-neuromod-anat-brain-qmri.csv"
         },
         'spine': {
-            'version_list': ['r20220623, r20220804'],
+            'version_list': ['r20220623', 'r20220804'],
             'filename': 'spinalcord_results.zip',
             'data_files': {
                 'T1w': 'csa-SC_T1w.csv',
@@ -27,7 +27,7 @@ class Data:
             },
         },
         'qmri':{
-            'version_list': ['r20220623, r20220804'],
+            'version_list': ['r20220623', 'r20220804'],
             'filename': 'spinalcord_results.zip',
             'data_files': {
                 'DWI_FA': 'DWI_FA.csv',
