@@ -1,8 +1,8 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: "Anatomical analysis" # The title of the book. Will be placed in the left navbar.
-author: Mathieu Boudreau and Kiril 
+title: "Courtois Neuromod project: Longitudinal stability of quantitative MRI measures" # The title of the book. Will be placed in the left navbar.
+author: Courtois Neuromod team 
 logo: logo.png
 
 # Force re-execution of notebooks on each build.
