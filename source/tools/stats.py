@@ -48,7 +48,10 @@ class Stats:
             'DWI_MD': 'MD (DWI)',
             'DWI_RD': 'RD (DWI)',
             'MTSat': 'MTsat',
-            'T1': 'T1 (MTsat)'
+            'T1': 'T1 (MTsat)',
+            'T1w':  'WM area (T1w)',
+            'T2w': 'WM area (T2w)',
+            'GMT2w': 'GM area (T2w)'
         }
         
 
@@ -75,7 +78,7 @@ class Stats:
             }
         
         self.stats_table = pd.DataFrame.from_dict(df_setup, orient='index', columns=columns)
-
+        breakpoint()
         for metric in metrics:
             if 'WM' in self.database.keys():
                 intrasub_cov = np.divide(np.nanstd(self.df[metric], axis=1), np.nanmean(self.df[metric], axis=1))
