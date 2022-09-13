@@ -196,7 +196,7 @@ class Data:
         return num_subjects, num_sessions
 
 
-    def extract_data(self, tissue=None):
+    def extract_data(self, tissue=None, default_val = -100):
         """Extract data
 
         Extract the metrics from the pandas datafram into a matrix format fo all
@@ -229,8 +229,6 @@ class Data:
                 'MTSat': [],
                 'T1': []
                 }
-
-        default_val = -100
 
         for metric in matrix:
             for i in range(1, num_sub+1, 1):
