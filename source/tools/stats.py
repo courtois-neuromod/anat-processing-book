@@ -72,25 +72,25 @@ class Stats:
             col_vals.append(None)
         
         df_setup = {
-            'intrasubject CoV mean': col_vals,
-            'intrasubject CoV std': col_vals,
-            'intersubject mean CoV': col_vals,
+            'intrasubject COV mean [%]': col_vals,
+            'intrasubject COV std [%]': col_vals,
+            'intersubject mean COV [%]': col_vals,
             }
         
         self.stats_table = pd.DataFrame.from_dict(df_setup, orient='index', columns=columns)
         breakpoint()
         for metric in metrics:
             if 'WM' in self.database.keys():
-                intrasub_cov = np.divide(np.nanstd(self.df[metric], axis=1), np.nanmean(self.df[metric], axis=1))
-                self.stats_table[self.database2table[metric]]['intrasubject CoV mean'] = np.mean(intrasub_cov)
-                self.stats_table[self.database2table[metric]]['intrasubject CoV std'] = np.std(intrasub_cov)
+                intrasub_cov = np.divide(np.nanstd(self.df[metric], axis=1), np.nanmean(self.df[metric], axis=1)) * 100
+                self.stats_table[self.database2table[metric]]['intrasubject COV mean [%]'] = np.mean(intrasub_cov)
+                self.stats_table[self.database2table[metric]]['intrasubject COV std [%]'] = np.std(intrasub_cov)
 
                 intrasub_mean = np.nanmean(self.df[metric], axis=1)
-                self.stats_table[self.database2table[metric]]['intersubject mean CoV'] = np.divide(np.std(intrasub_mean),np.mean(intrasub_mean))
+                self.stats_table[self.database2table[metric]]['intersubject mean COV [%]'] = np.divide(np.std(intrasub_mean),np.mean(intrasub_mean)) * 100
             else:
-                intrasub_cov = np.divide(np.nanstd(self.df[metric].tolist(), axis=1), np.nanmean(self.df[metric].tolist(), axis=1))
-                self.stats_table[self.database2table[metric]]['intrasubject CoV mean'] = np.mean(intrasub_cov)
-                self.stats_table[self.database2table[metric]]['intrasubject CoV std'] = np.std(intrasub_cov)
+                intrasub_cov = np.divide(np.nanstd(self.df[metric].tolist(), axis=1), np.nanmean(self.df[metric].tolist(), axis=1)) * 100
+                self.stats_table[self.database2table[metric]]['intrasubject COV mean [%]'] = np.mean(intrasub_cov)
+                self.stats_table[self.database2table[metric]]['intrasubject COV std [%]'] = np.std(intrasub_cov)
 
                 intrasub_mean = np.nanmean(self.df[metric].tolist(), axis=1)
-                self.stats_table[self.database2table[metric]]['intersubject mean CoV'] = np.divide(np.std(intrasub_mean),np.mean(intrasub_mean))
+                self.stats_table[self.database2table[metric]]['intersubject mean COV [%]'] = np.divide(np.std(intrasub_mean),np.mean(intrasub_mean)) * 100
