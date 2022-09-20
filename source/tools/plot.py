@@ -117,6 +117,13 @@ class Plot:
             }
             matrix['WM'] = self.dataset.extract_data('WM')
             matrix['GM'] = self.dataset.extract_data('GM')
+        elif self.dataset.data_type == 'brain-diffusion':
+            matrix = {
+                'CC_1': [],
+                'MCP': []
+            }
+            matrix['CC_1'] = self.dataset.extract_data('CC_1')
+            matrix['MCP'] = self.dataset.extract_data('MCP')
         else:
             matrix = self.dataset.extract_data()
 
@@ -141,6 +148,12 @@ class Plot:
                 'MTR': 'MTR',
                 'MTsat': 'MTsat'
             }
+        elif self.dataset.data_type == 'brain-diffusion':
+            trace_name = {
+                    'DWI_FA': 'DWI_FA',
+                    'DWI_MD': 'DWI_MD',
+                    'DWI_RD': 'DWI_RD'
+            }
         elif self.dataset.data_type == 'spine':
             trace_name = {
                 'Area': 'Area (mm<sup>2</sup>)',
@@ -159,6 +172,17 @@ class Plot:
 
         if self.dataset.data_type == 'brain':
             tissues = ['WM', 'GM']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
+
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix[tissue], trace_name, tissue)
+
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+        elif self.dataset.data_type == 'brain-diffusion':
+            tissues = ['CC_1', 'MCP']
             for tissue in tissues:
                 # Add datapoints to plot
                 figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
@@ -214,6 +238,27 @@ class Plot:
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*3) + [True]*num_subjects + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*(num_subjects*3) + [True]*num_subjects + [False]*3 + [True]*1 + [False]*3 + [True]*1},
                                 self.set_trace_layout(matrix=matrix, metric='MTsat', title='MTsat [a.u.]', tissues=['WM', 'GM'])])
+                            ])
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
+        elif self.dataset.data_type == 'brain-diffusion':
+            buttons = list([
+                            dict(label="DWI_FA",
+                                method="update",
+                                args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['CC_1', 'MCP'])]),
+                            dict(label="DWI_MD",
+                                method="update",
+                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['CC_1', 'MCP'])]),            
+                            dict(label="DWI_RD",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['CC_1', 'MCP'])]),
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
@@ -303,6 +348,10 @@ class Plot:
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
+        if self.dataset.data_type == 'brain-diffusion':
+            yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
+            yaxis_title = 'DWI_FA [a.u.]'
+            x_button=1.3
         elif self.dataset.data_type == 'spine':
             x_button=1.28
             if fig_id == 'spine-csa-wm':
@@ -378,7 +427,6 @@ class Plot:
             - tissue: 'WM' or 'GM', used for brain dataset
 
         """
-
         symbols = self.get_symbols()
 
         for metric in trace_name:
@@ -424,6 +472,14 @@ class Plot:
                         marker_color = "rgb"+str(Plot.colours[3])
                         legend_group = "group2"
                         name = 'Grey matter'
+                    elif tissue == 'CC_1':
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+                        name = 'CC_1'
+                    elif tissue == 'MCP':
+                        marker_color = "rgb"+str(Plot.colours[3])
+                        legend_group = "group2"
+                        name = 'MCP'
                     else:
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
@@ -550,6 +606,12 @@ class Plot:
                 elif tissue == 'GM': 
                     line_color = "rgb"+str(Plot.colours[3])
                     name = 'Grey matter'
+                if tissue == 'CC_1':
+                    line_color = "rgb"+str(Plot.colours[0])
+                    name = 'CC_1'
+                elif tissue == 'MCP': 
+                    line_color = "rgb"+str(Plot.colours[3])
+                    name = 'MCP'
                 else: 
                     line_color = "rgb"+str(Plot.colours[0])
                     name = trace_name[metric]
@@ -650,12 +712,11 @@ class Plot:
         x = list(np.linspace(-1, num_subjects, num=num_subjects+2, dtype=int))
 
         std_area = {}
-        
         if 'T1w' not in matrix:
             for metric in trace_name:
                 std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-                if tissue == 'WM':
+                if tissue == 'WM' or tissue == 'CC_1':
                     fillcolor='rgba(31, 119, 180, 0.15)'
                 else: 
                     fillcolor='rgba(255, 187, 120, 0.15)'
@@ -750,7 +811,7 @@ class Plot:
         return figb, std_area
 
     def set_trace_layout(self, matrix, metric, title, tissues=None):
-        """Set trace layour
+        """Set trace layout
         
         Internal function, sets up y_axis layout details
 
@@ -762,7 +823,6 @@ class Plot:
             - tissue: 'WM' or 'GM', used for brain dataset
 
         """
-
         if tissues is not None:
             yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
         else:
