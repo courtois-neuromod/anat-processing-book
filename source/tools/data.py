@@ -17,6 +17,11 @@ class Data:
             'filename': 'neuromod-anat-brain-qmri.zip',
             'data_files': "results-neuromod-anat-brain-qmri.csv"
         },
+        'brain-diffusion': {
+            'version_list': ['alpha'],
+            'filename': '',
+            'data_files': "mean_std.json"
+        },
         'spine': {
             'version_list': ['r20220623', 'r20220804'],
             'filename': 'spinalcord_results.zip',
@@ -124,7 +129,57 @@ class Data:
 
             # Sort data acording to subject and session columns 
             self.data.sort_values(['subject', 'session'], ascending=[True, True]) 
+        elif data_type == 'brain-diffusion':
+            data_file = Data.datasets[data_type]['data_files']
+            file_path = self.data_dir / data_file
 
+            # Read data
+            json_data = pd.read_json(file_path)
+
+            df = pd.DataFrame(columns=['subject', 'session', 'acquisition', 'metric', 'label', 'mean', 'std'])
+            metrics = ['fa_metric', 'md_metric', 'rd_metric']
+
+            for sub_ses in json_data.keys():
+                tmp = sub_ses.split('_')
+
+                sub = int(tmp[0].split('-')[1])
+                ses = int(tmp[1].split('-')[1])
+                for tract in json_data[sub_ses].keys():
+                    for metric in metrics:
+
+                        if type(json_data[sub_ses][tract]) is dict:
+                            mean_val = json_data[sub_ses][tract][metric]['mean']
+                            std_val = json_data[sub_ses][tract][metric]['std']
+                            df = df.append(
+                                {
+                                    'subject': sub,
+                                    'session': ses,
+                                    'acquisition': 'dwi',
+                                    'metric': metric,
+                                    'label': tract,
+                                    'mean': mean_val,
+                                    'std': std_val
+                                },
+                                ignore_index=True
+                            )
+                        else:
+                            df = df.append(
+                                {
+                                    'subject': sub,
+                                    'session': ses,
+                                    'acquisition': 'dti',
+                                    'metric': metric,
+                                    'label': tract,
+                                    'mean': -100,
+                                    'std': -100
+                                },
+                                ignore_index=True
+                            )
+
+            self.data = df
+
+            # Sort data acording to subject and session columns 
+            self.data=self.data.sort_values(['subject', 'session'], ascending=[True, True]) 
         else:
             if data_type == 'spine':
                 # Prep data property
@@ -181,8 +236,8 @@ class Data:
 
         subject_array = []
         session_array = []
-    
-        if self.data_type == 'brain':
+
+        if self.data_type == 'brain' or self.data_type == 'brain-diffusion':
             subject_array.append(max(self.data['subject']))
             session_array.append(max(self.data['session']))
         else:
@@ -214,6 +269,12 @@ class Data:
                 'MTR': [],
                 'MTsat': []
             }
+        elif self.data_type == 'brain-diffusion':
+            matrix = {
+                'DWI_FA': [],
+                'DWI_MD': [],
+                'DWI_RD': []
+            }
         elif self.data_type == 'spine':
             matrix = {
                 'T1w':  [],
@@ -232,7 +293,7 @@ class Data:
 
         for metric in matrix:
             for i in range(1, num_sub+1, 1):
-                if self.data_type == 'brain':
+                if self.data_type == 'brain' or self.data_type == 'brain-diffusion':
                     sub_values = self.data.loc[self.data['subject'] == i]
                 else:
                     sub_values = self.data[metric].loc[self.data[metric]['subject'] == i]
@@ -245,7 +306,7 @@ class Data:
                     mean_val = default_val
 
                     for index, row in ses_values.iterrows():
-                        
+
                         if self.data_type == 'qmri':
                             mean_val = row['WA()']
                         elif self.data_type == 'spine':
@@ -258,6 +319,15 @@ class Data:
                                 mean_val = row['mean']
                         elif metric == 'MTsat':
                             if row['metric'] == 'MTsat' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'DWI_FA':
+                            if row['metric'] == 'fa_metric' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'DWI_MD':
+                            if row['metric'] == 'md_metric' and row['label'] == tissue:
+                                mean_val = row['mean']
+                        elif metric == 'DWI_RD':
+                            if row['metric'] == 'rd_metric' and row['label'] == tissue:
                                 mean_val = row['mean']
 
                         if np.isnan(mean_val):
