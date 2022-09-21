@@ -13,7 +13,7 @@ class Data:
 
     datasets = {
         'brain': {
-            'version_list': ['r20210726', 'b20220804', 'r20220813', 'r20220916'],
+            'version_list': ['r20210726', 'b20220804', 'r20220813', 'r20220916', 'r20220921'],
             'filename': 'neuromod-anat-brain-qmri.zip',
             'data_files': "results-neuromod-anat-brain-qmri.csv"
         },
