@@ -348,7 +348,7 @@ class Plot:
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
             x_button=1.3
-        if self.dataset.data_type == 'brain-diffusion':
+        elif self.dataset.data_type == 'brain-diffusion':
             yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
             x_button=1.3

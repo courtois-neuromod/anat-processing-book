@@ -170,8 +170,8 @@ class Data:
                                     'acquisition': 'dti',
                                     'metric': metric,
                                     'label': tract,
-                                    'mean': -100,
-                                    'std': -100
+                                    'mean': np.nan,
+                                    'std': np.nan
                                 },
                                 ignore_index=True
                             )
