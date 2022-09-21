@@ -85,7 +85,7 @@ class Stats:
             }
         
         self.stats_table = pd.DataFrame.from_dict(df_setup, orient='index', columns=columns)
-        breakpoint()
+
         for metric in metrics:
             if 'WM' in self.database.keys() or 'CC_1' in self.database.keys():
                 intrasub_cov = np.divide(np.nanstd(self.df[metric], axis=1), np.nanmean(self.df[metric], axis=1)) * 100

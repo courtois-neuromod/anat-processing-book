@@ -18,8 +18,8 @@ class Data:
             'data_files': "results-neuromod-anat-brain-qmri.csv"
         },
         'brain-diffusion': {
-            'version_list': ['alpha'],
-            'filename': '',
+            'version_list': ['r20220921b'],
+            'filename': 'brain-diffusion-arnaud.zip',
             'data_files': "mean_std.json"
         },
         'spine': {
@@ -43,7 +43,7 @@ class Data:
                 'T1': 'T1.csv'
             },
         },
-        'url': 'https://github.com/courtois-neuromod/anat-processing/releases/download/'
+        'url': 'https://github.com/courtois-neuromod/anat-processing/releases/download'
     }
     
     def __init__(self, data_type):
