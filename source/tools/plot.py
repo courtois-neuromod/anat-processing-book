@@ -103,7 +103,17 @@ class Plot:
         """
         # Initialize Plotly 
         init_notebook_mode(connected = True)
-        config={'showLink': False, 'displayModeBar': False}
+        config={
+            'showLink': False,
+            'displayModeBar': False,
+            'toImageButtonOptions': {
+                'format': 'png', # one of png, svg, jpeg, webp
+                'filename': 'custom_image',
+                'height': 500,
+                'width': 700,
+                'scale': 2 # Multiply title/legend/axis/canvas sizes by this factor
+            }
+        }
 
         # Get number of subjects and sessions
         num_subjects = self.dataset.num_subjects
