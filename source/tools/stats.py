@@ -58,7 +58,7 @@ class Stats:
             'T1': 'T1 (MTsat)',
             'T1w':  'WM area (T1w)',
             'T2w': 'WM area (T2w)',
-            'GMT2w': 'GM area (T2w)'
+            'GMT2w': 'GM area (T2s)'
         }
         
 

@@ -45,6 +45,16 @@ class Data:
         },
         'url': 'https://github.com/courtois-neuromod/anat-processing/releases/download'
     }
+
+    # [sub, ses, metric]
+    qc_exclude = [
+        ['qmri', 3, 10, 'T1w'],
+        ['qmri', 4, 5, 'T1w'],
+        ['qmri', 5, 7, 'T2w'],
+        ['qmri', 2, 1, 'DWI_FA'], ['qmri', 2, 1, 'DWI_MD'], ['qmri', 2, 1, 'DWI_RD'],
+        ['qmri', 3, 3, 'DWI_FA'], ['qmri', 3, 3, 'DWI_MD'], ['qmri', 3, 3, 'DWI_RD'],
+        ['qmri', 6, 8, 'DWI_FA'], ['qmri', 6, 8, 'DWI_MD'], ['qmri', 6, 8, 'DWI_RD']
+    ]
     
     def __init__(self, data_type):
         """Initialize object
@@ -305,36 +315,39 @@ class Data:
                     
                     mean_val = default_val
 
-                    for index, row in ses_values.iterrows():
+                    if [self.data_type, i, j, metric] not in self.qc_exclude:
+                        for index, row in ses_values.iterrows():
+                            
+                            if self.data_type == 'qmri':
+                                mean_val = row['WA()']
+                            elif self.data_type == 'spine':
+                                mean_val = row['MEAN(area)']
+                            elif metric == 'MP2RAGE' or metric == 'MTS':
+                                if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
+                                    mean_val = row['mean']
+                            elif metric == 'MTR':
+                                if row['metric'] == 'MTRmap' and row['label'] == tissue: 
+                                    mean_val = row['mean']
+                            elif metric == 'MTsat':
+                                if row['metric'] == 'MTsat' and row['label'] == tissue:
+                                    mean_val = row['mean']
+                            elif metric == 'DWI_FA':
+                                if row['metric'] == 'fa_metric' and row['label'] == tissue:
+                                    mean_val = row['mean']
+                            elif metric == 'DWI_MD':
+                                if row['metric'] == 'md_metric' and row['label'] == tissue:
+                                    mean_val = row['mean']
+                            elif metric == 'DWI_RD':
+                                if row['metric'] == 'rd_metric' and row['label'] == tissue:
+                                    mean_val = row['mean']
 
-                        if self.data_type == 'qmri':
-                            mean_val = row['WA()']
-                        elif self.data_type == 'spine':
-                            mean_val = row['MEAN(area)']
-                        elif metric == 'MP2RAGE' or metric == 'MTS':
-                            if row['acquisition'] == metric and row['metric'] == 'T1map' and row['label'] == tissue:
-                                mean_val = row['mean']
-                        elif metric == 'MTR':
-                            if row['metric'] == 'MTRmap' and row['label'] == tissue: 
-                                mean_val = row['mean']
-                        elif metric == 'MTsat':
-                            if row['metric'] == 'MTsat' and row['label'] == tissue:
-                                mean_val = row['mean']
-                        elif metric == 'DWI_FA':
-                            if row['metric'] == 'fa_metric' and row['label'] == tissue:
-                                mean_val = row['mean']
-                        elif metric == 'DWI_MD':
-                            if row['metric'] == 'md_metric' and row['label'] == tissue:
-                                mean_val = row['mean']
-                        elif metric == 'DWI_RD':
-                            if row['metric'] == 'rd_metric' and row['label'] == tissue:
-                                mean_val = row['mean']
+                            if np.isnan(mean_val):
+                                mean_val = default_val
 
-                        if np.isnan(mean_val):
-                            mean_val = default_val
-
-                    # Append values to lists for sessions
-                    metric_ses.append(mean_val)
+                        # Append values to lists for sessions
+                        metric_ses.append(mean_val)
+                    else:
+                        metric_ses.append(default_val)
          
                 matrix[metric].append(metric_ses)
 
