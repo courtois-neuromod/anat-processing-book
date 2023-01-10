@@ -22,6 +22,11 @@ class Data:
             'filename': 'brain-diffusion-arnaud.zip',
             'data_files': "mean_std.json"
         },
+        'brain-diffusion-cc': {
+            'version_list': ['r20230110'],
+            'filename': 'brain-diffusion-arnaud-c.zip',
+            'data_files': "corpus_callosum-metrics.csv"
+        },
         'spine': {
             'version_list': ['r20220623', 'r20220804'],
             'filename': 'spinalcord_results.zip',
@@ -79,7 +84,6 @@ class Data:
         that the object was initalized with.
 
         """
-
         version_list = Data.datasets[self.data_type]['version_list']
         version_list.sort()
         return version_list
@@ -130,7 +134,7 @@ class Data:
 
         data_type = self.data_type
 
-        if data_type == 'brain':
+        if data_type == 'brain' or data_type == 'brain-diffusion-cc':
             data_file = Data.datasets[data_type]['data_files']
             file_path = self.data_dir / data_file
 
@@ -139,6 +143,7 @@ class Data:
 
             # Sort data acording to subject and session columns 
             self.data.sort_values(['subject', 'session'], ascending=[True, True]) 
+            print(self.data)
         elif data_type == 'brain-diffusion':
             data_file = Data.datasets[data_type]['data_files']
             file_path = self.data_dir / data_file
@@ -247,7 +252,7 @@ class Data:
         subject_array = []
         session_array = []
 
-        if self.data_type == 'brain' or self.data_type == 'brain-diffusion':
+        if self.data_type == 'brain' or self.data_type == 'brain-diffusion' or self.data_type == 'brain-diffusion-cc':
             subject_array.append(max(self.data['subject']))
             session_array.append(max(self.data['session']))
         else:
@@ -279,7 +284,7 @@ class Data:
                 'MTR': [],
                 'MTsat': []
             }
-        elif self.data_type == 'brain-diffusion':
+        elif self.data_type == 'brain-diffusion' or self.data_type == 'brain-diffusion-cc':
             matrix = {
                 'DWI_FA': [],
                 'DWI_MD': [],
@@ -303,7 +308,7 @@ class Data:
 
         for metric in matrix:
             for i in range(1, num_sub+1, 1):
-                if self.data_type == 'brain' or self.data_type == 'brain-diffusion':
+                if self.data_type == 'brain' or self.data_type == 'brain-diffusion' or self.data_type == 'brain-diffusion-cc':
                     sub_values = self.data.loc[self.data['subject'] == i]
                 else:
                     sub_values = self.data[metric].loc[self.data[metric]['subject'] == i]
@@ -334,11 +339,17 @@ class Data:
                             elif metric == 'DWI_FA':
                                 if row['metric'] == 'fa_metric' and row['label'] == tissue:
                                     mean_val = row['mean']
+                                elif row['metric']=='fa' and row['label'] == tissue:
+                                    mean_val = row['mean']
                             elif metric == 'DWI_MD':
                                 if row['metric'] == 'md_metric' and row['label'] == tissue:
                                     mean_val = row['mean']
+                                elif row['metric']=='md' and row['label'] == tissue:
+                                    mean_val = row['mean']
                             elif metric == 'DWI_RD':
                                 if row['metric'] == 'rd_metric' and row['label'] == tissue:
+                                    mean_val = row['mean']
+                                elif row['metric']=='rd' and row['label'] == tissue:
                                     mean_val = row['mean']
 
                             if np.isnan(mean_val):

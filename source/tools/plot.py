@@ -134,6 +134,15 @@ class Plot:
             }
             matrix['CC_1'] = self.dataset.extract_data('CC_1')
             matrix['MCP'] = self.dataset.extract_data('MCP')
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            matrix = {
+                'genu': [],
+                'body': [],
+                'splenium': []
+            }
+            matrix['genu'] = self.dataset.extract_data('genu')
+            matrix['body'] = self.dataset.extract_data('body')
+            matrix['splenium'] = self.dataset.extract_data('splenium')
         else:
             matrix = self.dataset.extract_data()
 
@@ -158,7 +167,7 @@ class Plot:
                 'MTR': 'MTR',
                 'MTsat': 'MTsat'
             }
-        elif self.dataset.data_type == 'brain-diffusion':
+        elif self.dataset.data_type == 'brain-diffusion' or self.dataset.data_type == 'brain-diffusion-cc':
             trace_name = {
                     'DWI_FA': 'DWI_FA',
                     'DWI_MD': 'DWI_MD',
@@ -193,6 +202,17 @@ class Plot:
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
         elif self.dataset.data_type == 'brain-diffusion':
             tissues = ['CC_1', 'MCP']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
+
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix[tissue], trace_name, tissue)
+
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+        if self.dataset.data_type == 'brain-diffusion-cc':
+            tissues = ['genu', 'body', 'splenium']
             for tissue in tissues:
                 # Add datapoints to plot
                 figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
@@ -269,6 +289,27 @@ class Plot:
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
                                 self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['CC_1', 'MCP'])]),
+                            ])
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            buttons = list([
+                            dict(label="DWI_FA",
+                                method="update",
+                                args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['genu', 'splenium'])]),
+                            dict(label="DWI_MD",
+                                method="update",
+                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['genu', 'splenium'])]),            
+                            dict(label="DWI_RD",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['genu', 'splenium'])]),
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
@@ -360,6 +401,10 @@ class Plot:
             x_button=1.3
         elif self.dataset.data_type == 'brain-diffusion':
             yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
+            yaxis_title = 'DWI_FA [a.u.]'
+            x_button=1.3
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            yaxis_range = [self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
