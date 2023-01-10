@@ -42,6 +42,15 @@ class Stats:
             }
             self.database['CC_1'] = self.dataset.extract_data('CC_1', default_val=np.nan)
             self.database['MCP'] = self.dataset.extract_data('MCP',default_val=np.nan)
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            self.database = {
+                'genu': [],
+                'body': [],
+                'splenium': []
+            }
+            self.database['genu'] = self.dataset.extract_data('genu', default_val=np.nan)
+            self.database['body'] = self.dataset.extract_data('body',default_val=np.nan)
+            self.database['splenium'] = self.dataset.extract_data('splenium',default_val=np.nan)
         else:
             self.database = self.dataset.extract_data(default_val=np.nan)
         
@@ -87,7 +96,7 @@ class Stats:
         self.stats_table = pd.DataFrame.from_dict(df_setup, orient='index', columns=columns)
 
         for metric in metrics:
-            if 'WM' in self.database.keys() or 'CC_1' in self.database.keys():
+            if 'WM' in self.database.keys() or 'CC_1' in self.database.keys() or 'genu' in self.database.keys():
                 intrasub_cov = np.divide(np.nanstd(self.df[metric], axis=1), np.nanmean(self.df[metric], axis=1)) * 100
                 self.stats_table[self.database2table[metric]]['intrasubject COV mean [%]'] = np.mean(intrasub_cov)
                 self.stats_table[self.database2table[metric]]['intrasubject COV std [%]'] = np.std(intrasub_cov)
