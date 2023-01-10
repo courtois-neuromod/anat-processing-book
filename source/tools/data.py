@@ -143,7 +143,6 @@ class Data:
 
             # Sort data acording to subject and session columns 
             self.data.sort_values(['subject', 'session'], ascending=[True, True]) 
-            print(self.data)
         elif data_type == 'brain-diffusion':
             data_file = Data.datasets[data_type]['data_files']
             file_path = self.data_dir / data_file
