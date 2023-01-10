@@ -518,7 +518,7 @@ class Plot:
                     marker_color = "rgb"+str(Plot.colours[0])
                     legend_group = "group1"
 
-                    # Custom settings for just MTS
+                    # Custom settings for colours
                     if tissue == 'WM':
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
@@ -535,6 +535,18 @@ class Plot:
                         marker_color = "rgb"+str(Plot.colours[3])
                         legend_group = "group2"
                         name = 'MCP'
+                    elif tissue == 'genu':
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+                        name = 'Genu'
+                    elif tissue == 'body':
+                        marker_color = "rgb"+str(Plot.colours[3])
+                        legend_group = "group2"
+                        name = 'Body'
+                    elif tissue == 'splenium':
+                        marker_color = "rgb"+str(Plot.colours[4])
+                        legend_group = "group4"
+                        name = 'Splenium'
                     else:
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
@@ -667,6 +679,15 @@ class Plot:
                 elif tissue == 'MCP': 
                     line_color = "rgb"+str(Plot.colours[3])
                     name = 'MCP'
+                if tissue == 'genu':
+                    line_color = "rgb"+str(Plot.colours[0])
+                    name = 'Genu'
+                elif tissue == 'body': 
+                    line_color = "rgb"+str(Plot.colours[3])
+                    name = 'Body'
+                elif tissue == 'splenium': 
+                    line_color = "rgb"+str(Plot.colours[4])
+                    name = 'Splenium'
                 else: 
                     line_color = "rgb"+str(Plot.colours[0])
                     name = trace_name[metric]
@@ -771,8 +792,10 @@ class Plot:
             for metric in trace_name:
                 std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-                if tissue == 'WM' or tissue == 'CC_1':
+                if tissue == 'WM' or tissue == 'CC_1' or tissue=='genu':
                     fillcolor='rgba(31, 119, 180, 0.15)'
+                elif tissue == 'splenium': 
+                    fillcolor='rgba(43, 160, 43, 0.15)'
                 else: 
                     fillcolor='rgba(255, 187, 120, 0.15)'
 
