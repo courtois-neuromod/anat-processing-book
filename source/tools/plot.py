@@ -301,15 +301,15 @@ class Plot:
                             dict(label="DWI_FA",
                                 method="update",
                                 args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['genu', 'splenium'])]),
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['genu', 'body', 'splenium'])]),
                             dict(label="DWI_MD",
                                 method="update",
                                 args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['genu', 'splenium'])]),            
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['genu', 'body', 'splenium'])]),            
                             dict(label="DWI_RD",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['genu', 'splenium'])]),
+                                self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['genu', 'body', 'splenium'])]),
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
@@ -902,7 +902,11 @@ class Plot:
 
         """
         if tissues is not None:
-            yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
+            if len(tissues)==2:
+                yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
+            elif len(tissues)==3:
+                pre_concat = np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0)
+                yaxis_range = [self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'min'), self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'max')]
         else:
             yaxis_range = [self.get_val(matrix[metric], 'min'), self.get_val(matrix[metric], 'max')]
         return {"yaxis": dict(
