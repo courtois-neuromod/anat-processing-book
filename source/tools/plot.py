@@ -134,6 +134,15 @@ class Plot:
             }
             matrix['CC_1'] = self.dataset.extract_data('CC_1')
             matrix['MCP'] = self.dataset.extract_data('MCP')
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            matrix = {
+                'genu': [],
+                'body': [],
+                'splenium': []
+            }
+            matrix['genu'] = self.dataset.extract_data('genu')
+            matrix['body'] = self.dataset.extract_data('body')
+            matrix['splenium'] = self.dataset.extract_data('splenium')
         else:
             matrix = self.dataset.extract_data()
 
@@ -158,7 +167,7 @@ class Plot:
                 'MTR': 'MTR',
                 'MTsat': 'MTsat'
             }
-        elif self.dataset.data_type == 'brain-diffusion':
+        elif self.dataset.data_type == 'brain-diffusion' or self.dataset.data_type == 'brain-diffusion-cc':
             trace_name = {
                     'DWI_FA': 'DWI_FA',
                     'DWI_MD': 'DWI_MD',
@@ -193,6 +202,17 @@ class Plot:
                 figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
         elif self.dataset.data_type == 'brain-diffusion':
             tissues = ['CC_1', 'MCP']
+            for tissue in tissues:
+                # Add datapoints to plot
+                figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
+
+                # Add mean line to plot
+                figb, line = self.add_lines(figb, matrix[tissue], trace_name, tissue)
+
+                # Add std shaded area to plot
+                figb, std_area = self.add_std_area(figb, matrix[tissue], trace_name, line, tissue)
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            tissues = ['genu', 'body', 'splenium']
             for tissue in tissues:
                 # Add datapoints to plot
                 figb = self.add_points(figb, matrix[tissue], trace_name, num_sessions, tissue)
@@ -269,6 +289,27 @@ class Plot:
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
                                 self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['CC_1', 'MCP'])]),
+                            ])
+            annotations=[dict(text="Display metric: ", 
+                              showarrow=False,
+                              x=1.25,
+                              y=0.62,
+                              xref = 'paper',
+                              yref="paper")]
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            buttons = list([
+                            dict(label="DWI_FA",
+                                method="update",
+                                args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['genu', 'body', 'splenium'])]),
+                            dict(label="DWI_MD",
+                                method="update",
+                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 },
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['genu', 'body', 'splenium'])]),            
+                            dict(label="DWI_RD",
+                                method="update",
+                                args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_RD', title='DWI_RD [mm<sup>2</sup>/s]', tissues=['genu', 'body', 'splenium'])]),
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
@@ -360,6 +401,10 @@ class Plot:
             x_button=1.3
         elif self.dataset.data_type == 'brain-diffusion':
             yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
+            yaxis_title = 'DWI_FA [a.u.]'
+            x_button=1.3
+        elif self.dataset.data_type == 'brain-diffusion-cc':
+            yaxis_range = [self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
             x_button=1.3
         elif self.dataset.data_type == 'spine':
@@ -473,7 +518,7 @@ class Plot:
                     marker_color = "rgb"+str(Plot.colours[0])
                     legend_group = "group1"
 
-                    # Custom settings for just MTS
+                    # Custom settings for colours
                     if tissue == 'WM':
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
@@ -490,6 +535,18 @@ class Plot:
                         marker_color = "rgb"+str(Plot.colours[3])
                         legend_group = "group2"
                         name = 'MCP'
+                    elif tissue == 'genu':
+                        marker_color = "rgb"+str(Plot.colours[0])
+                        legend_group = "group1"
+                        name = 'Genu'
+                    elif tissue == 'body':
+                        marker_color = "rgb"+str(Plot.colours[3])
+                        legend_group = "group2"
+                        name = 'Body'
+                    elif tissue == 'splenium':
+                        marker_color = "rgb"+str(Plot.colours[4])
+                        legend_group = "group3"
+                        name = 'Splenium'
                     else:
                         marker_color = "rgb"+str(Plot.colours[0])
                         legend_group = "group1"
@@ -622,6 +679,15 @@ class Plot:
                 elif tissue == 'MCP': 
                     line_color = "rgb"+str(Plot.colours[3])
                     name = 'MCP'
+                if tissue == 'genu':
+                    line_color = "rgb"+str(Plot.colours[0])
+                    name = 'Genu'
+                elif tissue == 'body': 
+                    line_color = "rgb"+str(Plot.colours[3])
+                    name = 'Body'
+                elif tissue == 'splenium': 
+                    line_color = "rgb"+str(Plot.colours[4])
+                    name = 'Splenium'
                 else: 
                     line_color = "rgb"+str(Plot.colours[0])
                     name = trace_name[metric]
@@ -726,8 +792,10 @@ class Plot:
             for metric in trace_name:
                 std_area[metric] = self.get_val(matrix[metric], 'std') 
 
-                if tissue == 'WM' or tissue == 'CC_1':
+                if tissue == 'WM' or tissue == 'CC_1' or tissue=='genu':
                     fillcolor='rgba(31, 119, 180, 0.15)'
+                elif tissue == 'splenium': 
+                    fillcolor='rgba(43, 160, 43, 0.15)'
                 else: 
                     fillcolor='rgba(255, 187, 120, 0.15)'
 
@@ -834,7 +902,11 @@ class Plot:
 
         """
         if tissues is not None:
-            yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
+            if len(tissues)==2:
+                yaxis_range = [self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'min'), self.get_val(np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0), 'max')]
+            elif len(tissues)==3:
+                pre_concat = np.append(matrix[tissues[0]][metric], matrix[tissues[1]][metric], axis=0)
+                yaxis_range = [self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'min'), self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'max')]
         else:
             yaxis_range = [self.get_val(matrix[metric], 'min'), self.get_val(matrix[metric], 'max')]
         return {"yaxis": dict(
