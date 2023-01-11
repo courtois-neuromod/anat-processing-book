@@ -24,7 +24,7 @@ class Data:
         },
         'brain-diffusion-cc': {
             'version_list': ['r20230110'],
-            'filename': 'brain-diffusion-arnaud-c.zip',
+            'filename': 'brain-diffusion-cc.zip',
             'data_files': "corpus_callosum-metrics.csv"
         },
         'spine': {
