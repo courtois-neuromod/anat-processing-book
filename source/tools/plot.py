@@ -568,7 +568,9 @@ class Plot:
             else:
                 if tissue=='WM':
                     prop = 'T1w'
+                    marker_color = "rgb"+str(Plot.colours[0])
                 elif tissue=='GM':
+                    marker_color = "rgb"+str(Plot.colours[3])
                     prop = 'GMT2w'
 
                 for trace in range(0, len(matrix[prop])):
@@ -598,7 +600,7 @@ class Plot:
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                     name= 'T<sub>1</sub>w',
-                                                    marker_color="rgb"+str(Plot.colours[0])))
+                                                    marker_color=marker_color))
 
                         marker_color="rgb"+str(Plot.colours[3])
                         marker_symbol=symbols[5]
@@ -639,7 +641,7 @@ class Plot:
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                     name= 'T<sub>2</sub><sup>*</sup>',
-                                                    marker_color="rgb"+str(Plot.colours[0])))
+                                                    marker_color=marker_color))
                                        
         return figb
 
@@ -714,10 +716,13 @@ class Plot:
                     'T1w':{},
                     'T2w': {}
                     }
+                line_color = "rgb"+str(Plot.colours[0])
             elif tissue=='GM':
                 line = {
                     'GMT2w':{}
                 }
+                line_color = "rgb"+str(Plot.colours[3])
+
 
             for metric in trace_name:
                     
@@ -738,7 +743,7 @@ class Plot:
                                                 name='T<sub>1</sub>w',
                                                 showlegend = False,
                                                 opacity=0.5, 
-                                                line=dict(color="rgb(31, 119, 180)", 
+                                                line=dict(color=line_color, 
                                                             width=2,
                                                             dash='dot')))
                     
@@ -763,7 +768,7 @@ class Plot:
                                                 name='T<sub>2</sub><sup>*</sup>',
                                                 showlegend = False,
                                                 opacity=0.5, 
-                                                line=dict(color="rgb(31, 119, 180)", 
+                                                line=dict(color=line_color, 
                                                             width=2,
                                                             dash='dot')))
 
@@ -822,10 +827,16 @@ class Plot:
                     'T1w':{},
                     'T2w': {}
                     }
+                color=list(Plot.colours[0])
+                color.append(0.15)
+                fillcolor = "rgba"+str(tuple(color))
             elif tissue=='GM':
                 std_area = {
                     'GMT2w':{}
                     }
+                color=list(Plot.colours[3])
+                color.append(0.15)
+                fillcolor = "rgba"+str(tuple(color))
 
             for metric in trace_name:
 
@@ -841,7 +852,7 @@ class Plot:
 
                  # Define name and color for STD region 
                 name = metric + " STD"
-                fillcolor = 'rgba(31, 119, 180,0.15)' 
+                fillcolor = fillcolor
 
                 # Add STD
                 if tissue=='WM':
@@ -850,17 +861,17 @@ class Plot:
                         y=[line['T1w']+std_area['T1w']]*8+[line['T1w']-std_area['T1w']]*8,
                         fill='toself',
                         visible=visible,
-                        fillcolor='rgba(31, 119, 180,0.15)',
+                        fillcolor=fillcolor,
                         line_color='rgba(255,255,255,0)',
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
                         name='T<sub>1</sub>w STD'
                     ))
 
-                    fillcolor='rgba(255, 187, 120,0.15)'
+                    fillcolor=fillcolor
                     if fig_id == 'spine-csa-wm':
                         visible = False
-                        fillcolor='rgba(31, 119, 180,0.15)'
+                        fillcolor=fillcolor
 
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
@@ -879,7 +890,7 @@ class Plot:
                         y=[line['GMT2w']+std_area['GMT2w']]*8+[line['GMT2w']-std_area['GMT2w']]*8,
                         fill='toself',
                         visible=visible,
-                        fillcolor='rgba(31, 119, 180,0.15)',
+                        fillcolor=fillcolor,
                         line_color='rgba(255,255,255,0)',
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
