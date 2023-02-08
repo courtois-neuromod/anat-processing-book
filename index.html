@@ -293,12 +293,41 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   About
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#abstract">
+   Abstract
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -310,6 +339,24 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   About
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#abstract">
+   Abstract
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -319,10 +366,13 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="about">
 <h1>About<a class="headerlink" href="#about" title="Permalink to this headline">#</a></h1>
-<p>This article describes the processing of quantitative MRI anatomical data
-for the <a class="reference external" href="https://www.cneuromod.ca/">Courtois-Neuromod Project</a>.</p>
+<p>This interactive notebook is supplementary material to the scientific manuscipt “Longitudinal stability of brain and spinal cord quantitative MRI measures” (2023) as part of the <a class="reference external" href="https://www.cneuromod.ca/">Courtois project on neural modelling (CNeuroMod)</a>.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="abstract">
+<h1>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">#</a></h1>
+<p>Quantitative MRI (qMRI) promises better specificity, accuracy, and stability relative to its qualitative MRI counterpart used clinically. Despite the best efforts from experts, most qMRI techniques have not been adopted for clinical use or in longitudinal disease/therapeutic studies, because of widely reported reproducibility issues. Longitudinal stability is particularly important for qMRI so that it may quantify MR tissue properties during the progression of disease or therapeutic therapy that are probed by longitudinal clinical studies. In this work, we scanned the brain and cervical spinal cord of six participants at regular intervals over the course of three years (a total of ten sessions) using quantitative MRI imaging protocols, with a focus on T1, myelin imaging techniques (magnetization transfer) and diffusion MRI. We developed a set of pipelines to process the BIDS-formated data we collected, and shared a reproducible and interactive Jupyter Book of the analysed data. Intrasubject COVs were on the order of 0.6% to 2.3% for qMRI metrics in brain white matter over the course of three years, and 3.9% to 9.5% in the spinal cord. Intersubject COVs ranged from 0.4% to 3.5% in brain white matter, and from 4.0% to 8.4% in the spinal cord. SOMETHING DIFFUSION-WISE. Results from this work show the level of stability that can be expected from qMRI protocols in the brain and spinal cord, and could help in the design of future longitudinal clinical studies. This study is part of the Courtois NeuroMod project, the data and code are publicly available at: <a class="reference external" href="https://github.com/courtois-neuromod">https://github.com/courtois-neuromod</a>.</p>
 <p>To cite this article:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">M</span><span class="o">.</span> <span class="n">Boudreau</span><span class="p">,</span> <span class="n">K</span><span class="o">.</span> <span class="n">Zelenkovski</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span> <span class="n">Karakuzu</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span> <span class="n">Boré</span><span class="p">,</span> <span class="n">E</span><span class="o">.</span> <span class="n">Alonso</span><span class="o">-</span><span class="n">Ortiz</span><span class="p">,</span> <span class="n">J</span><span class="o">.</span> <span class="n">Cohen</span><span class="o">-</span><span class="n">Adad</span><span class="o">.</span> <span class="n">Courtois</span> <span class="n">Neuromod</span> <span class="n">project</span><span class="p">:</span> <span class="n">Longitudinal</span> <span class="n">stability</span> <span class="n">of</span> <span class="n">quantitative</span> <span class="n">MRI</span> <span class="n">measures</span><span class="o">.</span> <span class="p">(</span><span class="n">submitted</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">M</span><span class="o">.</span> <span class="n">Boudreau</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span> <span class="n">Karakuzu</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span> <span class="n">Boré</span><span class="p">,</span> <span class="n">K</span><span class="o">.</span> <span class="n">Zelenkovski</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span> <span class="n">Pinsard</span><span class="p">,</span> <span class="n">K</span><span class="o">.</span> <span class="n">Zelenkovski</span><span class="p">,</span> <span class="n">E</span><span class="o">.</span> <span class="n">Alonso</span><span class="o">-</span><span class="n">Ortiz</span><span class="p">,</span> <span class="n">J</span><span class="o">.</span> <span class="n">Boyle</span><span class="p">,</span> <span class="n">P</span><span class="o">.</span> <span class="n">Bellec</span><span class="p">,</span> <span class="n">J</span><span class="o">.</span> <span class="n">Cohen</span><span class="o">-</span><span class="n">Adad</span><span class="o">.</span> <span class="n">Longitudinal</span> <span class="n">stability</span> <span class="n">of</span> <span class="n">brain</span> <span class="ow">and</span> <span class="n">spinal</span> <span class="n">cord</span> <span class="n">quantitative</span> <span class="n">MRI</span> <span class="n">measures</span><span class="o">.</span> <span class="p">(</span><span class="ow">in</span> <span class="n">preparation</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
