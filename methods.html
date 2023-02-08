@@ -317,24 +317,31 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#participants">
-   Participants
+  <a class="reference internal nav-link" href="#dataset">
+   Dataset
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-acquisition">
-   Data acquisition
+  <a class="reference internal nav-link" href="#processing-pipelines">
+   Processing pipelines
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#structural-mri-consisted-of-the-following-sequences">
-   Structural MRI consisted of the following sequences:
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-processing">
-   Data processing
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#brain-qmri">
+     Brain - qMRI
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#brain-diffusion">
+     Brain - diffusion
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spine-qmri-diffusion">
+     Spine - qMRI &amp; diffusion
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -356,24 +363,31 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#participants">
-   Participants
+  <a class="reference internal nav-link" href="#dataset">
+   Dataset
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-acquisition">
-   Data acquisition
+  <a class="reference internal nav-link" href="#processing-pipelines">
+   Processing pipelines
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#structural-mri-consisted-of-the-following-sequences">
-   Structural MRI consisted of the following sequences:
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-processing">
-   Data processing
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#brain-qmri">
+     Brain - qMRI
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#brain-diffusion">
+     Brain - diffusion
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spine-qmri-diffusion">
+     Spine - qMRI &amp; diffusion
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -387,88 +401,26 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="material-and-methods">
 <h1>Material and Methods<a class="headerlink" href="#material-and-methods" title="Permalink to this headline">#</a></h1>
-<section id="participants">
-<h2>Participants<a class="headerlink" href="#participants" title="Permalink to this headline">#</a></h2>
-<p>X healthy participants were recruited. Study was IRB XXX.</p>
+<section id="dataset">
+<h2>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">#</a></h2>
+<p>An overview of the structural dataset for the Courtois project on neural modelling (CNeuroMod) is shown below. 6 participants have been scanned up to 10 times over 3 years. The structural protocol consists of T1w, T2w and T2*w scans to quantify brain, SC (including grey matter, GM) morphometry, and MP2RAGE, magnetization transfer (MTR and MTsat) and dibusion-weighted sequences to compute metrics sensitive to demyelination in the white matter (WM).</p>
+<p><img alt="Figure 1" src="https://courtois.s3.ca-central-1.amazonaws.com/Figure1_updated.png" /></p>
+<p>For more details on the sequence parameters, please see the <a class="reference external" href="https://docs.cneuromod.ca/en/latest/MRI.html#brain-anatomical-sequences">full protocol details</a> and the <a class="reference external" href="https://docs.cneuromod.ca/en/latest/_downloads/4f1f285d300373cc60a45d4085097bad/anatomical_protocol_2019-01-22.pdf">MRI exam card PDF</a>.</p>
 </section>
-<section id="data-acquisition">
-<h2>Data acquisition<a class="headerlink" href="#data-acquisition" title="Permalink to this headline">#</a></h2>
+<section id="processing-pipelines">
+<h2>Processing pipelines<a class="headerlink" href="#processing-pipelines" title="Permalink to this headline">#</a></h2>
+<section id="brain-qmri">
+<h3>Brain - qMRI<a class="headerlink" href="#brain-qmri" title="Permalink to this headline">#</a></h3>
+<p><img alt="Figure 6 - top" src="https://courtois.s3.ca-central-1.amazonaws.com/Fig6_brain_qmr.png" /></p>
 </section>
-<section id="structural-mri-consisted-of-the-following-sequences">
-<h2>Structural MRI consisted of the following sequences:<a class="headerlink" href="#structural-mri-consisted-of-the-following-sequences" title="Permalink to this headline">#</a></h2>
-<p>For more details on the sequence parameters, please see the <span class="xref myst">full protocol</span>.</p>
+<section id="brain-diffusion">
+<h3>Brain - diffusion<a class="headerlink" href="#brain-diffusion" title="Permalink to this headline">#</a></h3>
+<p><img alt="Figure 6 - middle" src="https://courtois.s3.ca-central-1.amazonaws.com/Fig6_brain_dwi.png" /></p>
 </section>
-<section id="data-processing">
-<h2>Data processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">#</a></h2>
-<p>The software requirements include:</p>
-<ul class="simple">
-<li><p>Nextflow and Docker for brain data analysis</p></li>
-<li><p>SCT for spinal cord data analysis</p></li>
-</ul>
-<p>The repository containing the code and instructions to reproduce this analysis is available at: <a class="reference external" href="https://github.com/courtois-neuromod/anat-processing">https://github.com/courtois-neuromod/anat-processing</a>.</p>
-<p>In brief, brain analysis consisted in:</p>
-<ul class="simple">
-<li><p>co-registering MT0 and MT1 data,</p></li>
-<li><p>Resampling the B1+ map to the space of the MT data,</p></li>
-<li><p>Masking tissue outside the brain using FSL BET [REF],</p></li>
-<li><p>Smooth B1+ maps,</p></li>
-<li><p>Compute MTR and MTsat,</p></li>
-<li><p>Compute T1 using the MP2RAGE data.</p></li>
-</ul>
-<p>Spinal cord analysis consisted in:</p>
-<ul class="simple">
-<li><p>From the T2w image:</p>
-<ul>
-<li><p>Segment the spinal cord on the T2w image,</p></li>
-<li><p>Label vertebrae on the T2w image,</p></li>
-<li><p>Register the T2w spinal cord to the PAM50 template,</p></li>
-<li><p>Warp template without the white matter atlas (we don’t need it at this point)</p></li>
-<li><p>Generate QC report to assess vertebral labeling</p></li>
-<li><p>Compute average cord CSA between C2 and C3</p></li>
-</ul>
-</li>
-<li><p>From the T1w image:</p>
-<ul>
-<li><p>Segment the spinal cord</p></li>
-<li><p>Bring vertebral level into T1w space</p></li>
-<li><p>Compute average cord CSA between C2 and C3</p></li>
-</ul>
-</li>
-<li><p>From the MT data:</p>
-<ul>
-<li><p>Segment spinal cord</p></li>
-<li><p>Create mask around the cord</p></li>
-<li><p>Crop data for faster processing</p></li>
-<li><p>Register the MT0 to the T1w image</p></li>
-<li><p>Register the MT1 to the T1w image</p></li>
-<li><p>Register the PAM50 template to the T1w image (using the template-&gt;T1w warping field as initial transformation)</p></li>
-<li><p>Warp the PAM50 template objects</p></li>
-<li><p>Compute MTR and MTsat</p></li>
-<li><p>Extract MTR, MTsat and T1 in the white matter between C2 and C5 vertebral levels</p></li>
-</ul>
-</li>
-<li><p>From the T2*w data:</p>
-<ul>
-<li><p>Bring vertebral level into T2s space</p></li>
-<li><p>Segment gray matter</p></li>
-<li><p>Compute the gray matter CSA between C3 and C4 levels.</p></li>
-</ul>
-</li>
-<li><p>From the DWI data:</p>
-<ul>
-<li><p>Separate b=0 and DW images</p></li>
-<li><p>Automatically find the spinal cord centerline</p></li>
-<li><p>Create a mask around the spinal cord  to help motion correction and for faster processing</p></li>
-<li><p>Perform motion correction</p></li>
-<li><p>Segment the spinal cord on the mean DWI image</p></li>
-<li><p>Register the PAM50 template to the mean DWI image (using the template-&gt;T1w warping field as initial transformation)</p></li>
-<li><p>Warp the PAM50 template objects</p></li>
-<li><p>Create a mask around the spinal cord (for faster computing)</p></li>
-<li><p>Compute DTI (powered by Dipy <span id="id1">[<a class="reference internal" href="references.html#id4" title="Eleftherios Garyfallidis, Matthew Brett, Bagrat Amirbekian, Ariel Rokem, Stefan Van Der Walt, Maxime Descoteaux, and Ian Nimmo-Smith. Dipy, a library for the analysis of diffusion mri data. Frontiers in Neuroinformatics, 2014. doi:https://10.3389/fninf.2014.00008.">3</a>]</span>)</p></li>
-<li><p>Compute FA, MD and RD in WM between C2 and C5 vertebral levels</p></li>
-</ul>
-</li>
-</ul>
+<section id="spine-qmri-diffusion">
+<h3>Spine - qMRI &amp; diffusion<a class="headerlink" href="#spine-qmri-diffusion" title="Permalink to this headline">#</a></h3>
+<p><img alt="Figure 6 - bottom" src="https://courtois.s3.ca-central-1.amazonaws.com/Figure6_sct_not_high_res.png" /></p>
+</section>
 </section>
 </section>
 

@@ -1,66 +1,27 @@
 # Material and Methods
 
-## Participants
+## Dataset
 
-X healthy participants were recruited. Study was IRB XXX.
+An overview of the structural dataset for the Courtois project on neural modelling (CNeuroMod) is shown below. 6 participants have been scanned up to 10 times over 3 years. The structural protocol consists of T1w, T2w and T2*w scans to quantify brain, SC (including grey matter, GM) morphometry, and MP2RAGE, magnetization transfer (MTR and MTsat) and dibusion-weighted sequences to compute metrics sensitive to demyelination in the white matter (WM).
 
-## Data acquisition
+![Figure 1](https://courtois.s3.ca-central-1.amazonaws.com/Figure1_updated.png)
 
-Structural MRI consisted of the following sequences:
-- 
+For more details on the sequence parameters, please see the [full protocol details](https://docs.cneuromod.ca/en/latest/MRI.html#brain-anatomical-sequences) and the [MRI exam card PDF](https://docs.cneuromod.ca/en/latest/_downloads/4f1f285d300373cc60a45d4085097bad/anatomical_protocol_2019-01-22.pdf). 
 
-For more details on the sequence parameters, please see the [full protocol](). 
+## Processing pipelines
 
-## Data processing
+### Brain - qMRI
 
-The software requirements include:
-- Nextflow and Docker for brain data analysis
-- SCT for spinal cord data analysis
+![Figure 6 - top](https://courtois.s3.ca-central-1.amazonaws.com/Fig6_brain_qmr.png)
 
-The repository containing the code and instructions to reproduce this analysis is available at: https://github.com/courtois-neuromod/anat-processing.
+### Brain - diffusion
 
-In brief, brain analysis consisted in:
-- co-registering MT0 and MT1 data,
-- Resampling the B1+ map to the space of the MT data,
-- Masking tissue outside the brain using FSL BET [REF], 
-- Smooth B1+ maps,
-- Compute MTR and MTsat,
-- Compute T1 using the MP2RAGE data.
+![Figure 6 - middle](https://courtois.s3.ca-central-1.amazonaws.com/Fig6_brain_dwi.png)
 
-Spinal cord analysis consisted in:
-- From the T2w image: 
-  - Segment the spinal cord on the T2w image,
-  - Label vertebrae on the T2w image,
-  - Register the T2w spinal cord to the PAM50 template,
-  - Warp template without the white matter atlas (we don't need it at this point)
-  - Generate QC report to assess vertebral labeling
-  - Compute average cord CSA between C2 and C3
-- From the T1w image:
-  - Segment the spinal cord
-  - Bring vertebral level into T1w space
-  - Compute average cord CSA between C2 and C3
-- From the MT data:
-  - Segment spinal cord
-  - Create mask around the cord
-  - Crop data for faster processing
-  - Register the MT0 to the T1w image
-  - Register the MT1 to the T1w image
-  - Register the PAM50 template to the T1w image (using the template->T1w warping field as initial transformation)
-  - Warp the PAM50 template objects
-  - Compute MTR and MTsat
-  - Extract MTR, MTsat and T1 in the white matter between C2 and C5 vertebral levels
-- From the T2*w data:
-  - Bring vertebral level into T2s space
-  - Segment gray matter
-  - Compute the gray matter CSA between C3 and C4 levels. 
-- From the DWI data:
-  - Separate b=0 and DW images
-  - Automatically find the spinal cord centerline
-  - Create a mask around the spinal cord  to help motion correction and for faster processing
-  - Perform motion correction
-  - Segment the spinal cord on the mean DWI image
-  - Register the PAM50 template to the mean DWI image (using the template->T1w warping field as initial transformation)
-  - Warp the PAM50 template objects
-  - Create a mask around the spinal cord (for faster computing)
-  - Compute DTI (powered by Dipy {cite}`Garyfallidis2014`)
-  - Compute FA, MD and RD in WM between C2 and C5 vertebral levels
+### Spine - qMRI & diffusion
+
+![Figure 6 - bottom](https://courtois.s3.ca-central-1.amazonaws.com/Figure6_sct_not_high_res.png)
+
+
+
+
