@@ -5,11 +5,16 @@ format: jb-book
 root: index
 
 parts:
-  - chapters:
+  - caption: Background
+    chapters:
     - file: intro
     - file: methods
   - caption: Results
     chapters:
     - file: 1-brain-data
     - file: 2-spinal-data
+  - caption: Resources
+    chapters:
+    - file: data
+
 
