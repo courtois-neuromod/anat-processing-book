@@ -8,6 +8,8 @@ parts:
   - chapters:
     - file: intro
     - file: methods
+  - caption: Results
+    chapters:
     - file: 1-brain-data
     - file: 2-spinal-data
 
