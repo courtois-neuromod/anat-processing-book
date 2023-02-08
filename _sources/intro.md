@@ -1,7 +1,5 @@
 # Introduction 
 
-## Context
-
 Magnetic resonance imaging (MRI) comes with different flavours-- or as physicists would call it: pulse sequences. A pulse sequence is a bit like a musical orchestra. There are different instruments and each play at a particular time and with a particular pitch (frequency) and amplitude. In an MRI pulse sequence, the instruments are the hardware (gradients, RF controller, antenna, etc.). By driving the orchestra in a smart way, we can obtain more than a pretty picture of the inside body. In fact, we can obtain numbers that reflect the state of the tissue microstructure. For example, if there is a demyelinating lesion in multiple sclerosis, some sequences would enable to quantify the amount of demyelination. These particular sequences fall under the umbrella term _Quantitative MRI_, or qMRI. 
 
 MRI data acquired with a special pulse sequence are then analyzed. The analysis includes complex processing such as image non-linear registration, filtering and noise removal. Then, a biophysical model is usually fitted to the data, in order to extract physically meaningful parameters such as the density of neuronal cells, the orientation of white matter fibers or the relative concentration of brain metabolites. Given its important applications in the diagnosis and prognosis of traumas, neurological diseases and cancers, qMRI offers lots of promises and has become extremely popular in the neuroscience and pharmaceutical research community. 
