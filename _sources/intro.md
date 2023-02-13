@@ -3,7 +3,7 @@
 Conventional MRI images used in clinics come from the MRI machine being used as a non-invasive medical device, not a scientific instrument. These images need interpretation by expert readers as they lack specificity and reproducibility. Quantitative MRI (qMRI) aims to produce measurements of biological or physical properties by using conventional MRI images. The calculated or fit maps from these images have values with physical units, such as T1 or T2 relaxation times, myelin water fraction, magnetization transfer ratio, and cerebral blood flow. qMRI has high specificity to biological changes and in principle should have improved stability compared to clinical MRI. However, many of these qMRI techniques are currently not used routinely in clinics. One of the main reason is that data processing is long and tedious, as illustrated in he figure below below.
 
 ![Screen Shot 2021-07-26 at 9 59 18 PM](https://user-images.githubusercontent.com/2482071/127083234-6efd2c7a-352b-4ee0-81d9-9c278f4caf01.png)
-Illustration of a typical qMRI processing pipeline. The "start" and "finish" images are modified from the comics _Piled Higher and Deeper_ by Jorge Gabriel Cham._ 
+<font size="2"><i>Illustration of a typical qMRI processing pipeline. The "start" and "finish" images are modified from the comics _Piled Higher and Deeper_ by Jorge Gabriel Cham. </i></font>
 
 The qMRI field has fallen short of this promised standardization, with fundamental qMRI techniques outputs varying among methods and sites. Efforts have been made to improve accuracy and stability, such as through the use of calibration phantoms and integrating qMRI pulse sequences into commercial scanners.
 
