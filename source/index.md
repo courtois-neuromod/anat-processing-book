@@ -10,4 +10,4 @@ Quantitative MRI (qMRI) promises better specificity, accuracy, and stability rel
 
 To cite this article:
 
->M. Boudreau, A. Karakuzu, A. Boré, K. Zelenkovski, B. Pinsard, K. Zelenkovski, E. Alonso-Ortiz, J. Boyle, P. Bellec, J. Cohen-Adad. Longitudinal stability of brain and spinal cord quantitative MRI measures. 2023 (in preparation)
+>M. Boudreau, A. Karakuzu, A. Boré, B. Pinsard, K. Zelenkovski, E. Alonso-Ortiz, J. Boyle, P. Bellec, J. Cohen-Adad. Longitudinal stability of brain and spinal cord quantitative MRI measures. 2023 (in preparation)
