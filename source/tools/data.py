@@ -51,7 +51,7 @@ class Data:
         'url': 'https://github.com/courtois-neuromod/anat-processing/releases/download'
     }
 
-    # [sub, ses, metric]
+    # [dataset, sub, ses, metric]
     qc_exclude = [
         ['qmri', 3, 10, 'T1w'],
         ['qmri', 4, 5, 'T1w'],
