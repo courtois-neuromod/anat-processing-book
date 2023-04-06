@@ -16,8 +16,8 @@ class Plot:
 
     """
 
-    colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
-               (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
+    colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (190, 77, 80), (0, 132, 53),
+               (255, 187, 120), (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
                (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
                (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
                (188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
@@ -675,13 +675,13 @@ class Plot:
                 elif tissue == 'GM': 
                     line_color = "rgb"+str(Plot.colours[3])
                     name = 'Grey matter'
-                if tissue == 'CC_1':
+                elif tissue == 'CC_1':
                     line_color = "rgb"+str(Plot.colours[0])
                     name = 'CC_1'
                 elif tissue == 'MCP': 
                     line_color = "rgb"+str(Plot.colours[3])
                     name = 'MCP'
-                if tissue == 'genu':
+                elif tissue == 'genu':
                     line_color = "rgb"+str(Plot.colours[0])
                     name = 'Genu'
                 elif tissue == 'body': 
@@ -800,9 +800,9 @@ class Plot:
                 if tissue == 'WM' or tissue == 'CC_1' or tissue=='genu':
                     fillcolor='rgba(31, 119, 180, 0.15)'
                 elif tissue == 'splenium': 
-                    fillcolor='rgba(43, 160, 43, 0.15)'
+                    fillcolor='rgba(0, 132, 53, 0.15)'
                 else: 
-                    fillcolor='rgba(255, 187, 120, 0.15)'
+                    fillcolor='rgba(190, 77, 80, 0.15)'
 
                 if metric == 'MP2RAGE' or metric == 'DWI_FA':
                     visible=True
