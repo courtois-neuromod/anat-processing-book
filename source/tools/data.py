@@ -121,8 +121,8 @@ class Data:
             subprocess.run(["mkdir", "-p", self.data_dir])
 
             # Get data from GitHub release and extract
-            subprocess.run(["wget", "-O", release_file, url])
-            subprocess.run(["unzip", "-j", release_file,  "-d", self.data_dir])
+            subprocess.run(["wget", "-O", release_file, url], stdout=subprocess.DEVNULL)
+            subprocess.run(["unzip", "-j", release_file,  "-d", self.data_dir], stdout=subprocess.DEVNULL)
     
     def load(self):
         """Load dataset into the object
