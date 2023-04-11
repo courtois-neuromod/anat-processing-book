@@ -4,6 +4,8 @@ import plotly.graph_objects as go
 import plotly.tools as tls
 from plotly.offline import plot, iplot, init_notebook_mode
 from plotly.validators.scatter.marker import SymbolValidator
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 from IPython.core.display import display, HTML
 import numpy as np
 import pandas as pd
@@ -469,6 +471,142 @@ class Plot:
         elif env == 'notebook':
             # For local jupyter notebook --== binder session
             iplot(figb,config=config)
+
+    def display_paper_fig2(self, env, fig_id = None):
+        labels_subjects = ['Subject ' + str(i) for i in range(1,7)]
+
+        fig = make_subplots(rows=2, cols=2, horizontal_spacing = 0.08)
+        fig.add_trace(
+            go.Scatter(x=[1, 2, 3], y=[4, 5, 6], showlegend = False),
+            row=1, col=1
+        )
+
+        fig.add_trace(
+            go.Scatter(x=[20, 30, 40], y=[50, 60, 70], showlegend = False),
+            row=1, col=2
+        )
+
+        fig.add_trace(
+            go.Scatter(x=[20, 30, 40], y=[50, 60, 70], showlegend = False),
+            row=2, col=1
+        )
+        fig.add_trace(
+            go.Scatter(x=[1, 2, 3], y=[4, 5, 6], showlegend = False),
+            row=2, col=2
+        )
+
+        fig.update_xaxes(
+            type="linear",
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            row=1, col=1
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'T<sub>1</sub> [s]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            row=1, col=1
+            )
+
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            row=1, col=2
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'T<sub>1</sub> [s]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            row=1, col=2
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            row=2, col=1
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'T<sub>1</sub> [s]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            row=2, col=1
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            row=2, col=2
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'T<sub>1</sub> [s]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            row=2, col=2
+            )
+
+        fig.update_layout(
+            margin=dict(l=30, r=30, t=10, b=30),
+            paper_bgcolor='rgb(255, 255, 255)',
+            plot_bgcolor='rgb(255, 255, 255)',
+            legend_title="",
+        )
+
+
+        fig.update_layout(height=960, width=960)
+
+        fig.show()
 
     def add_points(self, figb, matrix, trace_name, num_sessions, tissue=None, fig_id=None):
         """Add points to trace
