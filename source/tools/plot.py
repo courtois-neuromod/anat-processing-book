@@ -107,9 +107,9 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': True,
+            'displayModeBar': False,
             'toImageButtonOptions': {
-                'format': 'svg', # one of png, svg, jpeg, webp
+                'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
                 'height': 500,
                 'width': 700,
