@@ -107,9 +107,9 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': False,
+            'displayModeBar': True,
             'toImageButtonOptions': {
-                'format': 'png', # one of png, svg, jpeg, webp
+                'format': 'svg', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
                 'height': 500,
                 'width': 700,
@@ -273,10 +273,11 @@ class Plot:
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
-                              x=1.42,
+                              x=1.38,
                               y=0.63,
                               xref = 'paper',
-                              yref="paper")]
+                              yref="paper",
+                              font = dict(size = 16),)]
         elif self.dataset.data_type == 'brain-diffusion':
             buttons = list([
                             dict(label="DWI_FA",
@@ -297,7 +298,8 @@ class Plot:
                               x=1.25,
                               y=0.62,
                               xref = 'paper',
-                              yref="paper")]
+                              yref="paper",
+                              font = dict(size = 16),)]
         elif self.dataset.data_type == 'brain-diffusion-cc':
             buttons = list([
                             dict(label="DWI_FA",
@@ -316,10 +318,11 @@ class Plot:
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
-                              x=1.38,
+                              x=1.33,
                               y=0.55,
                               xref = 'paper',
-                              yref="paper")]
+                              yref="paper",
+                              font = dict(size = 16),)]
         elif self.dataset.data_type == 'spine':
             if fig_id == 'spine-csa-wm':
                 buttons = list([
@@ -335,10 +338,11 @@ class Plot:
                                 ])
                 annotations=[dict(text="Display metric: ", 
                                 showarrow=False,
-                                x=0,
-                                y=-0.35,
+                                x=1.33,
+                                y=0.62,
                                 xref = 'paper',
-                                yref="paper")]
+                                yref="paper",
+                                font = dict(size = 16),)]
             elif fig_id == 'spine-csa-gm':
                 buttons = None
                 annotations= None
@@ -358,7 +362,8 @@ class Plot:
                                 x=1.25,
                                 y=0.62,
                                 xref = 'paper',
-                                yref="paper")]
+                                yref="paper",
+                                font = dict(size = 16),)]
 
         elif self.dataset.data_type == 'qmri':
             buttons = list([
@@ -389,20 +394,25 @@ class Plot:
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
-                              x=0,
-                              y=-0.35,
+                              x=1.32,
+                              y=0.62,
                               xref = 'paper',
-                              yref="paper")]
+                              yref="paper",
+                              font = dict(size = 16),)]
 
         x_button=1.23
         y_button=0.58
         width = 760
         height = 520
+        left=50
+        right=50
+        bottom=60
+        top=50
     
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
-            x_button=1.47
+            x_button=1.4
         elif self.dataset.data_type == 'brain-diffusion':
             yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
@@ -415,23 +425,22 @@ class Plot:
         elif self.dataset.data_type == 'spine':
             if fig_id == 'spine-csa-wm':
                 yaxis_range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')]
-                x_button = 0.16
-                y_button = -0.35
+                x_button=1.25
                 width = 680
-                height = 680
+                height = 540
+                right=150
             elif fig_id == 'spine-csa-gm':
                 yaxis_range = [self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')]
-                width = 680
-                height = 587
+                width = 590
+                height = 540
             
             yaxis_title = 'Area [mm<sup>2</sup>]'
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
-            x_button = 0.27
-            y_button = -0.35
+            x_button=1.28
             width = 680
-            height = 680
+            height = 540
         
         if fig_id== 'spine-csa-wm' or fig_id=='spine-qmri-wm':
             direction="up"
@@ -446,7 +455,9 @@ class Plot:
                                             y=y_button,
                                             direction=direction,
                                             yanchor="top",
-                                            buttons=buttons)],
+                                            buttons=buttons,
+                                            font = dict(size = 16),
+                                            )],
                         title_x = 0.445, 
                         legend=dict(orientation = 'v',
                                     bordercolor="Gray",
@@ -473,10 +484,10 @@ class Plot:
                         width = width, 
                         height = height,
                         font = dict(size = self.general_font_size),
-                        margin=go.layout.Margin(l=50,
-                                                r=50,
-                                                b=60,
-                                                t=50))
+                        margin=go.layout.Margin(l=left,
+                                                r=right,
+                                                b=bottom,
+                                                t=top))
         
         # Plot figuregit 
         if env == 'jupyter-book':
