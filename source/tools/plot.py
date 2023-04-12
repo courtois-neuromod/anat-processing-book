@@ -41,9 +41,9 @@ class Plot:
         self.hoverinfo = 'skip'
 
         # Text
-        self.x_label_tick_font_size = 13
-        self.y_label_tick_font_size = 13
-        self.general_font_size = 13
+        self.x_label_tick_font_size = 22
+        self.y_label_tick_font_size = 22
+        self.general_font_size = 22
 
     def get_val(self, matrix, key):
         """Get values
@@ -273,8 +273,8 @@ class Plot:
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
-                              x=1.25,
-                              y=0.62,
+                              x=1.42,
+                              y=0.63,
                               xref = 'paper',
                               yref="paper")]
         elif self.dataset.data_type == 'brain-diffusion':
@@ -306,8 +306,9 @@ class Plot:
                                 self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['genu', 'body', 'splenium'])]),
                             dict(label="DWI_MD",
                                 method="update",
-                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 },
-                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['genu', 'body', 'splenium'])]),            
+                                args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1,
+                                       "tickformat":'m'},
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]', tissues=['genu', 'body', 'splenium'])],),        
                             dict(label="DWI_RD",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*2 + [True]*1 + [False]*2 + [True]*1},
@@ -315,16 +316,17 @@ class Plot:
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
-                              x=1.25,
-                              y=0.62,
+                              x=1.38,
+                              y=0.55,
                               xref = 'paper',
                               yref="paper")]
         elif self.dataset.data_type == 'spine':
             if fig_id == 'spine-csa-wm':
                 buttons = list([
-                                dict(label="T1w",
+                    dict(label="T1w",
                                     method="update",
-                                    args=[{"visible": [True] + ([True] + [False])*num_subjects + ([True] + [False])*2},
+                                    args=[{
+                                        "visible": [True] + ([True] + [False])*num_subjects + ([True] + [False])*2},
                                         self.set_trace_layout(matrix=matrix, metric='T1w', title='Area [mm<sup>2</sup>]')]),
                                 dict(label="T2w",
                                     method="update",
@@ -333,8 +335,8 @@ class Plot:
                                 ])
                 annotations=[dict(text="Display metric: ", 
                                 showarrow=False,
-                                x=1.20,
-                                y=0.62,
+                                x=0,
+                                y=-0.35,
                                 xref = 'paper',
                                 yref="paper")]
             elif fig_id == 'spine-csa-gm':
@@ -367,7 +369,7 @@ class Plot:
                             dict(label="DWI_MD",
                                 method="update",
                                 args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects*4) + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]')]),            
+                                self.set_trace_layout(matrix=matrix, metric='DWI_MD', title='DWI_MD [mm<sup>2</sup>/s]')]),          
                             dict(label="DWI_RD",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*(num_subjects*3) + [False]*2 + [True]*1 +[False]*3 + [False]*2 + [True]*1 +[False]*3},
@@ -387,8 +389,8 @@ class Plot:
                             ])
             annotations=[dict(text="Display metric: ", 
                               showarrow=False,
-                              x=1.25,
-                              y=0.62,
+                              x=0,
+                              y=-0.35,
                               xref = 'paper',
                               yref="paper")]
 
@@ -400,7 +402,7 @@ class Plot:
         if self.dataset.data_type == 'brain':
             yaxis_range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')]
             yaxis_title = 'T<sub>1</sub> [s]'
-            x_button=1.3
+            x_button=1.47
         elif self.dataset.data_type == 'brain-diffusion':
             yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
@@ -409,21 +411,32 @@ class Plot:
             yaxis_range = [self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
             x_button=1.3
+            y_button=0.5
         elif self.dataset.data_type == 'spine':
-            x_button=1.28
             if fig_id == 'spine-csa-wm':
                 yaxis_range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')]
-                x_button = 1.18
+                x_button = 0.16
+                y_button = -0.35
+                width = 680
+                height = 680
             elif fig_id == 'spine-csa-gm':
                 yaxis_range = [self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')]
                 width = 680
-            else:
-                yaxis_range = [self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'min'), self.get_val(np.append(matrix['T1w'], matrix['T2w'], axis=0), 'max')]
+                height = 587
             
             yaxis_title = 'Area [mm<sup>2</sup>]'
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
             yaxis_title = 'DWI_FA [a.u.]'
+            x_button = 0.27
+            y_button = -0.35
+            width = 680
+            height = 680
+        
+        if fig_id== 'spine-csa-wm' or fig_id=='spine-qmri-wm':
+            direction="up"
+        else:
+            direction="down"
 
         figb.update_layout(title = self.title,
                         updatemenus=[
@@ -431,7 +444,7 @@ class Plot:
                                             active = 0, 
                                             x=x_button,
                                             y=y_button,
-                                            direction="down",
+                                            direction=direction,
                                             yanchor="top",
                                             buttons=buttons)],
                         title_x = 0.445, 
@@ -445,7 +458,9 @@ class Plot:
                                     linecolor='#000',
                                     tickvals = [0, 1, 2, 3, 4, 5],
                                     ticktext = labels_subjects,
-                                    tickfont = dict(size=self.x_label_tick_font_size)),
+                                    tickfont = dict(size=self.x_label_tick_font_size),
+                                    tickangle = 45
+                                    ),
                         yaxis_title=yaxis_title,
                         yaxis=dict(range=yaxis_range, 
                                     mirror=True,
@@ -461,7 +476,7 @@ class Plot:
                         margin=go.layout.Margin(l=50,
                                                 r=50,
                                                 b=60,
-                                                t=35))
+                                                t=50))
         
         # Plot figuregit 
         if env == 'jupyter-book':
@@ -1058,13 +1073,27 @@ class Plot:
                 yaxis_range = [self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'min'), self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'max')]
         else:
             yaxis_range = [self.get_val(matrix[metric], 'min'), self.get_val(matrix[metric], 'max')]
-        return {"yaxis": dict(
-                range = yaxis_range,
-                title=title,
-                mirror=True,
-                ticks='outside', 
-                showline=True, 
-                linecolor='#000',
-                tickfont = dict(size=self.y_label_tick_font_size)
-                )
-            }
+        if metric=='DWI_MD' or metric=='DWI_RD':
+            return {"yaxis": dict(
+                    range = yaxis_range,
+                    title=title,
+                    mirror=True,
+                    ticks='outside', 
+                    tickformat='s',
+                    showline=True, 
+                    linecolor='#000',
+                    tickfont = dict(size=self.y_label_tick_font_size)
+                    )
+                }
+        else:
+            return {"yaxis": dict(
+                    range = yaxis_range,
+                    title=title,
+                    mirror=True,
+                    ticks='outside', 
+                    ticklayout='f',
+                    showline=True, 
+                    linecolor='#000',
+                    tickfont = dict(size=self.y_label_tick_font_size)
+                    )
+                }
