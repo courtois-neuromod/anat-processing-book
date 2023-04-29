@@ -534,7 +534,10 @@ class Plot:
             'MTsat': 'MTsat'
         }
 
-        fig = make_subplots(rows=2, cols=2, horizontal_spacing = 0.08)
+        fig = make_subplots(
+            rows=2, cols=2,
+            horizontal_spacing = 0.13, vertical_spacing = 0.2,
+            subplot_titles=("T<sub>1</sub> (MP2RAGE)", "T<sub>1</sub> (MTsat)", "MTR", "MTsat"))
 
         tissues = ['WM', 'GM']
         for tissue in tissues:
@@ -569,6 +572,8 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
             range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')],
             row=1, col=1
             )
@@ -596,6 +601,8 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
             range = [self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],
             row=1, col=2
             )
@@ -622,6 +629,8 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
             range = [self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],
             row=2, col=1
             )
@@ -648,12 +657,14 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
             range = [self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],
             row=2, col=2
             )
 
         fig.update_layout(
-            margin=dict(l=30, r=30, t=10, b=30),
+            margin=dict(l=30, r=30, t=50, b=30),
             paper_bgcolor='rgb(255, 255, 255)',
             plot_bgcolor='rgb(255, 255, 255)',
             legend_title="",
@@ -666,10 +677,14 @@ class Plot:
             yanchor="top",
             y=0.85,
             xanchor="left",
-            x=0.2
+            x=0.15,
+            font = dict(size = self.general_font_size),
         ))
 
-
+        fig.for_each_annotation(lambda a: a.update(
+            text=f'<b>{a.text}</b>',
+            font = dict(size = self.general_font_size+10),))
+        
         fig.update_layout(height=900, width=900)
 
         fig.show()
