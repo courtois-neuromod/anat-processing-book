@@ -659,6 +659,16 @@ class Plot:
             legend_title="",
         )
 
+        fig.update_layout(legend=dict(
+            orientation = 'v',
+            bordercolor="Gray",
+            borderwidth=1,
+            yanchor="top",
+            y=0.85,
+            xanchor="left",
+            x=0.2
+        ))
+
 
         fig.update_layout(height=900, width=900)
 
