@@ -683,7 +683,7 @@ class Plot:
 
         fig.for_each_annotation(lambda a: a.update(
             text=f'<b>{a.text}</b>',
-            font = dict(size = self.general_font_size+10),))
+            font = dict(size = self.general_font_size),))
         
         fig.update_layout(height=900, width=900)
 
