@@ -499,27 +499,53 @@ class Plot:
             iplot(figb,config=config)
 
     def display_paper_fig2(self, env, fig_id = None):
+        # Initialize Plotly 
+        init_notebook_mode(connected = True)
+        config={
+            'showLink': False,
+            'displayModeBar': False,
+            'toImageButtonOptions': {
+                'format': 'png', # one of png, svg, jpeg, webp
+                'filename': 'custom_image',
+                'height': 500,
+                'width': 700,
+                'scale': 2 # Multiply title/legend/axis/canvas sizes by this factor
+            }
+        }
+
+        matrix = {
+            'WM': [],
+            'GM': []
+        }
+        matrix['WM'] = self.dataset.extract_data('WM')
+        matrix['GM'] = self.dataset.extract_data('GM')
+
+        # Get number of subjects and sessions
+        num_subjects = self.dataset.num_subjects
+        num_sessions = self.dataset.num_sessions    
+
         labels_subjects = ['Subject ' + str(i) for i in range(1,7)]
+        labels_int = [i for i in range(1, 7)]
+
+        trace_name = {
+            'MP2RAGE': 'T<sub>1</sub> (mp2rage)',
+            'MTS': 'T<sub>1</sub> (mts)',
+            'MTR': 'MTR',
+            'MTsat': 'MTsat'
+        }
 
         fig = make_subplots(rows=2, cols=2, horizontal_spacing = 0.08)
-        fig.add_trace(
-            go.Scatter(x=[1, 2, 3], y=[4, 5, 6], showlegend = False),
-            row=1, col=1
-        )
 
-        fig.add_trace(
-            go.Scatter(x=[20, 30, 40], y=[50, 60, 70], showlegend = False),
-            row=1, col=2
-        )
+        tissues = ['WM', 'GM']
+        for tissue in tissues:
+            # Add datapoints to plot
+            fig = self.add_points(fig, matrix[tissue], trace_name, num_sessions, tissue, fig_id='paper_fig2')
 
-        fig.add_trace(
-            go.Scatter(x=[20, 30, 40], y=[50, 60, 70], showlegend = False),
-            row=2, col=1
-        )
-        fig.add_trace(
-            go.Scatter(x=[1, 2, 3], y=[4, 5, 6], showlegend = False),
-            row=2, col=2
-        )
+            # Add mean line to plot
+            fig, line = self.add_lines(fig, matrix[tissue], trace_name, tissue, fig_id='paper_fig2')
+
+            # Add std shaded area to plot
+            fig, std_area = self.add_std_area(fig, matrix[tissue], trace_name, line, tissue, fig_id='paper_fig2')
 
         fig.update_xaxes(
             type="linear",
@@ -543,6 +569,7 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            range = [self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MP2RAGE'], matrix['GM']['MP2RAGE'], axis=0), 'max')],
             row=1, col=1
             )
 
@@ -569,6 +596,7 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            range = [self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTS'], matrix['GM']['MTS'], axis=0), 'max')],
             row=1, col=2
             )
         fig.update_xaxes(
@@ -594,6 +622,7 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            range = [self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTR'], matrix['GM']['MTR'], axis=0), 'max')],
             row=2, col=1
             )
         fig.update_xaxes(
@@ -619,6 +648,7 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
+            range = [self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'min'), self.get_val(np.append(matrix['WM']['MTsat'], matrix['GM']['MTsat'], axis=0), 'max')],
             row=2, col=2
             )
 
@@ -630,7 +660,7 @@ class Plot:
         )
 
 
-        fig.update_layout(height=960, width=960)
+        fig.update_layout(height=900, width=900)
 
         fig.show()
 
@@ -716,6 +746,27 @@ class Plot:
                         legend_group = "group1"
                         name = trace_name[metric]
 
+                    row=None
+                    col=None
+
+                    if fig_id == 'paper_fig2':
+                        visible=True
+                        if metric == 'MP2RAGE':
+                            row=1
+                            col=1
+                        elif metric == 'MTS':
+                            row=1
+                            col=2
+                            showlegend=False
+                        elif metric == 'MTR':
+                            row=2
+                            col=1
+                            showlegend=False
+                        elif metric == 'MTsat':
+                            row=2
+                            col=2
+                            showlegend=False
+
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
                                                 mode='markers',
@@ -728,7 +779,8 @@ class Plot:
                                                 showlegend = showlegend, 
                                                 text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                 name= name,
-                                                marker_color=marker_color))
+                                                marker_color=marker_color),
+                                                row=row, col=col)
             else:
                 if tissue=='WM':
                     prop = 'T1w'
@@ -809,7 +861,7 @@ class Plot:
                                        
         return figb
 
-    def add_lines(self, figb, matrix, trace_name, tissue=None, fig_id=None):
+    def add_lines(self, figb, matrix, trace_name, tissue=None, fig_id=None, row=None, col=None):
         """Add lines (mean) to trace
         
         Internal function, adds lines to Plotly trace.
@@ -863,6 +915,24 @@ class Plot:
                 else:
                     visible=False
 
+                row=None
+                col=None
+
+                if fig_id == 'paper_fig2':
+                    visible=True
+                    if metric == 'MP2RAGE':
+                        row=1
+                        col=1
+                    elif metric == 'MTS':
+                        row=1
+                        col=2
+                    elif metric == 'MTR':
+                        row=2
+                        col=1
+                    elif metric == 'MTsat':
+                        row=2
+                        col=2
+
                 # Add dotted line
                 figb.add_trace(go.Scatter(x=x, 
                                         y=[line[metric]]*8,
@@ -873,7 +943,9 @@ class Plot:
                                         opacity=0.5, 
                                         line=dict(color=line_color, 
                                                     width=2,
-                                                    dash='dot')))
+                                                    dash='dot')),
+                                row=row,
+                                col=col)
         else:
             if tissue=='WM':
                 line = {
@@ -939,7 +1011,7 @@ class Plot:
 
         return figb, line
 
-    def add_std_area(self, figb, matrix, trace_name, line, tissue=None, fig_id=None):
+    def add_std_area(self, figb, matrix, trace_name, line, tissue=None, fig_id=None, row=None, col=None):
         """Add STD shaded area to trace
         
         Internal function, adds STD shaded area to Plotly trace.
@@ -973,6 +1045,24 @@ class Plot:
                 else:
                     visible=False
 
+                row=None
+                col=None
+
+                if fig_id == 'paper_fig2':
+                    visible=True
+                    if metric == 'MP2RAGE':
+                        row=1
+                        col=1
+                    elif metric == 'MTS':
+                        row=1
+                        col=2
+                    elif metric == 'MTR':
+                        row=2
+                        col=1
+                    elif metric == 'MTsat':
+                        row=2
+                        col=2
+
                 # Add STD
                 figb.add_trace(go.Scatter(
                     x=x+x[::-1],
@@ -983,7 +1073,9 @@ class Plot:
                     line_color='rgba(255,255,255,0)',
                     showlegend=False,
                     hoverinfo=self.hoverinfo,
-                ))
+                ),
+                row=row,
+                col=col)
         
         else:
             if tissue=='WM':
