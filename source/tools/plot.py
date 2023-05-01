@@ -10,6 +10,7 @@ from IPython.core.display import display, HTML
 import numpy as np
 import pandas as pd
 from tools.data import Data
+from tools.stats import Stats
 
 class Plot:
     """Plot handling class
@@ -685,6 +686,156 @@ class Plot:
             text=f'<b>{a.text}</b>',
             font = dict(size = self.general_font_size),))
         
+        ## WM stats
+        stats_wm = Stats(self.dataset)
+        stats_wm.build_df('WM')
+        stats_wm.build_stats_table()
+        display(stats_wm.stats_table)
+
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0.63,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['T1 (MP2RAGE)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['T1 (MP2RAGE)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.99, y=0.63,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['T1 (MTsat)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['T1 (MTsat)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0.36,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['MTR']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['MTR']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.99, y=0.36,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['MTsat']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['MTsat']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        ## GM stats   
+        stats_gm = Stats(self.dataset)
+        stats_gm.build_df('GM')
+        stats_gm.build_stats_table()
+        display(stats_wm.stats_table)
+
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0.98,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_gm.stats_table['T1 (MP2RAGE)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_gm.stats_table['T1 (MP2RAGE)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.99, y=0.98,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_gm.stats_table['T1 (MTsat)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_gm.stats_table['T1 (MTsat)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0.025,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_gm.stats_table['MTR']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_gm.stats_table['MTR']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.99, y=0.025,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_gm.stats_table['MTsat']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_gm.stats_table['MTsat']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+
         fig.update_layout(height=900, width=900)
 
         fig.show()
