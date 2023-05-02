@@ -624,7 +624,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'T<sub>1</sub> [s]',
+                'text':'MTR [a.u.]',
                 'standoff':0
                 },
             showgrid=False,
@@ -652,7 +652,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'T<sub>1</sub> [s]',
+                'text':'MTsat [a.u.]',
                 'standoff':0
                 },
             showgrid=False,
