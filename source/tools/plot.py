@@ -854,8 +854,8 @@ class Plot:
             'toImageButtonOptions': {
                 'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
-                'height': 500,
-                'width': 700,
+                'height': 300,
+                'width': 900,
                 'scale': 2 # Multiply title/legend/axis/canvas sizes by this factor
             }
         }
@@ -884,7 +884,7 @@ class Plot:
 
         fig = make_subplots(
             rows=1, cols=3,
-            horizontal_spacing = 0.13,
+            horizontal_spacing = 0.14,
             subplot_titles=("Fractional Anisotropy (FA)", "Mean Diffusivity (MD)", "Radial Diffusivity (RD)"))
         
         tissues = ['genu', 'body', 'splenium']
@@ -908,7 +908,7 @@ class Plot:
             showline=True,
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
-            tickfont = dict(size=self.x_label_tick_font_size),
+            tickfont = dict(size=self.x_label_tick_font_size-5),
             tickangle = 45,
             row=1, col=1
             )
@@ -921,8 +921,8 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
-            tickfont = dict(size=self.y_label_tick_font_size),
-            title_font = dict(size = self.general_font_size),
+            tickfont = dict(size=self.y_label_tick_font_size-5),
+            title_font = dict(size = self.general_font_size-5),
             range = [self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'max')],
             row=1, col=1
             )
@@ -938,7 +938,7 @@ class Plot:
             showline=True,
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
-            tickfont = dict(size=self.x_label_tick_font_size),
+            tickfont = dict(size=self.x_label_tick_font_size-5),
             tickangle = 45,
             row=1, col=2
             )
@@ -951,8 +951,8 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
-            tickfont = dict(size=self.y_label_tick_font_size),
-            title_font = dict(size = self.general_font_size),
+            tickfont = dict(size=self.y_label_tick_font_size-5),
+            title_font = dict(size = self.general_font_size-5),
             range = [self.get_val(np.append(matrix['genu']['DWI_MD'], matrix['splenium']['DWI_MD'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_MD'], matrix['splenium']['DWI_MD'], axis=0), 'max')],
             
             row=1, col=2
@@ -968,7 +968,7 @@ class Plot:
             showline=True,
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
-            tickfont = dict(size=self.x_label_tick_font_size),
+            tickfont = dict(size=self.x_label_tick_font_size-5),
             tickangle = 45,
             row=1, col=3
             )
@@ -981,8 +981,8 @@ class Plot:
             showgrid=False,
             linecolor='black',
             linewidth=2,
-            tickfont = dict(size=self.y_label_tick_font_size),
-            title_font = dict(size = self.general_font_size),
+            tickfont = dict(size=self.y_label_tick_font_size-5),
+            title_font = dict(size = self.general_font_size-5),
             range = [self.get_val(np.append(matrix['genu']['DWI_RD'], matrix['splenium']['DWI_RD'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_RD'], matrix['splenium']['DWI_RD'], axis=0), 'max')],
             row=1, col=3
             )
@@ -1001,15 +1001,15 @@ class Plot:
             yanchor="top",
             y=0.97,
             xanchor="left",
-            x=0.47,
+            x=1.01,
             font = dict(size = self.general_font_size-10),
         ))
 
         fig.for_each_annotation(lambda a: a.update(
             text=f'<b>{a.text}</b>',
-            font = dict(size = self.general_font_size),))
+            font = dict(size = self.general_font_size-5),))
         
-        fig.update_layout(height=400, width=1200)
+        fig.update_layout(height=300, width=1000)
 
         # Plot figuregit 
         if env == 'jupyter-book':
@@ -1106,6 +1106,8 @@ class Plot:
                         legend_group = "group1"
                         name = trace_name[metric]
 
+
+                    marker_size = 6
                     row=None
                     col=None
 
@@ -1129,6 +1131,7 @@ class Plot:
 
                     if fig_id == 'paper_fig3':
                         visible=True
+                        marker_size=4
                         if metric == 'DWI_FA':
                             row=1
                             col=1
@@ -1149,6 +1152,7 @@ class Plot:
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
                                                 mode='markers',
+                                                marker=dict(size=marker_size),
                                                 visible=visible,
                                                 legendgroup=legend_group,
                                                 hovertemplate = 
