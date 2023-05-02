@@ -690,8 +690,6 @@ class Plot:
         stats_wm = Stats(self.dataset)
         stats_wm.build_df('WM')
         stats_wm.build_stats_table()
-        display(stats_wm.stats_table)
-
 
         fig.add_annotation(
             xref='paper',
@@ -765,8 +763,6 @@ class Plot:
         stats_gm = Stats(self.dataset)
         stats_gm.build_df('GM')
         stats_gm.build_stats_table()
-        display(stats_wm.stats_table)
-
 
         fig.add_annotation(
             xref='paper',
@@ -838,7 +834,16 @@ class Plot:
 
         fig.update_layout(height=900, width=900)
 
-        fig.show()
+        #fig.show()
+
+        # Plot figuregit 
+        if env == 'jupyter-book':
+            # For jupyter-book rendering --=-- jupyter-lab
+            plot(fig, filename = self.plot_name + '.html', config = config)
+            display(HTML(self.plot_name + '.html'))
+        elif env == 'notebook':
+            # For local jupyter notebook --== binder session
+            iplot(fig,config=config)
 
     def add_points(self, figb, matrix, trace_name, num_sessions, tissue=None, fig_id=None):
         """Add points to trace
