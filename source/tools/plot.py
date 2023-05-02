@@ -537,7 +537,7 @@ class Plot:
 
         fig = make_subplots(
             rows=2, cols=2,
-            horizontal_spacing = 0.13, vertical_spacing = 0.2,
+            horizontal_spacing = 0.13, vertical_spacing = 0.23,
             subplot_titles=("T<sub>1</sub> (MP2RAGE)", "T<sub>1</sub> (MTsat)", "MTR", "MTsat"))
 
         tissues = ['WM', 'GM']
@@ -562,6 +562,7 @@ class Plot:
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
             tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
             row=1, col=1
             )
         fig.update_yaxes(
@@ -591,6 +592,7 @@ class Plot:
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
             tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
             row=1, col=2
             )
         fig.update_yaxes(
@@ -619,6 +621,7 @@ class Plot:
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
             tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
             row=2, col=1
             )
         fig.update_yaxes(
@@ -647,6 +650,7 @@ class Plot:
             tickvals = [0, 1, 2, 3, 4, 5],
             ticktext = labels_subjects,
             tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
             row=2, col=2
             )
         fig.update_yaxes(
@@ -694,7 +698,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.023, y=0.63,
+            x=0.023, y=0.65,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_wm.stats_table['T1 (MP2RAGE)']['intrasubject COV mean [%]'],1))
@@ -711,7 +715,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.99, y=0.63,
+            x=0.99, y=0.65,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_wm.stats_table['T1 (MTsat)']['intrasubject COV mean [%]'],1))
@@ -728,7 +732,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.023, y=0.36,
+            x=0.023, y=0.35,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_wm.stats_table['MTR']['intrasubject COV mean [%]'],1))
@@ -745,7 +749,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.99, y=0.36,
+            x=0.99, y=0.35,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_wm.stats_table['MTsat']['intrasubject COV mean [%]'],1))
@@ -767,7 +771,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.023, y=0.98,
+            x=0.023, y=0.99,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_gm.stats_table['T1 (MP2RAGE)']['intrasubject COV mean [%]'],1))
@@ -784,7 +788,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.99, y=0.98,
+            x=0.99, y=0.99,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_gm.stats_table['T1 (MTsat)']['intrasubject COV mean [%]'],1))
@@ -832,7 +836,7 @@ class Plot:
             showarrow=False
             )
 
-        fig.update_layout(height=900, width=900)
+        fig.update_layout(height=930, width=870)
 
         #fig.show()
 
