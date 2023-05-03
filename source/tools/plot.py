@@ -1396,17 +1396,18 @@ class Plot:
 
         fig = make_subplots(
             rows=3, cols=2,
-            horizontal_spacing = 0.14, vertical_spacing = 0.2)
-            #subplot_titles=("CSA (WM, T1w)", "CSA (WM, T2w)", "CSA (GM, T2*w)"))
+            horizontal_spacing = 0.2, vertical_spacing = 0.15,
+            subplot_titles=("T<sub>1</sub> (MTsat)", "FA (DWI)", "MTR", "MD (DWI)", "MTsat", "RD (DWI)")
+        )
 
-                    # Add datapoints to plot
+        # Add datapoints to plot
         fig = self.add_points(fig, matrix, trace_name, num_sessions, tissue, fig_id='paper_fig5')
 
         # Add mean line to plot
-        #fig, line = self.add_lines(fig, matrix, trace_name, tissue, fig_id='paper_fig5')
+        fig, line = self.add_lines(fig, matrix, trace_name, tissue, fig_id='paper_fig5')
 
         # Add std shaded area to plot
-        #fig, std_area = self.add_std_area(fig, matrix, trace_name, line, tissue, fig_id='paper_fig5')  
+        fig, std_area = self.add_std_area(fig, matrix, trace_name, line, tissue, fig_id='paper_fig5')  
 
         fig.update_xaxes(
             type="linear",
@@ -1455,7 +1456,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'T<sub>1</sub> [s]',
+                'text':'MTR [a.u.]',
                 'standoff':0
                 },
             showgrid=False,
@@ -1484,7 +1485,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'MTR [a.u.]',
+                'text':'MTsat [a.u.]',
                 'standoff':0
                 },
             showgrid=False,
@@ -1513,7 +1514,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'MTsat [a.u.]',
+                'text':'DWI_FA [a.u.]',
                 'standoff':0
                 },
             showgrid=False,
@@ -1542,7 +1543,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'MTsat [a.u.]',
+                'text':'DWI_MD [mm<sup>2</sup>/s]',
                 'standoff':0
                 },
             showgrid=False,
@@ -1550,6 +1551,7 @@ class Plot:
             linewidth=2,
             tickfont = dict(size=self.y_label_tick_font_size),
             title_font = dict(size = self.general_font_size),
+            tickformat='s',
             range = [self.get_val(matrix['DWI_MD'], 'min'), self.get_val(matrix['DWI_MD'], 'max')],
             row=2, col=2
             )
@@ -1571,7 +1573,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'MTsat [a.u.]',
+                'text':'DWI_RD [mm<sup>2</sup>/s]',
                 'standoff':0
                 },
             showgrid=False,
@@ -1579,6 +1581,7 @@ class Plot:
             linewidth=2,
             tickfont = dict(size=self.y_label_tick_font_size),
             title_font = dict(size = self.general_font_size),
+            tickformat='s',
             range = [self.get_val(matrix['DWI_RD'], 'min'), self.get_val(matrix['DWI_RD'], 'max')],
             row=3, col=2
             )
@@ -1591,11 +1594,10 @@ class Plot:
         )
 
         fig.for_each_annotation(lambda a: a.update(
-            y=1.1,
             text=f'<b>{a.text}</b>',
-            font = dict(size = self.general_font_size-5),))
+            font = dict(size = self.general_font_size),))
 
-        fig.update_layout(height=1600, width=900)
+        fig.update_layout(height=1400, width=900)
 
         # Plot figureg
         if env == 'jupyter-book':
@@ -1987,6 +1989,28 @@ class Plot:
                         row=1
                         col=3
 
+                if fig_id == 'paper_fig5':
+                    visible=True
+                    showlegend=False
+                    if metric == 'T1':
+                        row=1
+                        col=1
+                    elif metric == 'MTR':
+                        row=2
+                        col=1
+                    elif metric == 'MTSat':
+                        row=3
+                        col=1
+                    elif metric == 'DWI_FA':
+                        row=1
+                        col=2
+                    elif metric == 'DWI_MD':
+                        row=2
+                        col=2
+                    elif metric == 'DWI_RD':
+                        row=3
+                        col=2
+
                 # Add dotted line
                 figb.add_trace(go.Scatter(x=x, 
                                         y=[line[metric]]*8,
@@ -2155,6 +2179,28 @@ class Plot:
                     elif metric == 'DWI_RD':
                         row=1
                         col=3
+
+                if fig_id == 'paper_fig5':
+                    visible=True
+                    showlegend=False
+                    if metric == 'T1':
+                        row=1
+                        col=1
+                    elif metric == 'MTR':
+                        row=2
+                        col=1
+                    elif metric == 'MTSat':
+                        row=3
+                        col=1
+                    elif metric == 'DWI_FA':
+                        row=1
+                        col=2
+                    elif metric == 'DWI_MD':
+                        row=2
+                        col=2
+                    elif metric == 'DWI_RD':
+                        row=3
+                        col=2
 
                 # Add STD
                 figb.add_trace(go.Scatter(
