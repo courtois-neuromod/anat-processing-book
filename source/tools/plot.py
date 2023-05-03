@@ -1192,6 +1192,174 @@ class Plot:
             # For local jupyter notebook --== binder session
             iplot(fig,config=config)
 
+    def display_paper_fig4(self, env, fig_id = None):
+        # Initialize Plotly 
+        init_notebook_mode(connected = True)
+        config={
+            'showLink': False,
+            'displayModeBar': False,
+            'toImageButtonOptions': {
+                'format': 'png', # one of png, svg, jpeg, webp
+                'filename': 'custom_image',
+                'height': 300,
+                'width': 900,
+                'scale': 2 # Multiply title/legend/axis/canvas sizes by this factor
+            }
+        }
+
+        matrix = self.dataset.extract_data()
+
+        # Get number of subjects and sessions
+        num_subjects = self.dataset.num_subjects
+        num_sessions = self.dataset.num_sessions    
+
+        labels_subjects = ['Subject ' + str(i) for i in range(1,7)]
+        labels_int = [i for i in range(1, 7)]
+
+        trace_name = {
+            'Area': 'Area (mm<sup>2</sup>)',
+        }
+
+        fig = make_subplots(
+            rows=1, cols=3,
+            horizontal_spacing = 0.14,
+            subplot_titles=("CSA (WM, T1w)", "CSA (WM, T2w)", "CSA (GM, T2*w)"))
+        
+        tissues = ['WM', 'GM']
+        for tissue in tissues:
+            # Add datapoints to plot
+            fig = self.add_points(fig, matrix, trace_name, num_sessions, tissue, fig_id='paper_fig4')
+
+            # Add mean line to plot
+            fig, line = self.add_lines(fig, matrix, trace_name, tissue, fig_id='paper_fig4')
+
+            # Add std shaded area to plot
+            fig, std_area = self.add_std_area(fig, matrix, trace_name, line, tissue, fig_id='paper_fig4')
+
+        fig.update_xaxes(
+            type="linear",
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size-5),
+            tickangle = 45,
+            row=1, col=1
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'Area [mm<sup>2</sup>]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size-5),
+            title_font = dict(size = self.general_font_size-5),
+            range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')],
+            row=1, col=1
+            )
+
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size-5),
+            tickangle = 45,
+            row=1, col=2
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'Area [mm<sup>2</sup>]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size-5),
+            tickformat='s',
+            title_font = dict(size = self.general_font_size-5),
+            range = [self.get_val(matrix['T2w'], 'min'), self.get_val(matrix['T2w'], 'max')],
+            row=1, col=2
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size-5),
+            tickangle = 45,
+            row=1, col=3
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'Area [mm<sup>2</sup>]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size-5),
+            title_font = dict(size = self.general_font_size-5),
+            tickformat='s',
+            range = [self.get_val(matrix['GMT2w'], 'min'), self.get_val(matrix['GMT2w'], 'max')],
+            row=1, col=3
+            )
+        
+        fig.update_layout(
+            margin=dict(l=30, r=30, t=50, b=30),
+            paper_bgcolor='rgb(255, 255, 255)',
+            plot_bgcolor='rgb(255, 255, 255)',
+            legend_title="",
+        )
+
+        fig.update_layout(legend=dict(
+            orientation = 'v',
+            bordercolor="Gray",
+            borderwidth=1,
+            yanchor="top",
+            y=0.97,
+            xanchor="left",
+            x=1.01,
+            font = dict(size = self.general_font_size-10),
+        ))
+
+        fig.for_each_annotation(lambda a: a.update(
+            y=1.1,
+            text=f'<b>{a.text}</b>',
+            font = dict(size = self.general_font_size-5),))
+
+        fig.update_layout(height=300, width=1000)
+
+        # Plot figureg
+        if env == 'jupyter-book':
+            # For jupyter-book rendering --=-- jupyter-lab
+            plot(fig, filename = self.plot_name + '.html', config = config)
+            display(HTML(self.plot_name + '.html'))
+        elif env == 'notebook':
+            # For local jupyter notebook --== binder session
+            iplot(fig,config=config)
+
 
     def add_points(self, figb, matrix, trace_name, num_sessions, tissue=None, fig_id=None):
         """Add points to trace
@@ -1209,6 +1377,8 @@ class Plot:
 
         # Setting option tracking variables
         FA_legend = False
+        CSA_legend = False
+        CSA_gm_legend = False
 
         for metric in trace_name:
             if 'T1w' not in matrix:
@@ -1356,6 +1526,27 @@ class Plot:
                     hover_mean = "Mean : <i> %{y: .2f} </i> mm<sup>2</sup>"
                     visible=True
 
+                    row_T1w=None
+                    col_T1w=None
+
+                    row_T2w=None
+                    col_T2w=None
+                    name_T1w = 'T<sub>1</sub>w'
+                    if fig_id == 'paper_fig4':
+                        name_T1w = 'White matter'
+                        visible=True
+                        marker_size=3
+                        row_T1w=1
+                        col_T1w=1
+
+                        row_T2w=1
+                        col_T2w=2
+                        if CSA_legend==False:
+                            showlegend=True
+                            CSA_legend=True
+                        else:
+                            showlegend=False
+
                     if tissue=='WM':
                         if fig_id == 'spine-csa-wm':
                             showlegend = False
@@ -1370,15 +1561,26 @@ class Plot:
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
-                                                    name= 'T<sub>1</sub>w',
-                                                    marker_color=marker_color))
+                                                    name= name_T1w,
+                                                    marker_color=marker_color),
+                                                    row=row_T1w, col=col_T1w)
 
                         marker_color="rgb"+str(Plot.colours[3])
                         marker_symbol=symbols[5]
-                        if fig_id == 'spine-csa-wm':
+                        if fig_id == 'spine-csa-wm' or fig_id == 'paper_fig4':
                             visible = False
                             marker_color="rgb"+str(Plot.colours[0])
                             marker_symbol = 'circle'
+
+                        if fig_id == 'paper_fig4':
+                            visible = True
+                            marker_color="rgb"+str(Plot.colours[0])
+                            marker_symbol = 'circle'
+                            if CSA_legend==False:
+                                showlegend=True
+                                CSA_legend=True
+                            else:
+                                showlegend=False
 
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['T2w'][trace], 
@@ -1393,13 +1595,30 @@ class Plot:
                                                     text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
                                                     name= 'T<sub>2</sub>w',
                                                     marker_symbol=marker_symbol,
-                                                    marker_color=marker_color))
+                                                    marker_color=marker_color),
+                                                    row=row_T2w, col=col_T2w)
                     elif tissue=='GM':
                         if fig_id == 'spine-csa-gm':
                             visible = True
                             showlegend = False
                         else:
                             visible = False
+                        name_T2sw= 'T<sub>2</sub><sup>*</sup>'
+
+                        row_T2sw=None
+                        col_T2sw=None
+                        if fig_id == 'paper_fig4':
+                            visible=True
+                            marker_size=3
+                            name_T2sw = 'Gray matter'
+                            row_T2sw=1
+                            col_T2sw=3
+                            if CSA_gm_legend==False:
+                                showlegend=True
+                                CSA_gm_legend=True
+                            else:
+                                showlegend=False
+
                         figb.add_trace(go.Scatter(x=t, 
                                                     y=matrix['GMT2w'][trace], 
                                                     mode='markers',
@@ -1411,8 +1630,9 @@ class Plot:
                                                     "<b>%{text}</b>", 
                                                     showlegend = showlegend, 
                                                     text = ['Session {}'.format(i + 1) for i in range(num_sessions)],
-                                                    name= 'T<sub>2</sub><sup>*</sup>',
-                                                    marker_color=marker_color))
+                                                    name= name_T2sw,
+                                                    marker_color=marker_color),
+                                                    row=row_T2sw, col=col_T2sw)
                                        
         return figb
 
@@ -1539,6 +1759,20 @@ class Plot:
 
                 # Add dotted line
                 if tissue=='WM':
+
+                    row_T1w=None
+                    col_T1w=None
+                    row_T2w=None
+                    col_T2w=None
+
+                    if fig_id == 'paper_fig4':
+                        visible=True
+                        row_T1w=1
+                        col_T1w=1
+
+                        row_T2w=1
+                        col_T2w=2
+
                     figb.add_trace(go.Scatter(x=x, 
                                                 y=[line['T1w']]*8,
                                                 mode='lines',
@@ -1548,11 +1782,16 @@ class Plot:
                                                 opacity=0.5, 
                                                 line=dict(color=line_color, 
                                                             width=2,
-                                                            dash='dot')))
+                                                            dash='dot')),
+                                                row=row_T1w, col=col_T1w)
                     
                     line_dict=dict(color="rgb(255, 187, 120)", width=2, dash='dot')
                     if fig_id == 'spine-csa-wm':
                         visible = False
+                        line_dict=dict(color="rgb(31, 119, 180)", width=2,dash='dot')
+
+                    if fig_id == 'paper_fig4':
+                        visible = True
                         line_dict=dict(color="rgb(31, 119, 180)", width=2,dash='dot')
                     
                     figb.add_trace(go.Scatter(x=x, 
@@ -1562,8 +1801,15 @@ class Plot:
                                                 name='T<sub>2</sub>w',
                                                 showlegend = False,
                                                 opacity=0.5, 
-                                                line=line_dict))
+                                                line=line_dict),
+                                                row=row_T2w, col=col_T2w)
                 if tissue=='GM':
+                    row_T2sw=None
+                    col_T2sw=None
+                    if fig_id == 'paper_fig4':
+                        visible=True
+                        row_T2sw=1
+                        col_T2sw=3
                     figb.add_trace(go.Scatter(x=x, 
                                                 y=[line['GMT2w']]*8,
                                                 mode='lines',
@@ -1573,7 +1819,8 @@ class Plot:
                                                 opacity=0.5, 
                                                 line=dict(color=line_color, 
                                                             width=2,
-                                                            dash='dot')))
+                                                            dash='dot')),
+                                                row=row_T2sw, col=col_T2sw)
 
 
         return figb, line
@@ -1691,6 +1938,19 @@ class Plot:
 
                 # Add STD
                 if tissue=='WM':
+
+                    row_T1w=None
+                    col_T1w=None
+                    row_T2w=None
+                    col_T2w=None
+
+                    if fig_id == 'paper_fig4':
+                        visible=True
+                        row_T1w=1
+                        col_T1w=1
+
+                        row_T2w=1
+                        col_T2w=2
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
                         y=[line['T1w']+std_area['T1w']]*8+[line['T1w']-std_area['T1w']]*8,
@@ -1701,7 +1961,8 @@ class Plot:
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
                         name='T<sub>1</sub>w STD'
-                    ))
+                    ),
+                    row=row_T1w, col=col_T1w)
 
                     fillcolor=fillcolor
                     if fig_id == 'spine-csa-wm':
@@ -1718,8 +1979,16 @@ class Plot:
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
                         name='T<sub>2</sub>w STD'
-                    ))
+                    ),
+                    row=row_T2w, col=col_T2w)
+
                 if tissue=='GM':
+                    row_T2sw=None
+                    col_T2sw=None
+                    if fig_id == 'paper_fig4':
+                        visible=True
+                        row_T2sw=1
+                        col_T2sw=3
                     figb.add_trace(go.Scatter(
                         x=x+x[::-1],
                         y=[line['GMT2w']+std_area['GMT2w']]*8+[line['GMT2w']-std_area['GMT2w']]*8,
@@ -1730,7 +1999,8 @@ class Plot:
                         showlegend=False,
                         hoverinfo=self.hoverinfo,
                         name='T<sub>2</sub><sup>*</sup> STD'
-                    ))
+                    ),
+                    row=row_T2sw, col=col_T2sw)
 
         return figb, std_area
 
