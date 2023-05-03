@@ -1360,6 +1360,251 @@ class Plot:
             # For local jupyter notebook --== binder session
             iplot(fig,config=config)
 
+    def display_paper_fig5(self, env, fig_id = None):
+        # Initialize Plotly 
+        init_notebook_mode(connected = True)
+        config={
+            'showLink': False,
+            'displayModeBar': False,
+            'toImageButtonOptions': {
+                'format': 'png', # one of png, svg, jpeg, webp
+                'filename': 'custom_image',
+                'height': 300,
+                'width': 900,
+                'scale': 2 # Multiply title/legend/axis/canvas sizes by this factor
+            }
+        }
+
+        matrix = self.dataset.extract_data()
+
+        # Get number of subjects and sessions
+        num_subjects = self.dataset.num_subjects
+        num_sessions = self.dataset.num_sessions    
+
+        labels_subjects = ['Subject ' + str(i) for i in range(1,7)]
+        labels_int = [i for i in range(1, 7)]
+
+        tissue = 'WM'
+        trace_name = {
+                    'DWI_FA': 'DWI_FA',
+                    'DWI_MD': 'DWI_MD',
+                    'DWI_RD': 'DWI_RD',
+                    'MTR': 'MTR',
+                    'MTSat': 'MTsat',
+                    'T1': 'T<sub>1</sub>'
+            }        
+
+        fig = make_subplots(
+            rows=3, cols=2,
+            horizontal_spacing = 0.14, vertical_spacing = 0.2)
+            #subplot_titles=("CSA (WM, T1w)", "CSA (WM, T2w)", "CSA (GM, T2*w)"))
+
+                    # Add datapoints to plot
+        fig = self.add_points(fig, matrix, trace_name, num_sessions, tissue, fig_id='paper_fig5')
+
+        # Add mean line to plot
+        #fig, line = self.add_lines(fig, matrix, trace_name, tissue, fig_id='paper_fig5')
+
+        # Add std shaded area to plot
+        #fig, std_area = self.add_std_area(fig, matrix, trace_name, line, tissue, fig_id='paper_fig5')  
+
+        fig.update_xaxes(
+            type="linear",
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
+            row=1, col=1
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'T<sub>1</sub> [s]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
+            range = [self.get_val(matrix['T1'], 'min'), self.get_val(matrix['T1'], 'max')],
+            row=1, col=1
+            )
+
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
+            row=2, col=1
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'T<sub>1</sub> [s]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
+            range = [self.get_val(matrix['MTR'], 'min'), self.get_val(matrix['MTR'], 'max')],
+            row=2, col=1
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
+            row=3, col=1
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'MTR [a.u.]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
+            range = [self.get_val(matrix['MTSat'], 'min'), self.get_val(matrix['MTSat'], 'max')],
+            row=3, col=1
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
+            row=1, col=2
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'MTsat [a.u.]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
+            range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')],
+            row=1, col=2
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
+            row=2, col=2
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'MTsat [a.u.]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
+            range = [self.get_val(matrix['DWI_MD'], 'min'), self.get_val(matrix['DWI_MD'], 'max')],
+            row=2, col=2
+            )
+        fig.update_xaxes(
+            type="linear",
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            range=[-0.45,5.45], 
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            tickvals = [0, 1, 2, 3, 4, 5],
+            ticktext = labels_subjects,
+            tickfont = dict(size=self.x_label_tick_font_size),
+            tickangle = 45,
+            row=3, col=2
+            )
+        fig.update_yaxes(
+            type="linear",
+            title={
+                'text':'MTsat [a.u.]',
+                'standoff':0
+                },
+            showgrid=False,
+            linecolor='black',
+            linewidth=2,
+            tickfont = dict(size=self.y_label_tick_font_size),
+            title_font = dict(size = self.general_font_size),
+            range = [self.get_val(matrix['DWI_RD'], 'min'), self.get_val(matrix['DWI_RD'], 'max')],
+            row=3, col=2
+            )
+
+        fig.update_layout(
+            margin=dict(l=30, r=30, t=50, b=30),
+            paper_bgcolor='rgb(255, 255, 255)',
+            plot_bgcolor='rgb(255, 255, 255)',
+            legend_title="",
+        )
+
+        fig.for_each_annotation(lambda a: a.update(
+            y=1.1,
+            text=f'<b>{a.text}</b>',
+            font = dict(size = self.general_font_size-5),))
+
+        fig.update_layout(height=1600, width=900)
+
+        # Plot figureg
+        if env == 'jupyter-book':
+            # For jupyter-book rendering --=-- jupyter-lab
+            plot(fig, filename = self.plot_name + '.html', config = config)
+            display(HTML(self.plot_name + '.html'))
+        elif env == 'notebook':
+            # For local jupyter notebook --== binder session
+            iplot(fig,config=config)
 
     def add_points(self, figb, matrix, trace_name, num_sessions, tissue=None, fig_id=None):
         """Add points to trace
@@ -1490,6 +1735,28 @@ class Plot:
                             row=1
                             col=3
                             showlegend=False
+
+                    if fig_id == 'paper_fig5':
+                        visible=True
+                        showlegend=False
+                        if metric == 'T1':
+                            row=1
+                            col=1
+                        elif metric == 'MTR':
+                            row=2
+                            col=1
+                        elif metric == 'MTSat':
+                            row=3
+                            col=1
+                        elif metric == 'DWI_FA':
+                            row=1
+                            col=2
+                        elif metric == 'DWI_MD':
+                            row=2
+                            col=2
+                        elif metric == 'DWI_RD':
+                            row=3
+                            col=2
 
                     figb.add_trace(go.Scatter(x=t, 
                                                 y=matrix[metric][trace], 
