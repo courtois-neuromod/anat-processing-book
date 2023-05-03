@@ -1008,7 +1008,176 @@ class Plot:
         fig.for_each_annotation(lambda a: a.update(
             text=f'<b>{a.text}</b>',
             font = dict(size = self.general_font_size-5),))
+
+        ## Splenium stats
+        stats_splenium = Stats(self.dataset)
+        stats_splenium.build_df('splenium')
+        stats_splenium.build_stats_table()
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0.98,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_splenium.stats_table['FA (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_splenium.stats_table['FA (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[4])),
+            showarrow=False
+            )
         
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.5, y=0.0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_splenium.stats_table['MD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_splenium.stats_table['MD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[4])),
+            showarrow=False
+            )
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.98, y=0.0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_splenium.stats_table['RD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_splenium.stats_table['RD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[4])),
+            showarrow=False
+            )
+        
+        ## Genu stats
+        stats_genu = Stats(self.dataset)
+        stats_genu.build_df('genu')
+        stats_genu.build_stats_table()
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_genu.stats_table['FA (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_genu.stats_table['FA (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.5, y=0.98,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_genu.stats_table['MD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_genu.stats_table['MD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.98, y=0.98,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_genu.stats_table['RD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_genu.stats_table['RD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+
+        ## Body stats
+        stats_body = Stats(self.dataset)
+        stats_body.build_df('body')
+        stats_body.build_stats_table()
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.023, y=0.08,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_body.stats_table['FA (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_body.stats_table['FA (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.5, y=0.9,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_body.stats_table['MD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_body.stats_table['MD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.973, y=0.9,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_body.stats_table['RD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_body.stats_table['RD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-12,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
+
+
         fig.update_layout(height=300, width=1000)
 
         # Plot figuregit 
@@ -1131,7 +1300,7 @@ class Plot:
 
                     if fig_id == 'paper_fig3':
                         visible=True
-                        marker_size=4
+                        marker_size=3
                         if metric == 'DWI_FA':
                             row=1
                             col=1
