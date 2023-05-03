@@ -1008,6 +1008,7 @@ class Plot:
         ))
 
         fig.for_each_annotation(lambda a: a.update(
+            y=1.1,
             text=f'<b>{a.text}</b>',
             font = dict(size = self.general_font_size-5),))
 
