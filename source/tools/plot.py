@@ -949,12 +949,13 @@ class Plot:
                 'standoff':0
                 },
             showgrid=False,
+            range = [0.0006,0.00099],
             linecolor='black',
             linewidth=2,
             tickfont = dict(size=self.y_label_tick_font_size-5),
+            tickformat='s',
             title_font = dict(size = self.general_font_size-5),
-            range = [self.get_val(np.append(matrix['genu']['DWI_MD'], matrix['splenium']['DWI_MD'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_MD'], matrix['splenium']['DWI_MD'], axis=0), 'max')],
-            
+            #range = [self.get_val(np.append(matrix['genu']['DWI_MD'], matrix['splenium']['DWI_MD'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_MD'], matrix['splenium']['DWI_MD'], axis=0), 'max')],
             row=1, col=2
             )
         fig.update_xaxes(
@@ -983,6 +984,7 @@ class Plot:
             linewidth=2,
             tickfont = dict(size=self.y_label_tick_font_size-5),
             title_font = dict(size = self.general_font_size-5),
+            tickformat='s',
             range = [self.get_val(np.append(matrix['genu']['DWI_RD'], matrix['splenium']['DWI_RD'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_RD'], matrix['splenium']['DWI_RD'], axis=0), 'max')],
             row=1, col=3
             )
@@ -1090,7 +1092,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.5, y=0.98,
+            x=0.5, y=1,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_genu.stats_table['MD (DWI)']['intrasubject COV mean [%]'],1))
@@ -1107,7 +1109,7 @@ class Plot:
         fig.add_annotation(
             xref='paper',
             yref='paper',
-            x=0.98, y=0.98,
+            x=0.98, y=1,
             text=
             "COV<sub>intra</sub>: " 
                 + str(round(stats_genu.stats_table['RD (DWI)']['intrasubject COV mean [%]'],1))
