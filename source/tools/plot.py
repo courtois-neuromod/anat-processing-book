@@ -1596,6 +1596,113 @@ class Plot:
         fig.for_each_annotation(lambda a: a.update(
             text=f'<b>{a.text}</b>',
             font = dict(size = self.general_font_size),))
+        
+        ## WM stats
+        stats_wm = Stats(self.dataset)
+        stats_wm.build_df()
+        stats_wm.build_stats_table()
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0, y=0.79,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['T1 (MTsat)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['T1 (MTsat)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0, y=0.4,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['MTR']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['MTR']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0, y=0.,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['MTsat']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['MTsat']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=1, y=0.79,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['FA (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['FA (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=1, y=0.4,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['MD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['MD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=1, y=0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['RD (DWI)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['RD (DWI)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-3,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
 
         fig.update_layout(height=1400, width=900)
 
