@@ -1008,7 +1008,7 @@ class Plot:
         ))
 
         fig.for_each_annotation(lambda a: a.update(
-            y=1.1,
+            y=1.05,
             text=f'<b>{a.text}</b>',
             font = dict(size = self.general_font_size-5),))
 
@@ -1345,9 +1345,65 @@ class Plot:
         ))
 
         fig.for_each_annotation(lambda a: a.update(
-            y=1.1,
+            y=1.05,
             text=f'<b>{a.text}</b>',
             font = dict(size = self.general_font_size-5),))
+
+        ## WM stats
+        stats_wm = Stats(self.dataset)
+        stats_wm.build_df()
+        stats_wm.build_stats_table()
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0, y=0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['WM area (T1w)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['WM area (T1w)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-10,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=0.5, y=0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['WM area (T2w)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['WM area (T2w)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-10,
+                color="rgb"+str(Plot.colours[0])),
+            showarrow=False
+            )
+        
+        fig.add_annotation(
+            xref='paper',
+            yref='paper',
+            x=1.01, y=0,
+            text=
+            "COV<sub>intra</sub>: " 
+                + str(round(stats_wm.stats_table['GM area (T2s)']['intrasubject COV mean [%]'],1))
+                + "% | "
+            "COV<sub>inter</sub>: " 
+                + str(round(stats_wm.stats_table['GM area (T2s)']['intersubject mean COV [%]'],1))
+                + "%",
+            font = dict(
+                size = self.general_font_size-10,
+                color="rgb"+str(Plot.colours[3])),
+            showarrow=False
+            )
 
         fig.update_layout(height=300, width=1000)
 
