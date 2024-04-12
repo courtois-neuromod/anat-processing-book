@@ -19,7 +19,7 @@ class Plot:
 
     """
 
-    colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (190, 77, 80), (0, 132, 53),
+    colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (190, 77, 80), (229, 153, 50), (0, 132, 53),
                (255, 187, 120), (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
                (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
                (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
@@ -108,7 +108,7 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': False,
+            'displayModeBar': True,
             'toImageButtonOptions': {
                 'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
@@ -266,7 +266,7 @@ class Plot:
                             dict(label="MTR",
                                 method="update",
                                 args=[{"visible": [True] + [False]*(num_subjects*2) + [True]*num_subjects + [False]*num_subjects + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1 + [False]*(num_subjects*2) + [True]*num_subjects + [False]*num_subjects + [False]*2 + [True]*1 +[False]*1 + [False]*2 + [True]*1 +[False]*1},
-                                self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [a.u.]', tissues=['WM', 'GM'])        ]),
+                                self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [%]', tissues=['WM', 'GM'])        ]),
                             dict(label="MTsat",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*3) + [True]*num_subjects + [False]*3 + [True]*1 + [False]*3 + [True]*1  + [False]*(num_subjects*3) + [True]*num_subjects + [False]*3 + [True]*1 + [False]*3 + [True]*1},
@@ -284,7 +284,7 @@ class Plot:
                             dict(label="DWI_FA",
                                 method="update",
                                 args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['CC_1', 'MCP'])]),
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA', tissues=['CC_1', 'MCP'])]),
                             dict(label="DWI_MD",
                                 method="update",
                                 args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1},
@@ -306,7 +306,7 @@ class Plot:
                             dict(label="DWI_FA",
                                 method="update",
                                 args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2 + [True]*num_subjects + [False]*(num_subjects*2) + [True]*1 + [False]*2 + [True]*1 + [False]*2},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]', tissues=['genu', 'body', 'splenium'])]),
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA', tissues=['genu', 'body', 'splenium'])]),
                             dict(label="DWI_MD",
                                 method="update",
                                 args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1 + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects) + [False]*1 + [True]*1 +[False]*1 + [False]*1 + [True]*1 +[False]*1,
@@ -371,7 +371,7 @@ class Plot:
                             dict(label="DWI_FA",
                                 method="update",
                                 args=[{"visible": [True] + [True]*num_subjects + [False]*(num_subjects*5) + [True]*1 + [False]*5 + [True]*1 + [False]*5},
-                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA [a.u.]')]),
+                                self.set_trace_layout(matrix=matrix, metric='DWI_FA', title='DWI_FA')]),
                             dict(label="DWI_MD",
                                 method="update",
                                 args=[{"visible": [True] + [False]*num_subjects + [True]*num_subjects + [False]*(num_subjects*4) + [False]*1 + [True]*1 +[False]*4 + [False]*1 + [True]*1 +[False]*4},
@@ -383,7 +383,7 @@ class Plot:
                             dict(label="MTR",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*3) + [True]*num_subjects + [False]*(num_subjects*2) + [False]*3 + [True]*1 +[False]*2 + [False]*3 + [True]*1 +[False]*2},
-                                self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [a.u.]')]),
+                                self.set_trace_layout(matrix=matrix, metric='MTR', title='MTR [%]')]),
                             dict(label="MTsat",
                                 method="update",
                                 args=[{"visible":  [True] + [False]*(num_subjects*4) + [True]*num_subjects + [False]*num_subjects + [False]*4 + [True]*1 +[False]*1 + [False]*4 + [True]*1 +[False]*1},
@@ -416,11 +416,11 @@ class Plot:
             x_button=1.4
         elif self.dataset.data_type == 'brain-diffusion':
             yaxis_range = [self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['CC_1']['DWI_FA'], matrix['MCP']['DWI_FA'], axis=0), 'max')]
-            yaxis_title = 'DWI_FA [a.u.]'
+            yaxis_title = 'DWI_FA'
             x_button=1.3
         elif self.dataset.data_type == 'brain-diffusion-cc':
             yaxis_range = [self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'min'), self.get_val(np.append(matrix['genu']['DWI_FA'], matrix['splenium']['DWI_FA'], axis=0), 'max')]
-            yaxis_title = 'DWI_FA [a.u.]'
+            yaxis_title = 'DWI_FA'
             x_button=1.3
             y_button=0.5
         elif self.dataset.data_type == 'spine':
@@ -438,7 +438,7 @@ class Plot:
             yaxis_title = 'Area [mm<sup>2</sup>]'
         else:
             yaxis_range = [self.get_val(matrix['DWI_FA'], 'min'), self.get_val(matrix['DWI_FA'], 'max')]
-            yaxis_title = 'DWI_FA [a.u.]'
+            yaxis_title = 'DWI_FA'
             x_button=1.28
             width = 680
             height = 540
@@ -504,7 +504,7 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': False,
+            'displayModeBar': True,
             'toImageButtonOptions': {
                 'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
@@ -624,7 +624,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'MTR [a.u.]',
+                'text':'MTR [%]',
                 'standoff':0
                 },
             showgrid=False,
@@ -850,7 +850,7 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': False,
+            'displayModeBar': True,
             'toImageButtonOptions': {
                 'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
@@ -915,7 +915,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'DWI_FA [a.u.]',
+                'text':'DWI_FA',
                 'standoff':0
                 },
             showgrid=False,
@@ -1197,7 +1197,7 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': False,
+            'displayModeBar': True,
             'toImageButtonOptions': {
                 'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
@@ -1261,7 +1261,8 @@ class Plot:
             linewidth=2,
             tickfont = dict(size=self.y_label_tick_font_size-5),
             title_font = dict(size = self.general_font_size-5),
-            range = [self.get_val(matrix['T1w'], 'min'), self.get_val(matrix['T1w'], 'max')],
+            autorange=False,
+            range = [40, 100],
             row=1, col=1
             )
 
@@ -1292,7 +1293,8 @@ class Plot:
             tickfont = dict(size=self.y_label_tick_font_size-5),
             tickformat='s',
             title_font = dict(size = self.general_font_size-5),
-            range = [self.get_val(matrix['T2w'], 'min'), self.get_val(matrix['T2w'], 'max')],
+            autorange=False,
+            range = [40, 100],
             row=1, col=2
             )
         fig.update_xaxes(
@@ -1421,7 +1423,7 @@ class Plot:
         init_notebook_mode(connected = True)
         config={
             'showLink': False,
-            'displayModeBar': False,
+            'displayModeBar': True,
             'toImageButtonOptions': {
                 'format': 'png', # one of png, svg, jpeg, webp
                 'filename': 'custom_image',
@@ -1512,7 +1514,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'MTR [a.u.]',
+                'text':'MTR [%]',
                 'standoff':0
                 },
             showgrid=False,
@@ -1570,7 +1572,7 @@ class Plot:
         fig.update_yaxes(
             type="linear",
             title={
-                'text':'DWI_FA [a.u.]',
+                'text':'DWI_FA',
                 'standoff':0
                 },
             showgrid=False,
@@ -1996,7 +1998,6 @@ class Plot:
                                                     name= name_T1w,
                                                     marker_color=marker_color),
                                                     row=row_T1w, col=col_T1w)
-
                         marker_color="rgb"+str(Plot.colours[3])
                         marker_symbol=symbols[5]
                         if fig_id == 'spine-csa-wm' or fig_id == 'paper_fig4':
@@ -2304,7 +2305,7 @@ class Plot:
                 if tissue == 'WM' or tissue == 'CC_1' or tissue=='genu':
                     fillcolor='rgba(31, 119, 180, 0.15)'
                 elif tissue == 'splenium': 
-                    fillcolor='rgba(0, 132, 53, 0.15)'
+                    fillcolor='rgba(229, 153, 50 0.15)'
                 else: 
                     fillcolor='rgba(190, 77, 80, 0.15)'
 
@@ -2501,6 +2502,8 @@ class Plot:
                 yaxis_range = [self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'min'), self.get_val(np.append(pre_concat, matrix[tissues[2]][metric], axis=0), 'max')]
         else:
             yaxis_range = [self.get_val(matrix[metric], 'min'), self.get_val(matrix[metric], 'max')]
+        if metric=='T1w' or metric=='T2w':
+            yaxis_range = [40,100]
         if metric=='DWI_MD' or metric=='DWI_RD':
             return {"yaxis": dict(
                     range = yaxis_range,

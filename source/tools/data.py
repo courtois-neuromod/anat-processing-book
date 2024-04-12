@@ -56,6 +56,8 @@ class Data:
         ['qmri', 3, 10, 'T1w'],
         ['qmri', 4, 5, 'T1w'],
         ['qmri', 5, 7, 'T2w'],
+        ['spine', 2, 10, 'GMT2w'],
+        ['spine', 5, 5, 'GMT2w'],
         ['qmri', 2, 1, 'DWI_FA'], ['qmri', 2, 1, 'DWI_MD'], ['qmri', 2, 1, 'DWI_RD'],
         ['qmri', 3, 3, 'DWI_FA'], ['qmri', 3, 3, 'DWI_MD'], ['qmri', 3, 3, 'DWI_RD'],
         ['qmri', 6, 8, 'DWI_FA'], ['qmri', 6, 8, 'DWI_MD'], ['qmri', 6, 8, 'DWI_RD']
