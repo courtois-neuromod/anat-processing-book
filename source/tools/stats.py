@@ -175,3 +175,24 @@ class Stats:
                 self.stats_table[self.database2table[metric]]['ICC'] = ICC
                 self.stats_table[self.database2table[metric]]['wsCOV'] = wsCOV
                 self.stats_table[self.database2table[metric]]['bsCOV'] = bsCOV
+
+    def calc_loa(self, metric1, metric2):
+    # Calculate the limit of agreement
+        data_metric1 = np.array(self.df[metric1]).flatten()
+        data_metric2 = np.array(self.df[metric2]).flatten()
+
+        data_metric1 = data_metric1[~np.isnan(data_metric1)]
+        data_metric2 = data_metric2[~np.isnan(data_metric2)]
+
+        assert len(data_metric1)==len(data_metric2)
+
+        difference = np.subtract(data_metric1, data_metric2)
+
+        mean = np.mean(difference)
+
+        std = np.std(difference)
+
+        loa =  1.96*std
+
+        return mean, loa
+
